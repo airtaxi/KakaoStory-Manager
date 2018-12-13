@@ -770,7 +770,7 @@ namespace KSP_WPF
                 }
                 else
                 {
-                    MessageBox.Show("오류 : 입력된 URL이 잘못됐습니다.");
+                    MessageBox.Show("오류가 발생했습니다.\n다시 시도해보세요.");
                     BT_Link.Kind = MaterialDesignThemes.Wpf.PackIconKind.Add;
                 }
                 BT_Link.IsEnabled = true;
