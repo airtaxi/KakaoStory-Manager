@@ -253,7 +253,6 @@
     <Compile Include="ProgressWindow.xaml.cs">
       <DependentUpon>ProgressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RecycleScrollViewer.cs" />
     <Compile Include="ScrapControl.xaml.cs">
       <DependentUpon>ScrapControl.xaml</DependentUpon>
     </Compile>
