@@ -1,0 +1,131 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.PostWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        Closed="Window_Closed"
+        ShowIconOnTitleBar="False"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        Title="포스트" Icon="icon2.png" Width="700" Height="420">
+
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <StackPanel Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Like" Click="BT_Like_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Name="IC_LikeBTN" Kind="Heart"/>
+                        <TextBlock Name="TB_LikeBTN" Text="느낌 달기" />
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_CommentRefresh" Click="BT_CommentRefresh_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Name="IC_Refresh" Kind="Refresh"/>
+                        <TextBlock Name="TB_Refresh" Text="새로고침" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    <Grid PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Name="CD_CommentInfo" Height="20"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Name="CD_Comment" Width="0.7*"/>
+        </Grid.ColumnDefinitions>
+        <Rectangle Fill="LightGray" StrokeThickness="1" HorizontalAlignment="Right" Width="1" Height="Auto" Grid.RowSpan="4" />
+        <TextBlock Name="TB_CommentInfo" Text="로딩중..." Foreground="Gray" Grid.Column="1" Grid.RowSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Grid Margin="5,5,5,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>
+            <Image Name="IMG_Profile" Stretch="UniformToFill"/>
+            <Rectangle Stroke="LightGray"/>
+            <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10,0,0,0">
+                <TextBlock Name="TB_Name" Text="이름" FontWeight="Bold" FontSize="15" Margin="0,13,0,0" />
+                <TextBlock Name="TB_Date" Text="날짜" FontWeight="ExtraLight" Margin="0,2.5,0,0"/>
+            </StackPanel>
+            <materialDesign:PackIcon Name="IC_Menu" Kind="Menu" HorizontalAlignment="Center" VerticalAlignment="Center" Width="30" Height="30" Foreground="Gray" Grid.Column="2" Background="Transparent" IsHitTestVisible="True" MouseLeftButtonDown="IC_Menu_MouseLeftButtonDown"/>
+        </Grid>
+        <ScrollViewer Name="SV_Content" Margin="0,0,0,0" PanningMode="VerticalOnly" Grid.Row="1" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="ScrollViewer_MouseWheel">
+            <StackPanel Margin="5,5,5,5">
+                <TextBlock Name="TB_Content" TextWrapping="Wrap" />
+                <Grid Margin="5,10,5,5" Name="GD_Share" Visibility="Collapsed">
+                    <Rectangle Stroke="LightGray"/>
+                    <Grid Name="GD_ShareCount" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Share" Foreground="Gray" VerticalAlignment="Center" Width="12" Height="12" />
+                            <TextBlock Name="TB_GD_ShareCount" FontSize="12" Text="0" VerticalAlignment="Center" Margin="1,0,0,0" Foreground="Gray" TextAlignment="Right" />
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Name="SP_Share" Orientation="Vertical" IsHitTestVisible="True" Background="Transparent" Margin="5,5,5,5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Name="IMG_ProfileShare" Width="50" Height="50" Stretch="UniformToFill"/>
+                            <Rectangle Stroke="LightGray" Width="50" Height="50"/>
+                            <StackPanel Orientation="Vertical" Grid.Column="1" Margin="5,5,5,5">
+                                <TextBlock Name="TB_NameShare" Text="이름" FontWeight="Bold" FontSize="15" Margin="0,4,0,0" />
+                                <TextBlock Name="TB_DateShare" Text="날짜" FontWeight="ExtraLight" FontSize="12" Margin="0,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Name="TB_ShareContent" Width="Auto" TextWrapping="Wrap" Margin="0,7.5,0,0"/>
+                        <StackPanel Name="SP_ShareContent" Orientation="Vertical" Margin="0,7.5,0,0" Visibility="Visible"/>
+                        <local:ScrapControl x:Name="Scrap_Share" Visibility="Collapsed" Margin="0,7.5,0,0"/>
+                    </StackPanel>
+                </Grid>
+                <StackPanel Name="SP_Content" Orientation="Vertical" Visibility="Collapsed" Margin="0,5,0,0"/>
+                <local:ScrapControl x:Name="Scrap_Main" Visibility="Collapsed" Margin="0,7.5,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+        <Grid Name="GD_Comment" Visibility="Visible" Height="20" Grid.Row="2">
+            <Rectangle Fill="LightGray" Height="1" VerticalAlignment="Top"/>
+            <materialDesign:PackIcon Name="IC_CommentShow" Foreground="Gray" ToolTip="댓글창 숨기기/보여주기" Kind="ArrowCollapseHorizontal" VerticalAlignment="Center" HorizontalAlignment="Right" IsHitTestVisible="True" Background="Transparent" PreviewMouseLeftButtonDown="IC_CommentShow_PreviewMouseLeftButtonDown" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,0,0,0">
+                <TextBlock Name="TB_CommentCount" VerticalAlignment="Center"/>
+                <TextBlock Name="TB_LikeCount" VerticalAlignment="Center" />
+                <TextBlock Name="TB_ShareCount" VerticalAlignment="Center"/>
+                <TextBlock Name="TB_UpCount" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+            <ScrollViewer Name="SV_Comment" PanningMode="VerticalOnly" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="ScrollViewer_MouseWheel">
+                <StackPanel Name="SP_Comment"/>
+            </ScrollViewer>
+        </Grid>
+        <Grid Grid.Row="3" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="40"/>
+            </Grid.ColumnDefinitions>
+            <Rectangle Stroke="LightGray" VerticalAlignment="Top" Grid.ColumnSpan="4"/>
+            <TextBox TextAlignment="Left" Name="TB_Comment" TextWrapping="Wrap" AcceptsReturn="True" BorderThickness="0" Height="38" VerticalAlignment="Center" PreviewKeyDown="TB_Comment_PreviewKeyDown" VerticalContentAlignment="Top" Margin="0,0,0,0" Focusable="True" controls:TextBoxHelper.Watermark="댓글 작성하기"/>
+            <materialDesign:PackIcon Name="BT_Quote" ToolTip="친구 언급하기" Kind="PersonAdd" Grid.Column="1" Width="30" Height="30" Margin="5,5,5,5" MouseLeftButtonDown="BT_Quote_MouseLeftButtonDown" Foreground="Gray" IsHitTestVisible="True" Background="Transparent"/>
+            <materialDesign:PackIcon Name="BT_Upload" ToolTip="사진 첨부하기" Kind="Attachment" Grid.Column="2" Width="30" Height="30" Margin="5,5,5,5" MouseLeftButtonDown="BT_Upload_MouseLeftButtonDown" Foreground="Gray" IsHitTestVisible="True" Background="Transparent"/>
+            <materialDesign:PackIcon Name="BT_SubmitComment" ToolTip="댓글 작성하기" Kind="Send" Grid.Column="3" Width="30" Height="30" Margin="5,5,5,5" MouseLeftButtonDown="BT_SubmitComment_MouseLeftButtonDown" Foreground="Gray" IsHitTestVisible="True" Background="Transparent" />
+        </Grid>
+        <controls:Flyout Name="FL_Menu" Position="Right" Width="150" HorizontalAlignment="Right" Header="메뉴" Grid.Column="1" Grid.RowSpan="4" Theme="Accent" IsOpen="False">
+            <StackPanel Margin="5,5,5,5">
+                <Button Name="BT_Web" Content="브라우저로 열기" Click="BT_Web_Click" Style="{StaticResource AccentedSquareButtonStyle}"/>
+                <Button Name="BT_Edit" Content="수정" Click="BT_Edit_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_Delte" Content="삭제" Click="BT_Delte_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_Share" Content="공유" Click="BT_Share_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_UP" Content="UP하기" Click="BT_UP_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+            </StackPanel>
+        </controls:Flyout>
+    </Grid>
+</controls:MetroWindow>

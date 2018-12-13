@@ -1,0 +1,124 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.StoryWriteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        Closed="Window_Closed"
+        ShowIconOnTitleBar="False"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        SaveWindowPosition="True"
+        xmlns:dragablz="http://dragablz.net/winfx/xaml/dragablz"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="게시글 올리기" Icon="icon2.png" SizeToContent="Height" Width="360" ResizeMode="NoResize">
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button Name="BT_Menu" Click="BT_Menu_Click" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Settings"/>
+                    <TextBlock Text="게시글 설정"/>
+                </StackPanel>
+            </Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    <Window.Resources>
+        <RoutedUICommand x:Key="Paste"/>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource Paste}" Executed="CommandBinding_Executed"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="V" Modifiers="Ctrl" Command="{StaticResource Paste}"/>
+    </Window.InputBindings>
+
+    <Grid AllowDrop="True" Drop="TB_Main_Drop">
+        <Grid Margin="5,5,5,5" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <Button Name="BT_Submit" Content="올리기" Grid.Column="2" Click="BT_Submit_Click" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus"/>
+                <ComboBox Name="ComboRange" Grid.Column="0" SelectedIndex="1" SelectionChanged="ComboRange_SelectionChanged" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                    <ComboBoxItem Name="CBI_All">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Globe" Foreground="Gray" Width="17.5" Height="17.5"/>
+                            <TextBlock Text="전체 공개" Margin="5,0,0,0" Foreground="Black"/>
+                        </StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="People" Foreground="Gray" Width="17.5" Height="17.5"/>
+                            <TextBlock Text="친구 공개" Margin="5,0,0,0" Foreground="Black"/>
+                        </StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="PersonAdd" Foreground="Gray" Width="17.5" Height="17.5"/>
+                            <TextBlock Text="편한 친구 공개" Margin="5,0,0,0" Foreground="Black"/>
+                        </StackPanel>
+                    </ComboBoxItem>
+                    <ComboBoxItem>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Person" Foreground="Gray" Width="17.5" Height="17.5"/>
+                            <TextBlock Text="나만 보기" Margin="5,0,0,0" Foreground="Black"/>
+                        </StackPanel>
+                    </ComboBoxItem>
+                </ComboBox>
+            </Grid>
+            <Grid Grid.Row="1" Margin="0,5,0,0">
+                <TextBox Name="TB_Main" TextAlignment="Left" MinHeight="80" MaxHeight="400" AcceptsReturn="True" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="오늘 하루, 어떤 일이 있었나요?" VerticalContentAlignment="Top" AllowDrop="True" Drop="TB_Main_Drop" PreviewDragOver="TB_Main_PreviewDragOver" PreviewKeyDown="TB_Main_PreviewKeyDown" VerticalScrollBarVisibility="Auto"/>
+            </Grid>
+            <Grid Grid.Row="2" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                    <StackPanel Name="SP_Pictures" Margin="5,5,5,5" Visibility="Collapsed" Orientation="Horizontal">
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+            <Grid Grid.Row="3" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Name="GD_Link" Margin="0,5,0,0" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="35"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Name="TB_Link" controls:TextBoxHelper.Watermark="링크 추가" KeyDown="TB_Link_KeyDown"/>
+                    <materialDesign:PackIcon Name="BT_Link" HorizontalAlignment="Center" IsHitTestVisible="True" Kind="Add" Height="30" Width="30" Foreground="Gray" Grid.Column="1" PreviewMouseLeftButtonDown="BT_Link_PreviewMouseLeftButtonDown" Background="Transparent"/>
+                </Grid>
+                <Grid Name="BT_WithFriend" Grid.Row="1" PreviewMouseLeftButtonDown="BT_WithFriend_PreviewMouseLeftButtonDown" IsHitTestVisible="True" Background="Transparent">
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <materialDesign:PackIcon Kind="Contacts" Foreground="Gray"/>
+                        <TextBlock Text="함께하는 친구 추가" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="4" Margin="0,0,0,0" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,0" >
+                    <materialDesign:PackIcon Name="BT_Pic" PreviewMouseLeftButtonDown="BT_Pic_MouseLeftButtonDown" Kind="Camera" Height="30" Width="30" Foreground="Gray" IsHitTestVisible="True" Background="Transparent"/>
+                    <materialDesign:PackIcon Kind="Camcorder" Height="30" Width="30" Foreground="LightGray" Margin="5,0,0,0" Background="Transparent" IsHitTestVisible="True"/>
+                    <materialDesign:PackIcon Name="BT_LinkShow" PreviewMouseLeftButtonDown="BT_LinkShow_PreviewMouseLeftButtonDown" Kind="Link" Height="30" Width="30" Foreground="Gray" IsHitTestVisible="True" Background="Transparent" Margin="5,0,0,0"/>
+                    <materialDesign:PackIcon Name="BT_QuoteFriend" Kind="PersonAdd" Height="30" Width="30" Foreground="Gray" IsHitTestVisible="True" Background="Transparent" Margin="5,0,0,0" PreviewMouseLeftButtonDown="BT_QuoteFriend_PreviewMouseLeftButtonDown"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <controls:Flyout Name="FL_Menu" Header="설정" Width="150" Position="Right" HorizontalAlignment="Right" IsOpen="False" Theme="Accent">
+            <StackPanel Orientation="Vertical" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <CheckBox Name="CB_Comment" Content="댓글 허용" Margin="5,5,5,5" IsChecked="True"/>
+                <CheckBox Name="CB_Share" Content="공유 허용" Margin="5,5,5,5" IsChecked="True"/>
+            </StackPanel>
+        </controls:Flyout>
+    </Grid>
+</controls:MetroWindow>

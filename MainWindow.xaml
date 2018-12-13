@@ -1,0 +1,77 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Closing="Window_Closing"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        ShowIconOnTitleBar="False"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        Title="카카오스토리 매니저" Icon="icon2.png" Height="480" Width="730" ResizeMode="NoResize" Focusable="False">
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <StackPanel VerticalAlignment="Center" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Memory" Click="BT_Memory_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Memory"/>
+                        <TextBlock Text="메모리 정리"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Focusable="False" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+        <TextBlock Name="TB_Tray" FontWeight="Bold" Text="프로그램 최소화 |" FontSize="16" Margin="510,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" MouseLeftButtonDown="TB_Tray_MouseLeftButtonDown" />
+        <materialDesign:PackIcon Name="IMG_Power" Kind="PowerStandby" Foreground="Teal" Width="42" Height="42" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="638,34,0,0" MouseLeftButtonDown="Image_MouseLeftButtonDown" IsHitTestVisible="True" Background="Transparent" />
+        <Grid Name="GD_Login" Visibility="Visible" Margin="0,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock FontWeight="Bold" Text="카카오 계정 로그인" FontSize="16" Margin="40,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" />
+            <TextBox Name="TBX_Email" FontSize="17" Text="" BorderThickness="0" FontWeight="Bold" VerticalContentAlignment="Center" Margin="40,90,0,0" Width="460" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top" controls:TextBoxHelper.Watermark="이메일" KeyDown="TBX_Email_KeyDown"/>
+            <Rectangle Stroke="Gray" Width="460" Height="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="40,125,0,0" />
+            <PasswordBox Name="TBX_Password" FontSize="17" Password="" FontWeight="Bold" BorderThickness="0" VerticalContentAlignment="Center" Margin="40,130,0,0" Width="460" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top" controls:TextBoxHelper.Watermark="패스워드" KeyDown="TBX_Password_KeyDown"/>
+            <CheckBox Name="CB_AutoLogin" Content="로그인 유지" FontWeight="Bold" FontSize="17.5" VerticalContentAlignment="Center" Margin="40,170,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="CB_AutoLogin_Click" KeyDown="TBX_Password_KeyDown"/>
+        </Grid>
+        <Grid Name="GD_Profile" Margin="0,75,0,0" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Ellipse Name="EL_Profile" Width="170" Height="170" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="35,0,0,0" MouseLeftButtonDown="TB_MyProfile_MouseLeftButtonDown" Stretch="UniformToFill"/>
+            <Grid Margin="220,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <TextBlock Name="TB_Name" FontWeight="Bold" Text="이름" FontSize="36" Margin="0,0,0,0" TextAlignment="Left" />
+                <TextBlock Name="TB_Email" FontWeight="Bold" Text="kck4156@kagamine-rin.com" FontSize="16" Margin="0,47.5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" />
+                <TextBlock Name="TB_MyProfile" FontWeight="Bold" Text="내 프로필 |" FontSize="16" Margin="0,72.5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" MouseLeftButtonDown="TB_MyProfile_MouseLeftButtonDown" />
+                <Grid Name="GD_Friends" MouseLeftButtonDown="GD_Friends_MouseLeftButtonDown">
+                    <materialDesign:PackIcon Name="IMG_Friends" Kind="People" Width="20" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="82.5,0,0,0"/>
+                    <TextBlock Name="TB_Friends" FontWeight="Bold" Text="친구 목록" FontSize="16" Margin="105,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" TextAlignment="Center" />
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Margin="0,285,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Grid Name="GD_Write" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Write_MouseLeftButtonDown">
+                <materialDesign:PackIcon Kind="Pen" Width="80" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+                <TextBlock FontWeight="Bold" Text="글 작성" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" />
+            </Grid>
+            <Grid Name="GD_Timeline" Margin="130,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Timeline_MouseLeftButtonDown">
+                <materialDesign:PackIcon Kind="ChartTimeline" Width="80" Height="80" Margin="0,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+                <TextBlock FontWeight="Bold" Text="타임라인" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" />
+            </Grid>
+            <Grid Name="GD_Notifications" Margin="260,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Notifications_MouseLeftButtonDown">
+                <materialDesign:PackIcon Kind="NotificationsNone" Width="80" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+                <TextBlock FontWeight="Bold" Text="최근 알림" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" />
+            </Grid>
+            <Grid Name="GD_Settings" Margin="390,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Settings_MouseLeftButtonDown">
+                <materialDesign:PackIcon Kind="SettingsOutline" Width="80" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+                <TextBlock FontWeight="Bold" Text="환경 설정" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Bottom" TextAlignment="Center" Margin="0,92,0,0" />
+            </Grid>
+        </Grid>
+        <Rectangle Fill="#008080" Width="150" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="535,140,0,0" />
+        <TextBlock Name="TB_Login" Text="로그인" FontWeight="Bold" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="555,152,0,0" Visibility="Visible" />
+        <TextBlock Name="TB_LoginProgress" Text="…" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="24" Margin="600,152,0,0" Visibility="Collapsed" />
+        <TextBlock Name="TB_Logout" Text="로그아웃" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="24" Margin="561.5,152,0,0" Visibility="Collapsed" />
+        <materialDesign:PackIcon Name="IMG_Login" Kind="LoginVariant" Foreground="White" Width="30" Height="30" Margin="634,152,0,0" VerticalAlignment="Top" Visibility="Visible" />
+        <Rectangle Name="BT_Login" Fill="Transparent" Width="150" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="535,140,0,0" MouseLeftButtonDown="BT_Login_MouseLeftButtonDown"/>
+        <TextBlock FontWeight="Bold" Text="후원 : 110-470-626176 신한 이호원 (돈 없는 대학원생입니다 ㅠㅠ)" FontSize="12" Margin="0,0,5,5" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Center" />
+    </Grid>
+</controls:MetroWindow>

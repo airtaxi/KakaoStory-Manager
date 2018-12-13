@@ -1,0 +1,36 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        Closed="Window_Closed"
+        ShowIconOnTitleBar="False"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        Title="설정" Icon="icon2.png" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
+    <ScrollViewer Name="SV_Main" Height="290" VerticalScrollBarVisibility="Auto" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus" PanningMode="VerticalOnly">
+        <StackPanel Orientation="Vertical" Margin="10,10,10,10">
+            <Button Name="BT_Start" Margin="0,0,0,0" Content="부팅시 자동 시작 설정하기" Click="BT_Start_Click"/>
+            <Button Name="BT_DeleteBlinded" Margin="0,5,0,0" Content="제한된 사용자 삭제" Click="BT_DeleteBlinded_Click"/>
+            <Button Name="BT_DeletePosts" Margin="0,5,0,0" Content="스토리 일괄 삭제" Click="BT_DeletePosts_Click"/>
+            <Button Name="BT_Credits" Margin="0,5,0,0" Content="개발자 스토리 방문" Click="BT_Credits_Click"/>
+            <CheckBox Name="CB_Mute" Margin="0,5,0,0" Content="프로그램 상태 알림 끄기" Click="CB_Click"/>
+            <CheckBox Name="CB_VIP" Margin="0,5,0,0" Content="관심 친구 알림 끄기" Click="CB_Click"/>
+            <CheckBox Name="CB_Like" Margin="0,5,0,0" Content="느낌 알림 끄기" Click="CB_Click"/>
+            <CheckBox Name="CB_Memory" Margin="0,5,0,0" Content="타임라인 메모리 절약" Click="CB_Click"/>
+            <!--<CheckBox Name="CB_ImageClick" Margin="0,5,0,0" Content="이미지 클릭시 저장" Click="CB_Click"/>-->
+            <CheckBox Name="CB_FullScreen" Margin="0,5,0,0" Content="포스트 열 때 전체화면으로 전환" Click="CB_Click"/>
+            <CheckBox Name="CB_TimelineScroll" Margin="0,5,0,0" Content="타임라인 내용이 길면 스크롤바 생성" Click="CB_Click"/>
+            <CheckBox Name="CB_HideScrollBar" Margin="0,5,0,0" Content="스크롤바 숨기기" Click="CB_Click"/>
+            <CheckBox Name="CB_NoGIF" Margin="0,5,0,0" Content="GIF 이미지 사용안함(저사양 PC 권장)" Click="CB_Click"/>
+            <CheckBox Name="CB_DefaultFriendOnly" Margin="0,5,0,0" Content="기본 공개범위를 친구공개로 설정" Click="CB_Click"/>
+            <CheckBox Name="CB_ShowComment" Margin="0,5,0,0" Content="포스트 창의 댓글창 자동으로 펼치기" Click="CB_Click"/>
+            <CheckBox Name="CB_PositionPostToTop" Margin="0,5,0,0" Content="포스트 조회시 창의 위치를 맨위로 설정하기" Click="CB_Click"/>
+            <CheckBox Name="CB_PositionTimelineToTop" Margin="0,5,0,0" Content="타임라인 조회시 창의 위치를 맨위로 설정하기" Click="CB_Click"/>
+            <CheckBox Name="CB_DefaultMinimize" Margin="0,5,0,0" Content="프로그램을 트레이로 보내는 대신 최소화" Click="CB_Click"/>
+            <CheckBox Name="CB_AutoMinimize" Margin="0,5,0,0" Content="로그인 성공후 자동으로 최소화" Click="CB_Click"/>
+        </StackPanel>
+    </ScrollViewer>
+</controls:MetroWindow>

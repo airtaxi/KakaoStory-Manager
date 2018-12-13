@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="KSP_WPF.FriendSelectControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:KSP_WPF"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="300">
+    <Grid Name="Grid" Height="50" IsHitTestVisible="True" Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Border Name="RA_Main" Grid.ColumnSpan="3" IsHitTestVisible="True" Background="Transparent"/>
+        <Image Name="IMG_Profile" Width="50" Height="50" Stretch="UniformToFill" Margin="0,0,0,0"/>
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Name="GD_Emotion" Visibility="Collapsed">
+            <Ellipse Width="13" Height="13" Margin="1,1,0,0" Fill="White"/>
+            <materialDesign:PackIcon Name="EM_Cheer" Kind="LightningBoltCircle" Foreground="Purple" Visibility="Collapsed"/>
+            <materialDesign:PackIcon Name="EM_Like" Kind="HeartCircle" Foreground="Red" Visibility="Collapsed"/>
+            <materialDesign:PackIcon Name="EM_Cool" Kind="StarCircle" Foreground="Teal" Visibility="Collapsed"/>
+            <materialDesign:PackIcon Name="EM_Pleasure" Kind="Smiley" Foreground="Gold" Visibility="Collapsed"/>
+            <Grid Name="EM_Sad" Visibility="Collapsed">
+                <Ellipse Width="13" Height="13" Margin="1,1,0,0" Fill="Teal" />
+                <materialDesign:PackIcon Kind="Water" Width="12" Height="12" Margin="2,2,0,0" Foreground="White"/>
+            </Grid>
+        </Grid>
+        <TextBlock Name="TB_Name" Text="이름" Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="18" FontWeight="Bold"/>
+        <materialDesign:PackIcon Name="IC_Friend" Kind="PersonAdd" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Width="30" Height="30" Foreground="Gray" Background="Transparent" IsHitTestVisible="True" Visibility="Collapsed" />
+    </Grid>
+</UserControl>

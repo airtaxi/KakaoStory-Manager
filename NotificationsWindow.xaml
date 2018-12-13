@@ -1,0 +1,45 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.NotificationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        Deactivated="Window_Deactivated"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Closed="Window_Closed"
+        ShowIconOnTitleBar="False"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        Title="알림 확인" Icon="icon2.png" Height="450" Width="350">
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <StackPanel Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Refresh" Click="BT_Refresh_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Name="IC_Refresh" Kind="Refresh"/>
+                        <TextBlock Name="TB_RefreshBT" Text="새로고침" />
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_Menu" Click="BT_Menu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Menu"/>
+                        <TextBlock Text="메뉴" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    <Grid PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+        <ScrollViewer Name="SV_Content" VerticalScrollBarVisibility="Auto" Grid.Row="0" PanningMode="VerticalOnly" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+            <StackPanel Name="SP_Content" Orientation="Vertical"/>
+        </ScrollViewer>
+        <controls:Flyout Name="FL_Menu" Position="Right" IsOpen="False" Theme="Accent" Width="210" Header="알림 메뉴">
+            <StackPanel Margin="5,5,5,5" Orientation="Vertical">
+                <CheckBox Name="CB_Topmost" Content="항상 위" Foreground="White"/>
+                <CheckBox Name="CB_AutoRefresh" Content="알림 자동 새로고침" Margin="0,5,0,0" IsChecked="False"/>
+                <TextBox Name="TB_Refresh" Width="160" Text="15" controls:TextBoxHelper.Watermark="자동 새로고침 주기 (초)" controls:TextBoxHelper.UseFloatingWatermark="True" LostKeyboardFocus="TB_Refresh_LostKeyboardFocus" controls:TextBoxHelper.SelectAllOnFocus="True" Margin="5,5,5,5" Visibility="{Binding IsChecked,ElementName=CB_AutoRefresh,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </StackPanel>
+        </controls:Flyout>
+    </Grid>
+</controls:MetroWindow>

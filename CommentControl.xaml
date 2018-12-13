@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="KSP_WPF.CommentControl"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+            xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+            xmlns:local="clr-namespace:KSP_WPF"
+            mc:Ignorable="d" 
+            d:DesignHeight="80" d:DesignWidth="300">
+    <Grid Name="Grid" IsHitTestVisible="True" Background="Transparent">
+        <controls:FlipView Background="Transparent" ClipToBounds="True" IsBannerEnabled="False" VerticalAlignment="Center" HorizontalAlignment="Stretch" SelectedIndex="0">
+            <controls:FlipViewItem>
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="50"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Name="IMG_Profile" Height="60" VerticalAlignment="Top" Stretch="UniformToFill" />
+                    <Rectangle Stroke="LightGray" Height="60" VerticalAlignment="Top"/>
+                    <StackPanel Orientation="Vertical" Grid.Column="1" Margin="5,0,0,0" Grid.ColumnSpan="1">
+                        <TextBlock Name="TB_Name" Text="이름" FontSize="15" TextWrapping="WrapWithOverflow" FontWeight="Bold"/>
+                        <TextBlock Name="TB_Content" FontSize="12" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                        <Image Name="IMG_Comment" Width="Auto" Stretch="UniformToFill" Margin="0,5,0,0" Visibility="Collapsed"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0" HorizontalAlignment="Left">
+                            <TextBlock Name="TB_MetaData" TextWrapping="Wrap" Text="방금 전" FontSize="10" FontWeight="ExtraLight"/>
+                            <StackPanel Name="BT_Like" Orientation="Horizontal" Margin="5,0,0,0.5" Background="Transparent" IsHitTestVisible="True">
+                                <materialDesign:PackIcon Name="IC_Like" Kind="Heart" Foreground="Gray" Width="8" Height="8" VerticalAlignment="Bottom" Margin="0,0,0,1.5"/>
+                                <TextBlock Name="TB_Like" TextWrapping="Wrap" Text="좋아요" FontSize="8" FontWeight="ExtraLight" Margin="1.25,0,0,0" VerticalAlignment="Bottom"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </controls:FlipViewItem>
+            <controls:FlipViewItem>
+                <Grid HorizontalAlignment="Stretch" Margin="50,10,10,10" VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Name="BT_Edit" Content="수정" Style="{StaticResource AccentedSquareButtonStyle}"/>
+                    <Button Name="BT_Delete" Content="삭제" Grid.Row="1" Style="{StaticResource AccentedSquareButtonStyle}"/>
+                </Grid>
+            </controls:FlipViewItem>
+        </controls:FlipView>
+    </Grid>
+</UserControl>

@@ -1,0 +1,96 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.TimeLineWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        ShowIconOnTitleBar="False"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        Closed="Window_Closed"
+        Closing="MetroWindow_Closing"
+        Loaded="Window_Loaded"
+        Deactivated="Window_Deactivated"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="타임라인" Height="640" Width="450" Icon="icon2.png">
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <StackPanel Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Refresh" Click="BT_Refresh_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Name="IC_Refresh" Kind="Refresh"/>
+                        <TextBlock Name="TB_RefreshBT" Text="새로고침"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_Write" Click="BT_Write_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Pen"/>
+                        <TextBlock Text="글쓰기"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_Notification" Click="BT_Notification_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Notifications"/>
+                        <TextBlock Text="알림"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_Menu" Click="BT_Menu_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Menu"/>
+                        <TextBlock Text="메뉴"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+    <Grid Name="Grid" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+        <Grid Grid.Row="1" Margin="0,10,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer x:Name="SV_Content" VerticalScrollBarVisibility="Hidden" ScrollChanged="SV_Content_ScrollChanged" PanningMode="VerticalOnly" PreviewMouseWheel="SV_Content_PreviewMouseWheel" IsDeferredScrollingEnabled="True">
+                <StackPanel Orientation="Vertical" Margin="10,0,10,0">
+                    <Grid Margin="0,5,0,0" Name="CD_Profile" Visibility="Collapsed">
+                        <Rectangle Stroke="LightGray"/>
+                        <Grid>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="180"/>
+                                    <RowDefinition Height="90"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Name="IMG_ProfileBG" Grid.Row="0" Grid.ColumnSpan="2" Stretch="UniformToFill" />
+                                <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Visibility="Visible">
+                                    <TextBlock Name="TB_Name" Text="이름" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" />
+                                    <TextBlock Name="TB_Desc" Text="소개" Margin="0,2.5,0,0" FontSize="12" FontWeight="Light" HorizontalAlignment="Left" />
+                                    <TextBlock Name="TB_Desc2" Text="설명" Margin="0,2.5,0,0" FontSize="12" FontWeight="ExtraLight" HorizontalAlignment="Left" />
+                                </StackPanel>
+                                <Image Grid.Row="1" Name="IMG_Profile" Width="90" Height="90" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="UniformToFill"/>
+                                <Rectangle Grid.Row="1" Stroke="LightGray" Width="90" Height="90" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                                <Rectangle Grid.Row="1" Stroke="LightGray" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
+                                <Grid Name="GD_Favorite" Grid.Row="1" VerticalAlignment="Bottom" Visibility="Visible">
+                                    <Rectangle Fill="OrangeRed" Name="IC_Favorite" Width="30" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                                    <materialDesign:PackIcon Name="ICP_Favorite" Kind="Star" Foreground="White" Width="30" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                                </Grid>
+                                <materialDesign:PackIcon Margin="5,5,5,5" Grid.Row="1" Grid.Column="1" Kind="Person" Name="IC_Friend" Foreground="Gray" Width="22" Height="22" VerticalAlignment="Top" HorizontalAlignment="Right" PreviewMouseLeftButtonDown="IC_Friend_PreviewMouseLeftButtonDown" IsHitTestVisible="True" Background="Transparent"/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <StackPanel Name="SP_Content" Orientation="Vertical"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        <controls:Flyout Name="FL_Menu" Theme="Accent" Width="210" Position="Right" IsOpen="False" Header="타임라인 메뉴">
+            <StackPanel Orientation="Vertical" Margin="5,5,5,5">
+                <CheckBox Name="CB_Topmost" Content="항상 위에 표시"/>
+                <CheckBox Name="CB_AutoRefresh" Content="타임라인 자동 새로고침" Margin="0,5,0,0" IsChecked="False"/>
+                <TextBox Name="TB_Refresh" Width="160" Text="15" controls:TextBoxHelper.Watermark="자동 새로고침 주기 (초)" controls:TextBoxHelper.UseFloatingWatermark="True" LostKeyboardFocus="TB_Refresh_LostKeyboardFocus" controls:TextBoxHelper.SelectAllOnFocus="True" Margin="5,5,5,5" Visibility="{Binding IsChecked,ElementName=CB_AutoRefresh,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </StackPanel>
+        </controls:Flyout>
+        <TextBlock Name="TB_Loading" Text="불러오는중..." Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+    </Grid>
+</controls:MetroWindow>

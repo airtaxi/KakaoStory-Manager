@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="KSP_WPF.NotificationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:KSP_WPF"
+             mc:Ignorable="d"
+            d:DesignHeight="60" d:DesignWidth="300">
+    <Grid Name="GD_Main" Background="#CCEEFF" IsHitTestVisible="True">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Name="IMG_Thumbnail" Width="60" Height="60" VerticalAlignment="Center" HorizontalAlignment="Left" Stretch="UniformToFill"/>
+            <Rectangle Stroke="Gray" HorizontalAlignment="Right"/>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0">
+                <TextBlock Name="TB_Content" Text="제목" TextTrimming="CharacterEllipsis" FontWeight="ExtraBold" Margin="0,0,0,0" Width="Auto" VerticalAlignment="Top"/>
+                <TextBlock Name="TB_Message" Text="내용" FontWeight="Medium" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" Width="Auto"/>
+                <TextBlock Name="TB_Date" Text="날짜" FontWeight="UltraLight" FontSize="9" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" Width="Auto"/>
+            </StackPanel>
+        </Grid>
+        <Rectangle Stroke="Gray" StrokeThickness="1" VerticalAlignment="Bottom"/>
+    </Grid>
+</UserControl>

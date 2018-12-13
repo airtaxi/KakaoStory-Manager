@@ -1,0 +1,43 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.ImageViewerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:KSP_WPF"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        ShowIconOnTitleBar="False"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        Title="이미지 뷰어" Height="450" Width="450" Icon="icon2.png" Background="#333333">
+    <Grid Focusable="False" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+        <local:ZoomBorder x:Name="ZB_Main" ClipToBounds="True">
+            <Image Name="IMG_Main" Stretch="Uniform" IsHitTestVisible="True"/>
+        </local:ZoomBorder>
+    </Grid>
+
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <StackPanel Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Reset" Click="BT_Reset_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Undo"/>
+                        <TextBlock Text="초기화"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_Save" Click="BT_Save_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ContentSave"/>
+                        <TextBlock Text="저장"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_Clipboard" Click="BT_Clipboard_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ClipboardTextOutline"/>
+                        <TextBlock Text="클립보드에 복사"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+</controls:MetroWindow>
