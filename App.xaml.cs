@@ -28,7 +28,7 @@ namespace KSP_WPF
             if (!createdNew)
             {
                 if (!KSP_WPF.Properties.Settings.Default.Disable_Message)
-                    KSP_WPF.MainWindow.ShowNotification("안내", "프로그램이 이미 실행중이므로 자동 종료되었습니다.", null);
+                    KSP_WPF.GlobalHelper.ShowNotification("안내", "프로그램이 이미 실행중이므로 자동 종료되었습니다.", null);
                 Current.Shutdown();
             }
             else

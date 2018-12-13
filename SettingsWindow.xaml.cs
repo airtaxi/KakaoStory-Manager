@@ -172,7 +172,7 @@ namespace KSP_WPF
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            TimeLineWindow.HandleScroll(sender, e);
+            GlobalHelper.HandleScroll(sender, e);
         }
 
         private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)

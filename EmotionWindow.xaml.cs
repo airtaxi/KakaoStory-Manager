@@ -34,7 +34,7 @@ namespace KSP_WPF
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             Button button = ((Button) sender);
-            bool isSucces = await MainWindow.LikeFeed(feedID, (string) button.Tag);
+            bool isSucces = await KakaoRequestClass.LikeFeed(feedID, (string) button.Tag);
             instance.Dispatcher.Invoke(() =>
             {
                 if (isSucces)

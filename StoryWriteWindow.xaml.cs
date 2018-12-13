@@ -37,18 +37,18 @@ namespace KSP_WPF
                 instance.ValidatePanelHeight();
             }
         };
-        private List<ImageData> imgs = new List<ImageData>();
-        private List<UploadedImageProp> imgsProp = new List<UploadedImageProp>();
+        private readonly List<ImageData> imgs = new List<ImageData>();
+        private readonly List<UploadedImageProp> imgsProp = new List<UploadedImageProp>();
         private static StoryWriteWindow instance;
-        private List<string> with_ids = new List<string>();
-        private List<string> trust_ids = new List<string>();
-        private bool isEdit;
-        private bool isShare = false;
-        private string editFeedID;
-        private List<string> editOldMediaPath = new List<string>();
-        private string shareFeedID;
+        private readonly List<string> with_ids = new List<string>();
+        private readonly List<string> trust_ids = new List<string>();
+        private readonly bool isEdit;
+        private readonly bool isShare = false;
+        private readonly string editFeedID;
+        private readonly List<string> editOldMediaPath = new List<string>();
+        private readonly string shareFeedID;
+        private readonly bool isShared = false;
         private string linkData;
-        private bool isShared = false;
 
         public StoryWriteWindow()
         {
@@ -220,10 +220,12 @@ namespace KSP_WPF
         {
             if (imgs.Count < 20)
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Filter = "Image Files (*.jpg;*.jpeg; *.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|GIF Image File (*.gif)|*.gif";
-                ofd.DefaultExt = "jpg";
-                ofd.Multiselect = true;
+                OpenFileDialog ofd = new OpenFileDialog
+                {
+                    Filter = "Image Files (*.jpg;*.jpeg; *.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|GIF Image File (*.gif)|*.gif",
+                    DefaultExt = "jpg",
+                    Multiselect = true
+                };
                 ofd.ShowDialog();
                 if (ofd.FileNames.Length > 0)
                 {
@@ -240,142 +242,7 @@ namespace KSP_WPF
 
             ValidatePanelHeight();
         }
-
-        public static string GetStringFromQuoteData(List<QuoteData> datas, bool preserveQuote)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var data in datas)
-            {
-                if (preserveQuote)
-                {
-                    if (data.type.Equals("profile"))
-                    {
-                        sb.Append("{!{" + JsonConvert.SerializeObject (data, Formatting.None, new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Ignore
-                        }) + "}!}");
-                    }
-                    else
-                        sb.Append(data.text);
-                }
-                else
-                    sb.Append(data.text);
-            }
-            return sb.ToString();
-        }
-        public static List<QuoteData> GetQuoteDataFromString(string text)
-        {
-            return GetQuoteDataFromString(text, false);
-        }
-        public static List<QuoteData> GetQuoteDataFromString(string text, bool escapeHashtag)
-        {
-            string[] fragmentBases = text.Split(new string[] { "{!{" }, StringSplitOptions.None);
-            List<QuoteData> returnData = new List<QuoteData>();
-            int count = 0;
-            foreach (string fragmentBase in fragmentBases)
-            {
-                if (count % 2 == 0)
-                {
-                    string str = fragmentBase.Contains("}!}") ? fragmentBase.Split(new string[] { "}!}" }, StringSplitOptions.None)[1] : fragmentBase;
-                    str = str.Replace("\\n", "\n");
-                    str = str.Replace("\\r\\n", "\n");
-                    str = str.Replace("\\\"", "\"");
-                    if(str.Contains("#") && !escapeHashtag)
-                    {
-                        string[] rawStr = str.Split(new string[] { "#" }, StringSplitOptions.None);
-                        if (rawStr[0].Length > 0)
-                        {
-                            returnData.Add(new QuoteData()
-                            {
-                                type = "text",
-                                text = rawStr[0]
-                            });
-                        }
-                        for (int i = 1; i < rawStr.Length; i++)
-                        {
-                            string strNow = rawStr[i];
-                            str = str.Replace("\\n", "\n");
-                            str = str.Replace("\\r\\n", "\n");
-                            str = str.Replace("\r\n", "\n");
-                            int splitCounter = Math.Min(strNow.IndexOf(" "), strNow.IndexOf("\n"));
-                            if (splitCounter >= 0)
-                            {
-                                string hashTag = strNow.Substring(0, splitCounter);
-                                string otherStr = strNow.Substring(splitCounter);
-                                if (hashTag.Length > 0)
-                                {
-                                    returnData.Add(new QuoteData()
-                                    {
-                                        type = "hashtag",
-                                        hashtag_type = "",
-                                        hashtag_type_id = "",
-                                        text = "#" + hashTag
-                                    });
-                                }
-                                else
-                                {
-                                    returnData.Add(new QuoteData()
-                                    {
-                                        type = "text",
-                                        text = "#"
-                                    });
-                                }
-                                if (otherStr.Length > 0)
-                                {
-                                    returnData.Add(new QuoteData()
-                                    {
-                                        type = "text",
-                                        text = otherStr
-                                    });
-                                }
-                            }
-                            else
-                            {
-                                returnData.Add(new QuoteData()
-                                {
-                                    type = "hashtag",
-                                    hashtag_type = "",
-                                    hashtag_type_id = "",
-                                    text = "#" + strNow
-                                });
-                            }
-                        }
-                    }
-                    else
-                    {
-                        QuoteData quoteData = new QuoteData()
-                        {
-                            type = "text",
-                            text = str
-                        };
-                        returnData.Add(quoteData);
-                    }
-                    count++;
-                }
-                else
-                {
-                    string[] strs = fragmentBase.Split(new string[] { "}!}" }, StringSplitOptions.None);
-                    string jsonStr = strs[0];
-                    jsonStr = jsonStr.Replace("\\n", "\n");
-                    jsonStr = jsonStr.Replace("\\\"", "\"");
-                    QuoteData quoteData = JsonConvert.DeserializeObject<QuoteData>(jsonStr);
-                    count++;
-                    returnData.Add(quoteData);
-                    if (strs.Length == 2)
-                    {
-                        QuoteData quoteData2 = new QuoteData()
-                        {
-                            type = "text",
-                            text = strs[1].Replace("\\n", "\n").Replace("\\\"", "\"")
-                        };
-                        returnData.Add(quoteData2);
-                        count++;
-                    }
-                }
-            }
-            return returnData;
-        }
-
+        
         private async Task<bool> WriteText(string text, string permission, bool isCommentable, bool isSharable)
         {
             text = text.Replace("\"", "\\\"");
@@ -384,7 +251,7 @@ namespace KSP_WPF
             text = text.Replace("\r", "\\n");
             string commentable = isCommentable ? "true" : "false";
             string sharable = isSharable ? "true" : "false";
-            List<QuoteData> rawContent = GetQuoteDataFromString(text);
+            List<QuoteData> rawContent = GlobalHelper.GetQuoteDataFromString(text);
             string textContent = Uri.EscapeDataString(JsonConvert.SerializeObject(rawContent, Formatting.None, new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore
@@ -469,6 +336,7 @@ namespace KSP_WPF
 
             return true;
         }
+
         private async Task<bool> UploadImage(string filepath)
         {
             StreamReader fileStream = new StreamReader(filepath);
@@ -619,7 +487,7 @@ namespace KSP_WPF
                     if(!isShare)
                         await WriteText(TB_Main.Text, permission, (bool)CB_Comment.IsChecked, (bool)CB_Share.IsChecked);
                     else
-                        await MainWindow.ShareFeed(shareFeedID, TB_Main.Text, permission, (bool)CB_Comment.IsChecked, with_ids, trust_ids);
+                        await KakaoRequestClass.ShareFeed(shareFeedID, TB_Main.Text, permission, (bool)CB_Comment.IsChecked, with_ids, trust_ids);
                     if (MainWindow.profileTimeLineWindow != null)
                         await MainWindow.profileTimeLineWindow.RefreshTimeline(null, true);
                     if (MainWindow.timeLineWindow != null)
@@ -761,7 +629,7 @@ namespace KSP_WPF
                 string url = TB_Link.Text;
                 BT_Link.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressUpload;
                 BT_Link.IsEnabled = false;
-                linkData = await MainWindow.GetScrapData(url);
+                linkData = await KakaoRequestClass.GetScrapData(url);
                 if (linkData != null)
                 {
                     BT_Link.Kind = MaterialDesignThemes.Wpf.PackIconKind.Delete;
@@ -846,7 +714,7 @@ namespace KSP_WPF
 
         private void MetroWindow_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            if(!(e.Source is System.Windows.Controls.TextBox))
+            if(!(e.Source is System.Windows.Controls.TextBox) && !(e.Source is System.Windows.Controls.ComboBox) && !(e.Source is System.Windows.Controls.ComboBoxItem))
                 e.Handled = true;
         }
     }

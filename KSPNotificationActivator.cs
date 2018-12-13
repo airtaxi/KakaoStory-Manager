@@ -70,7 +70,7 @@ namespace KSP_WPF
                             string text = invokedArgs.Substring(0, invokedArgs.IndexOf("LIKE!@#$%"));
                             string activityID = text.Split(new string[] { "activities/" }, StringSplitOptions.None)[1];
                             string commentID = invokedArgs.Split(new string[] { "LIKE!@#$%" }, StringSplitOptions.None)[1];
-                            await MainWindow.LikeComment(activityID, commentID, false);
+                            await KakaoRequestClass.LikeComment(activityID, commentID, false);
                         }
                         else if (invokedArgs.Contains("REPLY!@#$%"))
                         {
@@ -82,7 +82,7 @@ namespace KSP_WPF
                             string identity = datas[4];
                             string msg = userInput["tbReply"];
                             string activityID = text.Split(new string[] { "activities/" }, StringSplitOptions.None)[1];
-                            await MainWindow.ReplyToFeed(activityID, msg, id, name);
+                            await KakaoRequestClass.ReplyToFeed(activityID, msg, id, name);
                         }
                         else
                         {

@@ -54,7 +54,7 @@ namespace KSP_WPF
             BT_Refresh.IsEnabled = false;
             TB_RefreshBT.Text = "갱신중..";
             IC_Refresh.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
-            List<CSNotification> notifications = await MainWindow.RequestNotification(true);
+            List<CSNotification> notifications = await KakaoRequestClass.RequestNotification(true);
             SP_Content.Children.Clear();
             foreach (var notification in notifications)
             {
@@ -75,7 +75,7 @@ namespace KSP_WPF
                 }
                 content.TB_Date.Text = timestamp;
                 string uri = "https://story.kakao.com/";
-                PostWindow.AssignImage(content.IMG_Thumbnail, thumbnailURL);
+                GlobalHelper.AssignImage(content.IMG_Thumbnail, thumbnailURL);
                 MainWindow.SetClickObject(content.IMG_Thumbnail);
                 content.IMG_Thumbnail.MouseLeftButtonDown += (s, e) =>
                 {
@@ -148,7 +148,7 @@ namespace KSP_WPF
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            TimeLineWindow.HandleScroll(sender, e);
+            GlobalHelper.HandleScroll(sender, e);
         }
 
         private void Window_Closed(object sender, EventArgs e)

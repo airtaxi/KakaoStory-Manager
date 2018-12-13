@@ -84,7 +84,7 @@ namespace KSP_WPF
                     };
                     MainWindow.SetClickObject(fsc.Grid);
                     string imgUri = friend.profile_thumbnail_url;
-                    PostWindow.AssignImage(fsc.IMG_Profile, imgUri);
+                    GlobalHelper.AssignImage(fsc.IMG_Profile, imgUri);
                     fsc.TB_Name.Text = friend.display_name;
                     fsc.TB_Name.Tag = friend.is_favorite;
                     fsc.Grid.Tag = friend.id;
@@ -120,7 +120,7 @@ namespace KSP_WPF
         
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            TimeLineWindow.HandleScroll(sender, e);
+            GlobalHelper.HandleScroll(sender, e);
         }
 
         private void Window_Closed(object sender, EventArgs e)

@@ -60,9 +60,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CachedImage, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\CachedImage.0.1.8.0\lib\net45\CachedImage.dll</HintPath>
-    </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\ControlzEx.3.0.2.4\lib\net462\ControlzEx.dll</HintPath>
     </Reference>
@@ -234,9 +231,11 @@
     <Compile Include="FriendSelectWindow.xaml.cs">
       <DependentUpon>FriendSelectWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GlobalHelper.cs" />
     <Compile Include="ImageViewerWindow.xaml.cs">
       <DependentUpon>ImageViewerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="KakaoRequestClass.cs" />
     <Compile Include="KSPNotificationActivator.cs" />
     <Compile Include="NotificationControl.xaml.cs">
       <DependentUpon>NotificationControl.xaml</DependentUpon>

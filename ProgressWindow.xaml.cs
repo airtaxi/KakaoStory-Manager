@@ -37,7 +37,7 @@ namespace KSP_WPF
                     foreach (var blindedFriend in blinded)
                     {
                         await Task.Delay(1000);
-                        await MainWindow.DeleteFriend(blindedFriend.id);
+                        await KakaoRequestClass.DeleteFriend(blindedFriend.id);
                         TB_Content.Dispatcher.Invoke(() =>
                         {
                             count++;

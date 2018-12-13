@@ -67,12 +67,12 @@ namespace KSP_WPF
             });
         }
 
-        private static void ShareContentMouseEvent(object s, MouseButtonEventArgs e)
+        private void ShareContentMouseEvent(object s, MouseButtonEventArgs e)
         {
             e.Handled = true;
             MainContentMouseEvent(s, e);
         }
-        private static async void MainContentMouseEvent(object s, MouseButtonEventArgs e)
+        private async void MainContentMouseEvent(object s, MouseButtonEventArgs e)
         {
             string id = (string)((FrameworkElement)s).Tag;
             try
@@ -87,22 +87,6 @@ namespace KSP_WPF
             e.Handled = true;
         }
 
-        public static void SubContentMouseEvent(object s, MouseButtonEventArgs e)
-        {
-            string id = (string)((FrameworkElement)s).Tag;
-            try
-            {
-                TimeLineWindow tlw = new TimeLineWindow(id);
-                tlw.Show();
-                tlw.Activate();
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("접근이 불가능한 스토리입니다.");
-            }
-            e.Handled = true;
-        }
-        
         public TimeLineWindow(string id)
         {
             InitializeComponent();
@@ -172,19 +156,19 @@ namespace KSP_WPF
             List<CommentData.PostData> feeds;
             if (!isProfile)
             {
-                TimeLineData.TimeLine feedData = await MainWindow.GetFeed(from);
+                TimeLineData.TimeLine feedData = await KakaoRequestClass.GetFeed(from);
                 nextRequest = feedData.next_since;
                 feeds = feedData.feeds;
             }
             else
             {
-                var profile = await MainWindow.GetProfileFeed(profileID, from);
-                relationship = await MainWindow.GetProfileRelationship(profileID);
+                var profile = await KakaoRequestClass.GetProfileFeed(profileID, from);
+                relationship = await KakaoRequestClass.GetProfileRelationship(profileID);
                 if (profile.profile.bg_image_url != null)
                 {
                     string imgUri = profile.profile.profile_video_url_square_small ?? profile.profile.profile_image_url ?? profile.profile.profile_thumbnail_url;
-                    PostWindow.AssignImage(IMG_Profile, imgUri);
-                    PostWindow.AssignImage(IMG_ProfileBG, profile.profile.bg_image_url);
+                    GlobalHelper.AssignImage(IMG_Profile, imgUri);
+                    GlobalHelper.AssignImage(IMG_ProfileBG, profile.profile.bg_image_url);
                     TB_Name.Text = profile.profile.display_name;
 
                     if (profile.profile.status_objects?.Count > 0)
@@ -213,7 +197,7 @@ namespace KSP_WPF
                     };
                     async void onMouseDown(object s, MouseButtonEventArgs e)
                     {
-                        await MainWindow.FavoriteRequest(profile.profile.id, profile.profile.is_favorite);
+                        await KakaoRequestClass.FavoriteRequest(profile.profile.id, profile.profile.is_favorite);
                         await RefreshTimeline(null, true);
                         e.Handled = true;
                     }
@@ -280,7 +264,7 @@ namespace KSP_WPF
                     
                     if (feed.scrap != null)
                     {
-                        PostWindow.RefreshScrap(feed.scrap, tlp.Scrap_Main);
+                        GlobalHelper.RefreshScrap(feed.scrap, tlp.Scrap_Main);
                     }
                     if (feed.media?.Count > 0 && feed.media?[0]?.url_hq != null)
                     {
@@ -330,15 +314,15 @@ namespace KSP_WPF
                             tlp.GD_Share.Tag = feed.@object.id;
                             tlp.GD_Share.MouseLeftButtonDown += ShareContentMouseEvent;
 
-                            PostWindow.AssignImage(tlp.IMG_ProfileShare, feed.@object.actor.profile_thumbnail_url ?? feed.@object.actor.profile_image_url);
+                            GlobalHelper.AssignImage(tlp.IMG_ProfileShare, feed.@object.actor.profile_thumbnail_url ?? feed.@object.actor.profile_image_url);
                             MainWindow.SetClickObject(tlp.IMG_ProfileShare);
 
                             tlp.IMG_ProfileShare.Tag = feed.@object.actor.id;
-                            tlp.IMG_ProfileShare.MouseLeftButtonDown += SubContentMouseEvent;
+                            tlp.IMG_ProfileShare.MouseLeftButtonDown += GlobalHelper.SubContentMouseEvent;
 
                             tlp.TB_NameShare.Text = feed.@object.actor.display_name;
                             tlp.TB_DateShare.Text = PostWindow.GetTimeString(feed.@object.created_at);
-                            PostWindow.RefreshContent(feed.@object.content_decorators, feed.@object.content, tlp.TB_ShareContent);
+                            GlobalHelper.RefreshContent(feed.@object.content_decorators, feed.@object.content, tlp.TB_ShareContent);
 
                             tlp.TB_ShareContent.MouseRightButtonDown += (s, e) =>
                             {
@@ -358,7 +342,7 @@ namespace KSP_WPF
                                     if (uri != null)
                                     {
                                         Image image = new Image();
-                                        PostWindow.AssignImage(image, uri);
+                                        GlobalHelper.AssignImage(image, uri);
                                         image.Stretch = Stretch.UniformToFill;
                                         image.Margin = new Thickness(0, 0, 0, 10);
                                         image.MouseRightButtonDown += MainWindow.CopyImageHandler;
@@ -369,7 +353,7 @@ namespace KSP_WPF
                             }
                             if (feed.@object.scrap != null)
                             {
-                                PostWindow.RefreshScrap(feed.@object.scrap, tlp.Scrap_Share);
+                                GlobalHelper.RefreshScrap(feed.@object.scrap, tlp.Scrap_Share);
                             }
 
                             if (feed.@object.media?.Count > 0 && feed.@object.media?[0]?.url_hq != null)
@@ -445,15 +429,15 @@ namespace KSP_WPF
             tlp.SP_Comments?.Children?.Clear();
             tlp.SP_Content?.Children?.Clear();
             string imgUri = feed.actor.profile_thumbnail_url ?? feed.actor.profile_image_url;
-            PostWindow.AssignImage(tlp.IMG_Profile, imgUri);
+            GlobalHelper.AssignImage(tlp.IMG_Profile, imgUri);
 
             MainWindow.SetClickObject(tlp.IMG_Profile);
             tlp.IMG_Profile.Tag = feed.actor.id;
-            tlp.IMG_Profile.MouseLeftButtonDown += SubContentMouseEvent;
+            tlp.IMG_Profile.MouseLeftButtonDown += GlobalHelper.SubContentMouseEvent;
 
             tlp.TB_Name.Text = feed.actor.display_name;
             tlp.TB_Date.Text = PostWindow.GetTimeString(feed.created_at);
-            PostWindow.RefreshContent(feed.content_decorators, feed.content, tlp.TB_Content);
+            GlobalHelper.RefreshContent(feed.content_decorators, feed.content, tlp.TB_Content);
             if (feed.media_type != null && feed.media_type.Equals("image"))
             {
                 foreach (var media in feed.media)
@@ -463,7 +447,7 @@ namespace KSP_WPF
                         uri = media.origin_url;
 
                     Image img = new Image();
-                    PostWindow.AssignImage(img, uri);
+                    GlobalHelper.AssignImage(img, uri);
                     img.Stretch = Stretch.UniformToFill;
                     img.Margin = new Thickness(0, 0, 0, 10);
                     img.MouseRightButtonDown += MainWindow.CopyImageHandler;
@@ -566,16 +550,7 @@ namespace KSP_WPF
         {
             Topmost = CB_Topmost.IsChecked == true;
         }
-
-        public static void HandleScroll(object sender, MouseWheelEventArgs e)
-        {
-            int threshold = 48;
-            ScrollViewer scrollViewer = (ScrollViewer)sender;
-            double target = scrollViewer.VerticalOffset - Math.Min(Math.Max(e.Delta, -threshold), threshold);
-            scrollViewer.ScrollToVerticalOffset(target);
-            e.Handled = true;
-        }
-
+        
         private async void SV_Content_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             ScrollViewer scrollViewer = (ScrollViewer)sender;
@@ -588,7 +563,7 @@ namespace KSP_WPF
 
         private void SV_Content_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            HandleScroll(sender, e);
+            GlobalHelper.HandleScroll(sender, e);
             //if (!isScrollOver)
             //{
             //    int threshold = 48;
@@ -610,23 +585,23 @@ namespace KSP_WPF
         {
             if (relationship.relationship.Equals("F"))
             {
-                await MainWindow.DeleteFriend(relationship.id);
+                await KakaoRequestClass.DeleteFriend(relationship.id);
                 await RefreshTimeline(null, true);
             }
             else if (relationship.relationship.Equals("R"))
             {
-                await MainWindow.FriendRequest(relationship.id, true);
+                await KakaoRequestClass.FriendRequest(relationship.id, true);
                 await RefreshTimeline(null, true);
             }
             else if (relationship.relationship.Equals("C"))
             {
                 bool isDelete = MessageBox.Show("친구 신청을 수락하시겠습니까?", "안내", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No;
-                await MainWindow.FriendAccept(relationship.id, isDelete);
+                await KakaoRequestClass.FriendAccept(relationship.id, isDelete);
                 await RefreshTimeline(null, true);
             }
             else if (relationship.relationship.Equals("N"))
             {
-                await MainWindow.FriendRequest(relationship.id, false);
+                await KakaoRequestClass.FriendRequest(relationship.id, false);
                 await RefreshTimeline(null, true);
             }
         }

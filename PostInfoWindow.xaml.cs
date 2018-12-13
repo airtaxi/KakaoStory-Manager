@@ -32,9 +32,9 @@ namespace KSP_WPF
                 fsc.Background = Brushes.Transparent;
             };
             fsc.TB_Name.Text = actor.display_name;
-            PostWindow.AssignImage(fsc.IMG_Profile, actor.profile_thumbnail_url);
+            GlobalHelper.AssignImage(fsc.IMG_Profile, actor.profile_thumbnail_url);
             fsc.IMG_Profile.Tag = actor.id;
-            fsc.IMG_Profile.MouseLeftButtonDown += TimeLineWindow.SubContentMouseEvent;
+            fsc.IMG_Profile.MouseLeftButtonDown += GlobalHelper.SubContentMouseEvent;
 
             MainWindow.SetClickObject(fsc.Grid);
             if (actor.relationship.Equals("N"))
@@ -44,7 +44,7 @@ namespace KSP_WPF
                 fsc.IC_Friend.MouseLeftButtonDown += async (s, e) =>
                 {
                     fsc.IC_Friend.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
-                    await MainWindow.FriendRequest(actor.id, false);
+                    await KakaoRequestClass.FriendRequest(actor.id, false);
                     fsc.IC_Friend.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressCheck;
                     fsc.IC_Friend.IsEnabled = false;
                     e.Handled = true;
@@ -129,7 +129,7 @@ namespace KSP_WPF
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            TimeLineWindow.HandleScroll(sender, e);
+            GlobalHelper.HandleScroll(sender, e);
         }
 
         private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)

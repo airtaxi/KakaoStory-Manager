@@ -76,7 +76,7 @@ namespace KSP_WPF
             comment.TB_MetaData.Text = timestamp;
             string imgUri = commentProf.writer.profile_image_url ?? commentProf.writer.profile_thumbnail_url;
             //string imgUri = commentProf.writer.profile_video_url_square_small ?? commentProf.writer.profile_image_url ?? commentProf.writer.profile_thumbnail_url;
-            AssignImage(comment.IMG_Profile, imgUri);
+            GlobalHelper.AssignImage(comment.IMG_Profile, imgUri);
 
             MainWindow.SetClickObject(comment.IMG_Profile);
             comment.IMG_Profile.MouseLeftButtonDown += (s, e) =>
@@ -97,7 +97,7 @@ namespace KSP_WPF
             if (imageUri != null)
             {
                 comment.IMG_Comment.Visibility = Visibility.Visible;
-                AssignImage(comment.IMG_Comment, imageUri);
+                GlobalHelper.AssignImage(comment.IMG_Comment, imageUri);
                 comment.IMG_Comment.MouseRightButtonDown += MainWindow.CopyImageHandler;
                 comment.IMG_Comment.MouseLeftButtonDown += MainWindow.SaveImageHandler;
             }
@@ -115,7 +115,7 @@ namespace KSP_WPF
 
             comment.BT_Delete.Click += async (s, e) =>
             {
-                await DeleteComment(id);
+                await KakaoRequestClass.DeleteComment(id, data);
                 await RenewComment();
             };
 
@@ -127,13 +127,13 @@ namespace KSP_WPF
                     {
                         Owner = this
                     };
-                    cew.TB_Comment.Text = StoryWriteWindow.GetStringFromQuoteData(commentProf.decorators, true);
+                    cew.TB_Comment.Text = GlobalHelper.GetStringFromQuoteData(commentProf.decorators, true);
                     async void OnButtonClick(object s2, RoutedEventArgs e2)
                     {
                         Button button = (Button)s2;
                         button.Content = "...";
                         button.IsEnabled = false;
-                        await EditComment(commentProf, cew.TB_Comment.Text);
+                        await KakaoRequestClass.EditComment(commentProf, cew.TB_Comment.Text, data);
                         Refresh();
                         cew.Close();
                     }
@@ -183,7 +183,7 @@ namespace KSP_WPF
                     comment.IC_Like.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
                     comment.IC_Like.Foreground = Brushes.Gray;
                     comment.BT_Like.IsEnabled = false;
-                    await MainWindow.LikeComment(feedID, id, liked);
+                    await KakaoRequestClass.LikeComment(feedID, id, liked);
                     await RenewComment();
                 }
             };
@@ -272,7 +272,7 @@ namespace KSP_WPF
                 //TB_MustRead.Text = "";
                 //TB_MustRead.Text += data.with_me ? "필독 친구로 설정됨" : "";
                 TB_Name.Text = data.actor.display_name;
-                RefreshContent(data.content_decorators, data.content, TB_Content);
+                GlobalHelper.RefreshContent(data.content_decorators, data.content, TB_Content);
                 RefreshImage();
                 TB_Content.MouseRightButtonDown += (s, e) =>
                 {
@@ -295,7 +295,7 @@ namespace KSP_WPF
                 if (data.actor.profile_image_url != null) { }
                 //string imgUri = data.actor.profile_video_url_square_small ?? data.actor.profile_image_url ?? data.actor.profile_thumbnail_url;
                 string imgUri = data.actor.profile_thumbnail_url;
-                AssignImage(IMG_Profile, imgUri);
+                GlobalHelper.AssignImage(IMG_Profile, imgUri);
 
                 MainWindow.SetClickObject(IMG_Profile);
                 IMG_Profile.MouseLeftButtonDown += (s, e) =>
@@ -362,7 +362,7 @@ namespace KSP_WPF
                         };
                         string imgUri2 = data.@object.actor.profile_image_url;
                         //string imgUri2 = data.@object.actor.profile_video_url_square_small ?? data.@object.actor.profile_image_url;
-                        AssignImage(IMG_ProfileShare, imgUri2);
+                        GlobalHelper.AssignImage(IMG_ProfileShare, imgUri2);
 
                         MainWindow.SetClickObject(IMG_ProfileShare);
 
@@ -384,7 +384,7 @@ namespace KSP_WPF
                         TB_NameShare.Text = data.@object.actor.display_name;
                         TB_DateShare.Text = GetTimeString(data.@object.created_at);
                         TB_ShareContent.Text = data.@object.content;
-                        RefreshContent(data.@object.content_decorators, data.@object.content, TB_ShareContent);
+                        GlobalHelper.RefreshContent(data.@object.content_decorators, data.@object.content, TB_ShareContent);
                         TB_ShareContent.MouseRightButtonDown += (s, e) =>
                         {
                             Clipboard.SetDataObject(TB_ShareContent.Text);
@@ -401,7 +401,7 @@ namespace KSP_WPF
                                 if (uri != null)
                                 {
                                     Image image = new Image();
-                                    AssignImage(image, uri);
+                                    GlobalHelper.AssignImage(image, uri);
                                     image.Stretch = Stretch.UniformToFill;
                                     if (!isFirst)
                                         image.Margin = new Thickness(0, 10, 0, 10);
@@ -416,7 +416,7 @@ namespace KSP_WPF
 
                         if (data.@object.scrap != null)
                         {
-                            RefreshScrap(data.@object.scrap, Scrap_Share);
+                            GlobalHelper.RefreshScrap(data.@object.scrap, Scrap_Share);
                         }
                         else if (data.@object.media?.Count > 0 && data.@object.media?[0]?.url_hq != null)
                         {
@@ -450,7 +450,7 @@ namespace KSP_WPF
 
                 if (data.scrap != null)
                 {
-                    RefreshScrap(data.scrap, Scrap_Main);
+                    GlobalHelper.RefreshScrap(data.scrap, Scrap_Main);
                 }
                 ShiftWindowOntoScreenHelper.ShiftWindowOntoScreen(this);
             });
@@ -468,7 +468,7 @@ namespace KSP_WPF
                     if (uri != null)
                     {
                         Image image = new Image();
-                        AssignImage(image, uri);
+                        GlobalHelper.AssignImage(image, uri);
                         image.Stretch = Stretch.UniformToFill;
                         if (!isFirst)
                             image.Margin = new Thickness(0, 10, 0, 10);
@@ -495,184 +495,20 @@ namespace KSP_WPF
             data = await KSPNotificationActivator.GetPost(feedID);
             if (!data.permission.Equals("A"))
                 isAllRead = false;
-            RefreshContent(data.content_decorators, data.content, TB_Content);
+            GlobalHelper.RefreshContent(data.content_decorators, data.content, TB_Content);
             await RenewComment();
             RefreshImage();
             ShiftWindowOntoScreenHelper.ShiftWindowOntoScreen(this);
         }
 
-        public static string GetHash(string inputString)
-        {
-            HashAlgorithm algorithm = MD5.Create();
-            var rawHash = algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in rawHash)
-                sb.Append(b.ToString("X2"));
-            return sb.ToString();
-        }
-
-        public static string defaultPath = System.IO.Path.GetTempPath();
-
-        private static void SetImage(Ellipse image, string path, string uri, bool isGIF)
-        {
-            image.Dispatcher.Invoke(async () =>
-            {
-                try
-                {
-                    var bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnLoad;
-                    bi.UriSource = new Uri(path);
-                    bi.EndInit();
-                    var fill = new ImageBrush(bi);
-                    image.Fill = fill;
-                }
-                catch (Exception)
-                {
-                    await Task.Delay(100);
-                    SetImage(image, path, uri, isGIF);
-                }
-            });
-        }
-        private static void SetImage(Image image, string path, string uri, bool isGIF)
-        {
-            if (image == null) return;
-            if (isGIF)
-                image.Dispatcher.Invoke(async () =>
-                {
-                    try
-                    {
-                        image.Tag = uri;
-                        AnimationBehavior.SetSourceUri(image, new Uri(path));
-                        AnimationBehavior.SetRepeatBehavior(image, RepeatBehavior.Forever);
-                        AnimationBehavior.SetAutoStart(image, true);
-                    }
-                    catch (Exception)
-                    {
-                        await Task.Delay(100);
-                        SetImage(image, path, uri, isGIF);
-                    }
-                });
-            else
-                image.Dispatcher.Invoke(async () =>
-                {
-                    try
-                    {
-                        var bi = new BitmapImage();
-                        bi.BeginInit();
-                        bi.CacheOption = BitmapCacheOption.OnLoad;
-                        bi.UriSource = new Uri(path);
-                        bi.EndInit();
-                        bi.Freeze();
-                        image.Source = bi;
-                    }
-                    catch (Exception)
-                    {
-                        await Task.Delay(100);
-                        SetImage(image, path, uri, isGIF);
-                    }
-                });
-        }
-        public static async void AssignImage(dynamic image, string uri)
-        {
-            if (image == null) return;
-            if (uri != null && uri.Length > 0)
-            {
-                string hash = GetHash(uri);
-                string path = System.IO.Path.Combine(defaultPath, hash + ".proftemp");
-                bool isGIF = uri.Contains(".gif");
-                if (File.Exists(path))
-                {
-                    if (image is Image)
-                        SetImage(image as Image, path, uri, isGIF);
-                    else if (image is Ellipse)
-                        SetImage(image as Ellipse, path, uri, isGIF);
-                }
-                else
-                    await Task.Run(async () =>
-                   {
-                       try
-                       {
-                           WebClient client = new WebClient();
-                           client.DownloadFile(uri, path);
-                           client.Dispose();
-                       }
-                       catch (Exception)
-                       {
-                           await Task.Delay(100);
-                           AssignImage(image, uri);
-                       }
-                       if (image is Image)
-                           SetImage(image as Image, path, uri, isGIF);
-                       else if (image is Ellipse)
-                           SetImage(image as Ellipse, path, uri, isGIF);
-                   });
-            }
-        }
-
-        public static void RefreshScrap(TimeLineData.Scrap data, ScrapControl Scrap)
-        {
-            Scrap.Visibility = Visibility.Visible;
-            if (data.image == null || data.image.Count == 0)
-                Scrap.CD_Image.Width = new GridLength(0);
-            else
-                AssignImage(Scrap.Image, data.image[0]);
-
-            Scrap.TB_Title.Text = data.title;
-            Scrap.TB_Desc.Text = data.description;
-            Scrap.TB_BaseURL.Text = data.host;
-
-            MainWindow.SetClickObject(Scrap.Grid);
-            Scrap.Grid.ToolTip = data.title;
-            Scrap.Grid.MouseLeftButtonDown += (s, e) =>
-            {
-                System.Diagnostics.Process.Start(data.url);
-                e.Handled = true;
-            };
-        }
-
-        public static void RefreshContent(List<QuoteData> content_decorators, string content, TextBlock TB_Content)
-        {
-            TB_Content.Tag = new object[] { content_decorators, content };
-            TB_Content.Inlines.Clear();
-            if (content.Length == 0)
-                TB_Content.Visibility = Visibility.Collapsed;
-            else
-                TB_Content.Visibility = Visibility.Visible;
-
-            foreach (var decorator in content_decorators)
-            {
-                if (decorator.type.Equals("profile"))
-                {
-                    Bold content2 = new Bold(new Run(decorator.text));
-                    MainWindow.SetClickObject(content2);
-                    content2.MouseLeftButtonDown += (s, e) =>
-                    {
-                        TimeLineWindow tlw = new TimeLineWindow(decorator.id);
-                        tlw.Show();
-                        tlw.Focus();
-                        e.Handled = true;
-                    };
-                    TB_Content.Inlines.Add(content2);
-                }
-                else if (decorator.type.Equals("text") || decorator.type.Equals("emoticon"))
-                {
-                    TB_Content.Inlines.Add(new Run(decorator.text.Replace("\\n", "\n")));
-                }
-                else if (decorator.type.Equals("hashtag"))
-                {
-                    TB_Content.Inlines.Add(new Bold(new Run(decorator.text.Replace("\\n", "\n"))));
-                }
-            }
-        }
-
+        
         private async void OnEmotionClick(object sender, MouseButtonEventArgs e)
         {
             TextBlock source = (TextBlock)sender;
             source.Tag = true;
             data = await KSPNotificationActivator.GetPost(feedID);
-            var shares = await GetShares(false);
-            var ups = await GetShares(true);
+            var shares = await KakaoRequestClass.GetShares(false, data);
+            var ups = await KakaoRequestClass.GetShares(true, data);
             int index = 0;
             if (source.Equals(TB_LikeCount))
                 index = 0;
@@ -685,6 +521,7 @@ namespace KSP_WPF
             piw.Focus();
             e.Handled = true;
         }
+
 
         public static string GetTimeString(DateTime created_at)
         {
@@ -816,7 +653,7 @@ namespace KSP_WPF
                 BT_SubmitComment.IsEnabled = false;
                 string text = TB_Comment.Text;
                 TB_Comment.Text = "";
-                await MainWindow.ReplyToFeed(feedID, text, null, null, commentImage);
+                await KakaoRequestClass.ReplyToFeed(feedID, text, null, null, commentImage);
                 await RenewComment();
                 commentImage = null;
                 BT_Upload.Foreground = Brushes.Gray;
@@ -846,7 +683,7 @@ namespace KSP_WPF
 
         private void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            TimeLineWindow.HandleScroll(sender, e);
+            GlobalHelper.HandleScroll(sender, e);
         }
 
         private async void BT_CommentRefresh_Click(object sender, RoutedEventArgs e)
@@ -879,7 +716,7 @@ namespace KSP_WPF
         {
             if (data.liked)
             {
-                bool isSuccess = await MainWindow.LikeFeed(feedID, null);
+                bool isSuccess = await KakaoRequestClass.LikeFeed(feedID, null);
                 if (isSuccess)
                 {
                     data.liked = false;
@@ -1014,185 +851,7 @@ namespace KSP_WPF
             UploadedImageProp result = JsonConvert.DeserializeObject<UploadedImageProp>(respResult);
             return result;
         }
-
-        public static async void DeletePost(string id)
-        {
-            string requestURI = "https://story.kakao.com/a/activities/" + id;
-
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "DELETE";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-        }
-
-        public async Task<bool> DeleteComment(string commentID)
-        {
-            string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/comments/" + commentID;
-
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "DELETE";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-
-            return true;
-        }
-
-        public async Task<bool> EditComment(Comment comment, string text)
-        {
-            string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/comments/" + comment.id + "/content";
-
-            List<QuoteData> rawContent = StoryWriteWindow.GetQuoteDataFromString(text);
-            string textContent = Uri.EscapeDataString(JsonConvert.SerializeObject(rawContent).Replace("\"id\":null,", ""));
-
-            string imageData = "";
-            string imageData2 = "";
-            foreach (QuoteData data in comment.decorators)
-            {
-                if (data.media_path != null)
-                {
-                    imageData2 = "(Image) ";
-                    imageData = JsonConvert.SerializeObject(data, Formatting.None, new JsonSerializerSettings()
-                    {
-                        NullValueHandling = NullValueHandling.Ignore
-                    });
-                    textContent = textContent.Insert(3, Uri.EscapeDataString(imageData));
-                }
-            }
-            string postData = "text=" + Uri.EscapeDataString(imageData2 + StoryWriteWindow.GetStringFromQuoteData(rawContent, false));
-            postData += "&decorators=" + textContent;
-
-            postData = postData.Replace("%20", "+");
-
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "PUT";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            Stream writeStream = await request.GetRequestStreamAsync();
-            writeStream.Write(byteArray, 0, byteArray.Length);
-            writeStream.Close();
-
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-
-            return true;
-        }
-
-        public async Task<List<ShareData.Share>> GetShares(bool isUP)
-        {
-
-            string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/shares";
-            if (isUP)
-                requestURI = "https://story.kakao.com/a/activities/" + data.id + "/sympathies";
-            HttpWebRequest NotificationGetRequest = WebRequest.CreateHttp(requestURI);
-            NotificationGetRequest.Method = "GET";
-            NotificationGetRequest.ContentType = "application/json; charset=utf-8";
-
-            NotificationGetRequest.CookieContainer = new CookieContainer();
-            NotificationGetRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
-
-            NotificationGetRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            NotificationGetRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            NotificationGetRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            NotificationGetRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            NotificationGetRequest.Headers["Cache-Control"] = "max-age=0";
-
-            NotificationGetRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            NotificationGetRequest.Headers["Accept-Language"] = "ko";
-
-            NotificationGetRequest.Headers["DNT"] = "1";
-
-            NotificationGetRequest.Headers["authority"] = "story.kakao.com";
-            NotificationGetRequest.Referer = "https://story.kakao.com";
-            NotificationGetRequest.KeepAlive = true;
-            NotificationGetRequest.UseDefaultCredentials = true;
-            NotificationGetRequest.Host = "story.kakao.com";
-            NotificationGetRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            NotificationGetRequest.Accept = "application/json";
-
-            NotificationGetRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            NotificationGetRequest.Date = DateTime.Now;
-
-            var ReadStream = await NotificationGetRequest.GetResponseAsync();
-            var RespReader = ReadStream.GetResponseStream();
-            string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-            RespReader.Close();
-            return JsonConvert.DeserializeObject<List<ShareData.Share>>(RespResult);
-        }
+        
         private async void BT_Upload_Click(object sender, RoutedEventArgs e)
         {
             if (commentImage == null)
@@ -1288,7 +947,7 @@ namespace KSP_WPF
 
         private async void BT_Edit_Click(object sender, RoutedEventArgs e)
         {
-            string content = StoryWriteWindow.GetStringFromQuoteData(data.content_decorators, true);
+            string content = GlobalHelper.GetStringFromQuoteData(data.content_decorators, true);
 
             StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null)
             {
@@ -1296,13 +955,13 @@ namespace KSP_WPF
             };
             sww.ShowDialog();
             data = await KSPNotificationActivator.GetPost(feedID);
-            RefreshContent(data.content_decorators, data.content, TB_Content);
+            GlobalHelper.RefreshContent(data.content_decorators, data.content, TB_Content);
             Refresh();
         }
 
         private void BT_Delte_Click(object sender, RoutedEventArgs e)
         {
-            DeletePost(data.id);
+            KakaoRequestClass.DeletePost(data.id);
             MessageBox.Show("포스트가 삭제됐습니다.");
             Close();
         }
@@ -1313,7 +972,7 @@ namespace KSP_WPF
             {
                 BT_UP.IsEnabled = false;
                 BT_UP.Content = "...";
-                await MainWindow.UPFeed(data.id, true);
+                await KakaoRequestClass.UPFeed(data.id, true);
                 data.sympathized = false;
                 BT_UP.IsEnabled = true;
                 BT_UP.Content = "UP";
@@ -1322,7 +981,7 @@ namespace KSP_WPF
             {
                 BT_UP.IsEnabled = false;
                 BT_UP.Content = "...";
-                await MainWindow.UPFeed(data.id, false);
+                await KakaoRequestClass.UPFeed(data.id, false);
                 data.sympathized = true;
                 BT_UP.IsEnabled = true;
                 BT_UP.Content = "UP 취소";

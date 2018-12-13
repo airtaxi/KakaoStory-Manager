@@ -57,7 +57,7 @@ namespace KSP_WPF
             {
                 int deleted = 0;
                 int counted = 0;
-                var feed = await MainWindow.GetProfileFeed(MainWindow.FriendData.profile.id, null);
+                var feed = await KakaoRequestClass.GetProfileFeed(MainWindow.FriendData.profile.id, null);
                 if(feed.activities.Count == 0)
                 {
                     MessageBox.Show("삭제할 게시글이 존재하지 않습니다.");
@@ -97,7 +97,7 @@ namespace KSP_WPF
                                     if (willDelete)
                                     {
                                         await Task.Delay(100);
-                                        PostWindow.DeletePost(activity.id);
+                                        KakaoRequestClass.DeletePost(activity.id);
                                         deleted++;
                                     }
                                     counted++;
@@ -112,7 +112,7 @@ namespace KSP_WPF
                                     MainWindow.FriendData.profile.activity_count = counted - deleted;
                                     return;
                                 }
-                                feed = await MainWindow.GetProfileFeed(MainWindow.FriendData.profile.id, feed.activities[feed.activities.Count - 1].id);
+                                feed = await KakaoRequestClass.GetProfileFeed(MainWindow.FriendData.profile.id, feed.activities[feed.activities.Count - 1].id);
                                 if (feed != null && (feed.activities?.Count ?? 0) > 0)
                                     Delete();
                                 else
