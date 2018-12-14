@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Closing="Window_Closing"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
         TextOptions.TextFormattingMode="Ideal"
@@ -50,11 +51,11 @@
         </Grid>
         <Grid Margin="0,285,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
             <Grid Name="GD_Write" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Write_MouseLeftButtonDown">
-                <materialDesign:PackIcon Kind="Pen" Width="80" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+                <iconPacks:PackIconModern Kind="PageAdd" Width="80" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
                 <TextBlock FontWeight="Bold" Text="글 작성" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" />
             </Grid>
             <Grid Name="GD_Timeline" Margin="130,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Timeline_MouseLeftButtonDown">
-                <materialDesign:PackIcon Kind="ChartTimeline" Width="80" Height="80" Margin="0,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+                <iconPacks:PackIconMaterial Kind="ChartTimeline" Width="80" Height="80" Margin="0,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
                 <TextBlock FontWeight="Bold" Text="타임라인" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" />
             </Grid>
             <Grid Name="GD_Notifications" Margin="260,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Notifications_MouseLeftButtonDown">
@@ -70,7 +71,7 @@
         <TextBlock Name="TB_Login" Text="로그인" FontWeight="Bold" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="555,152,0,0" Visibility="Visible" />
         <TextBlock Name="TB_LoginProgress" Text="…" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="24" Margin="600,152,0,0" Visibility="Collapsed" />
         <TextBlock Name="TB_Logout" Text="로그아웃" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="24" Margin="561.5,152,0,0" Visibility="Collapsed" />
-        <materialDesign:PackIcon Name="IMG_Login" Kind="LoginVariant" Foreground="White" Width="30" Height="30" Margin="634,152,0,0" VerticalAlignment="Top" Visibility="Visible" />
+        <iconPacks:PackIconMaterial Name="IMG_Login" Kind="Login" Foreground="White" Width="30" Height="30" Margin="634,152,0,0" VerticalAlignment="Top" Visibility="Visible" />
         <Rectangle Name="BT_Login" Fill="Transparent" Width="150" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="535,140,0,0" MouseLeftButtonDown="BT_Login_MouseLeftButtonDown"/>
         <TextBlock FontWeight="Bold" Text="후원 : 110-470-626176 신한 이호원 (돈 없는 대학원생입니다 ㅠㅠ)" FontSize="12" Margin="0,0,5,5" HorizontalAlignment="Right" VerticalAlignment="Bottom" TextAlignment="Center" />
     </Grid>
