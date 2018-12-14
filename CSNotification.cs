@@ -8,7 +8,27 @@ namespace KSP_WPF
 {
     using System;
     using System.Collections.Generic;
-    
+
+    public class VideoData
+    {
+        public class Info
+        {
+            public int duration { get; set; }
+        }
+
+        public class Percent
+        {
+            public int percent { get; set; }
+            public int code { get; set; }
+            public string msg { get; set; }
+        }
+
+        public class Video
+        {
+            public string access_key { get; set; }
+            public Info info { get; set; }
+        }
+    }
     public class TimeLineData
     {
         public class Relation
