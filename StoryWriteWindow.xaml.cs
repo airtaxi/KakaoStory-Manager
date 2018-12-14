@@ -623,9 +623,6 @@ namespace KSP_WPF
             HttpWebResponse response = (HttpWebResponse) request.GetResponse();
             var respReader = response.GetResponseStream();
             string respResult = new StreamReader(respReader).ReadToEnd();
-            var file = new StreamWriter("C:\\Data\\Test.txt");
-            file.WriteLine(respResult);
-            file.Close();
             respReader.Close();
             response.Close();
             VideoData.Percent pecrentData = JsonConvert.DeserializeObject<VideoData.Percent>(respResult);
