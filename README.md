@@ -1,5 +1,5 @@
 # Kakaostory-Manager
-PC version of Kakao Story written with C#(WPF)
+PC version of Kakao Story written in C#(WPF)
 
 License
 ----
