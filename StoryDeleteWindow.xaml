@@ -28,8 +28,9 @@
             <TextBox Name="TB_Filter" Visibility="Collapsed" Margin="0,5,0,0"/>
             <CheckBox Name="CB_Include" Content="특정 단어가 들어간 게시물 삭제" Margin="0,5,0,0" Click="CB_Include_Click"/>
             <CheckBox Name="CB_Exclude" Content="특정 단어가 들어가지 않은 게시물 삭제" Margin="0,5,0,0" Click="CB_Exclude_Click"/>
+            <CheckBox Name="CB_Favorite" Content="관심글 제외" Margin="0,5,0,0"/>
             <StackPanel Name="SP_Progress" Visibility="Collapsed" Orientation="Vertical" Margin="5,5,5,5">
-                <TextBlock Name="TB_Progress"/>
+                <TextBlock Name="TB_Progress" Margin="0,0,0,5"/>
                 <ProgressBar IsIndeterminate="True"/>
             </StackPanel>
         </StackPanel>

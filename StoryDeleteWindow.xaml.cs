@@ -71,6 +71,7 @@ namespace KSP_WPF
                         CB_Category.IsEnabled = false;
                         CB_Exclude.IsEnabled = false;
                         CB_Include.IsEnabled = false;
+                        CB_Favorite.IsEnabled = false;
                         TB_Filter.IsEnabled = false;
                         SP_Progress.Visibility = Visibility.Visible;
                         TB_Progress.Text = "삭제 준비중...";
@@ -94,6 +95,9 @@ namespace KSP_WPF
                                         willDelete = false;
                                     if (CB_Exclude.IsChecked == true && activity.content.Contains(TB_Filter.Text))
                                         willDelete = false;
+                                    if (CB_Favorite.IsChecked == true && activity.pinned)
+                                        willDelete = false;
+
                                     if (willDelete)
                                     {
                                         await Task.Delay(100);
