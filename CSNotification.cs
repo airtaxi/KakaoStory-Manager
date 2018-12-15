@@ -9,6 +9,30 @@ namespace KSP_WPF
     using System;
     using System.Collections.Generic;
 
+    public class BookmarkData
+    {   
+        public class Bookmark
+        {
+            public CommentData.PostData activity { get; set; }
+            public DateTime created_at { get; set; }
+            public string id { get; set; }
+            public int status { get; set; }
+        }
+        
+        public class SectionInfo
+        {
+            public int count { get; set; }
+            public string type { get; set; }
+            public string relationship { get; set; }
+            public TimeLineData.Relation relation { get; set; }
+        }
+
+        public class Bookmarks
+        {
+            public List<Bookmark> bookmarks { get; set; }
+            public SectionInfo section_info { get; set; }
+        }
+    }
     public class VideoData
     {
         public class Info

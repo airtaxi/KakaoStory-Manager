@@ -25,14 +25,16 @@ namespace KSP_WPF
     /// </summary>
     public partial class TimeLineWindow : MetroWindow
     {
-        private static Dictionary<string, TimeLineWindow> profiles = new Dictionary<string, TimeLineWindow>();
+        private static readonly Dictionary<string, TimeLineWindow> profiles = new Dictionary<string, TimeLineWindow>();
+        public static bool showBookmarkedGlobal = false;
+        public bool showBookmarked = false;
         private bool isProfile = false;
         private double lastOffset = -1;
         private string nextRequest = null;
         private DispatcherTimer refreshTimer;
         private string profileID;
 
-        public void InitRefreshTImer()
+        public void InitRefreshTimer()
         {
             string text = TB_Refresh.Text;
             if (text.Length == 0)
@@ -50,7 +52,7 @@ namespace KSP_WPF
         public TimeLineWindow()
         {
             InitializeComponent();
-            InitRefreshTImer();
+            InitRefreshTimer();
             Dispatcher.Invoke(async() =>
             {
                 if (Properties.Settings.Default.PositionTimelineToTop)
@@ -86,13 +88,18 @@ namespace KSP_WPF
             }
             e.Handled = true;
         }
-
+        
         public TimeLineWindow(string id)
         {
             InitializeComponent();
-            InitRefreshTImer();
+            InitRefreshTimer();
             Dispatcher.Invoke(async() =>
             {
+                if (showBookmarkedGlobal)
+                {
+                    showBookmarkedGlobal = false;
+                    showBookmarked = true;
+                }
                 if (Properties.Settings.Default.PositionTimelineToTop)
                     Top = 0;
                 if (!Properties.Settings.Default.HideScrollBar)
@@ -102,7 +109,7 @@ namespace KSP_WPF
                 MainWindow.SetClickObject(BT_Write);
                 MainWindow.SetClickObject(IC_Friend);
                 SP_Content.Margin = new Thickness(0, 10, 0, 0);
-                if (id.Equals(MainWindow.FriendData.profile.id))
+                if (id.Equals(MainWindow.FriendData.profile.id) && showBookmarked != true)
                 {
                     if (MainWindow.profileTimeLineWindow != null)
                     {
@@ -118,7 +125,7 @@ namespace KSP_WPF
                         MainWindow.profileTimeLineWindow = this;
                     }
                 }
-                else
+                else if(showBookmarked != true)
                 {
                     if (profiles.ContainsKey(id))
                     {
@@ -136,8 +143,6 @@ namespace KSP_WPF
                 profileID = id;
                 Title = "프로필";
                 await RefreshTimeline(null, true);
-                Show();
-                Activate();
                 CD_Profile.Visibility = Visibility.Visible;
             });
         }
@@ -228,15 +233,26 @@ namespace KSP_WPF
                     nextRequest = profile.activities[profile.activities.Count - 1].id;
                 }
 
-                if (MainWindow.FriendData.profile.id.Equals(profileID))
+                if (MainWindow.FriendData.profile.id.Equals(profileID) && showBookmarked != true)
                 {
                     Title = "내 프로필";
                     TB_Desc2.Text = profile.profile.activity_count.ToString() + "개의 스토리";
                 }
                 else
                     Title = profile.profile.display_name + "님의 프로필";
-
-                feeds = profile.activities;
+                if (showBookmarked)
+                {
+                    Title = "관심글 조회";
+                    var bookmarks = await KakaoRequestClass.GetBookmark(profileID);
+                    var feedsNow = new List<CommentData.PostData>();
+                    foreach(var bookmark in bookmarks.bookmarks)
+                    {
+                        feedsNow.Add(bookmark.activity);
+                    }
+                    feeds = feedsNow;
+                }
+                else
+                    feeds = profile.activities;
             }
 
             if (isClear)
@@ -553,11 +569,14 @@ namespace KSP_WPF
         
         private async void SV_Content_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            ScrollViewer scrollViewer = (ScrollViewer)sender;
-            if (scrollViewer.VerticalOffset > Height && lastOffset != scrollViewer.ScrollableHeight && scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+            if(showBookmarked != true)
             {
-                lastOffset = scrollViewer.ScrollableHeight;
-                await RefreshTimeline(nextRequest, Properties.Settings.Default.MemoryControl);
+                ScrollViewer scrollViewer = (ScrollViewer)sender;
+                if (scrollViewer.VerticalOffset > Height && lastOffset != scrollViewer.ScrollableHeight && scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+                {
+                    lastOffset = scrollViewer.ScrollableHeight;
+                    await RefreshTimeline(nextRequest, Properties.Settings.Default.MemoryControl);
+                }
             }
         }
 

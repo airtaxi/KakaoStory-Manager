@@ -429,17 +429,16 @@ namespace KSP_WPF
             {
                 if(profileTimeLineWindow == null)
                 {
-                    profileTimeLineWindow = new TimeLineWindow(FriendData.profile.id)
-                    {
-                        fromMainMenu = true
-                    };
+                    profileTimeLineWindow = new TimeLineWindow(FriendData.profile.id);
                     profileTimeLineWindow.Show();
+                    profileTimeLineWindow.Focus();
                     profileTimeLineWindow.Activate();
                 }
                 else
                 {
                     await profileTimeLineWindow.RefreshTimeline(null, true);
                     profileTimeLineWindow.Show();
+                    profileTimeLineWindow.Focus();
                     profileTimeLineWindow.Activate();
                 }
             }
@@ -586,6 +585,20 @@ namespace KSP_WPF
             else
                 ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent("Teal"), ThemeManager.GetAppTheme("BaseLight"));
             Properties.Settings.Default.Save();
+        }
+
+        private void BT_Favorite_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoggedIn && !isOffline)
+                ShowOfflineMessage();
+            else
+            {
+                TimeLineWindow.showBookmarkedGlobal = true;
+                TimeLineWindow timeLineWindow = new TimeLineWindow(FriendData.profile.id);
+                timeLineWindow.Show();
+                timeLineWindow.Focus();
+                timeLineWindow.Activate();
+            }
         }
     }
 }

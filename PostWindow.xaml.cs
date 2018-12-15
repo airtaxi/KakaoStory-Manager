@@ -37,7 +37,6 @@ namespace KSP_WPF
         private bool isAllRead = true;
         UploadedImageProp commentImage = null;
         private bool isVideo = false;
-        private string lastVideo;
         private readonly Hashtable ht = new Hashtable();
 
         private void AddComment(string path, string name, string message, string uri, string commentID, string commentName, bool liked, string id, string imageUri, string timestamp, int likes, Comment commentProf)

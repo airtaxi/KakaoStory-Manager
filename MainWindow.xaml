@@ -17,7 +17,13 @@
         Title="카카오스토리 매니저" Icon="icon2.png" Height="480" Width="730" ResizeMode="NoResize" Focusable="False">
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <StackPanel VerticalAlignment="Center" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Favorite" Click="BT_Favorite_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Star"/>
+                        <TextBlock Text="관심글 조회"/>
+                    </StackPanel>
+                </Button>
                 <Button Name="BT_Memory" Click="BT_Memory_Click">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Memory"/>
