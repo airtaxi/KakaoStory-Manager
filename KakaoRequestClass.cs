@@ -54,6 +54,7 @@ namespace KSP_WPF
                 var RespReader = ReadStream.GetResponseStream();
                 string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
                 RespReader.Close();
+                ReadStream.Close();
                 return RespResult;
             }
             catch (WebException e)
@@ -103,6 +104,7 @@ namespace KSP_WPF
             var RespReader = ReadStream.GetResponseStream();
             string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
             RespReader.Close();
+            ReadStream.Close();
             ProfileData.ProfileObject obj = JsonConvert.DeserializeObject<ProfileData.ProfileObject>(RespResult);
             return obj;
         }
@@ -143,6 +145,7 @@ namespace KSP_WPF
             var RespReader = ReadStream.GetResponseStream();
             string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
             RespReader.Close();
+            ReadStream.Close();
             ProfileRelationshipData.ProfileRelationship obj = JsonConvert.DeserializeObject<ProfileRelationshipData.ProfileRelationship>(RespResult);
             return obj;
         }
@@ -190,6 +193,7 @@ namespace KSP_WPF
                 var RespReader = ReadStream.GetResponseStream();
                 string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
                 RespReader.Close();
+                ReadStream.Close();
                 TimeLineData.TimeLine obj = JsonConvert.DeserializeObject<TimeLineData.TimeLine>(RespResult);
                 return obj;
             }
@@ -200,8 +204,7 @@ namespace KSP_WPF
                 return null;
             }
         }
-
-
+        
         public static async Task<bool> LikeComment(string FeedID, string commentID, bool isDelete)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/comments/" + commentID + "/likes";
@@ -239,6 +242,7 @@ namespace KSP_WPF
             var respReader = readStream.GetResponseStream();
             string respResult = await new StreamReader(respReader).ReadToEndAsync();
             respReader.Close();
+            readStream.Close();
             return true;
         }
 
@@ -295,6 +299,7 @@ namespace KSP_WPF
                 var readStream = await request.GetResponseAsync();
                 var respReader = readStream.GetResponseStream();
                 respReader.Close();
+                readStream.Close();
             }
             catch (WebException e)
             {
@@ -351,6 +356,7 @@ namespace KSP_WPF
                 var readStream = await request.GetResponseAsync();
                 var respReader = readStream.GetResponseStream();
                 respReader.Close();
+                readStream.Close();
             }
             catch (WebException e)
             {
@@ -401,6 +407,7 @@ namespace KSP_WPF
                 var readStream = await request.GetResponseAsync();
                 var respReader = readStream.GetResponseStream();
                 respReader.Close();
+                readStream.Close();
             }
             catch (WebException e)
             {
@@ -411,6 +418,56 @@ namespace KSP_WPF
             return true;
         }
 
+        public static async Task<bool> PinPost(string id, bool isUnpin)
+        {
+            string requestURI = "https://story.kakao.com/a/activities/" + id + "/bookmark";
+            string method;
+            if (isUnpin != true)
+                method = "POST";
+            else
+                method = "DELETE";
+
+            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
+            request.Method = method;
+
+            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+            request.CookieContainer = new CookieContainer();
+            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
+
+            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
+            request.Headers["X-Kakao-ApiLevel"] = "45";
+            request.Headers["X-Requested-With"] = "XMLHttpRequest";
+            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
+            request.Headers["Cache-Control"] = "max-age=0";
+
+            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
+            request.Headers["Accept-Language"] = "ko";
+
+            request.Headers["DNT"] = "1";
+
+            request.Headers["authority"] = "story.kakao.com";
+            request.Referer = "https://story.kakao.com/";
+            request.KeepAlive = true;
+            request.UseDefaultCredentials = true;
+            request.Host = "story.kakao.com";
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+            request.Accept = "application/json";
+
+            try
+            {
+                var readStream = await request.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                respReader.Close();
+                readStream.Close();
+            }
+            catch (WebException e)
+            {
+                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
+                MessageBox.Show(resp);
+                return false;
+            }
+            return true;
+        }
 
         public async static Task<bool> ShareFeed(string FeedID, string text, string permission, bool commentable, List<string> with_ids, List<string> trust_ids)
         {
@@ -468,6 +525,7 @@ namespace KSP_WPF
                 var readStream = await request.GetResponseAsync();
                 var respReader = readStream.GetResponseStream();
                 respReader.Close();
+                readStream.Close();
             }
             catch (WebException e)
             {
@@ -513,6 +571,7 @@ namespace KSP_WPF
                 var readStream = await request.GetResponseAsync();
                 var respReader = readStream.GetResponseStream();
                 respReader.Close();
+                readStream.Close();
             }
             catch (WebException e)
             {
@@ -570,6 +629,7 @@ namespace KSP_WPF
                 var readStream = await request.GetResponseAsync();
                 var respReader = readStream.GetResponseStream();
                 respReader.Close();
+                readStream.Close();
             }
             catch (WebException e)
             {
@@ -615,6 +675,7 @@ namespace KSP_WPF
                 var readStream = await request.GetResponseAsync();
                 var respReader = readStream.GetResponseStream();
                 respReader.Close();
+                readStream.Close();
             }
             catch (WebException e)
             {
@@ -695,6 +756,7 @@ namespace KSP_WPF
                 var readStream = await request.GetResponseAsync();
                 var respReader = readStream.GetResponseStream();
                 respReader.Close();
+                readStream.Close();
             }
             catch (WebException e)
             {
@@ -752,6 +814,7 @@ namespace KSP_WPF
                     var RespReader = ReadStream.GetResponseStream();
                     string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
                     RespReader.Close();
+                    ReadStream.Close();
                     List<CSNotification> obj = JsonConvert.DeserializeObject<List<CSNotification>>(RespResult);
                     if (isReturn) return obj;
                     int countTemp = 0;
@@ -869,6 +932,7 @@ namespace KSP_WPF
             var respReader = readStream.GetResponseStream();
             string respResult = await new StreamReader(respReader).ReadToEndAsync();
             respReader.Close();
+            readStream.Close();
         }
 
         public static async Task<bool> DeleteComment(string commentID, PostData data)
@@ -904,6 +968,7 @@ namespace KSP_WPF
             var respReader = readStream.GetResponseStream();
             string respResult = await new StreamReader(respReader).ReadToEndAsync();
             respReader.Close();
+            readStream.Close();
 
             return true;
         }
@@ -969,6 +1034,7 @@ namespace KSP_WPF
             var respReader = readStream.GetResponseStream();
             string respResult = await new StreamReader(respReader).ReadToEndAsync();
             respReader.Close();
+            readStream.Close();
 
             return true;
         }
@@ -1012,6 +1078,7 @@ namespace KSP_WPF
             var RespReader = ReadStream.GetResponseStream();
             string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
             RespReader.Close();
+            ReadStream.Close();
             return JsonConvert.DeserializeObject<List<ShareData.Share>>(RespResult);
         }
     }

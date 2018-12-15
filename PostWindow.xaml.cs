@@ -602,7 +602,18 @@ namespace KSP_WPF
                 TB_LikeCount.MouseLeftButtonDown += OnEmotionClick;
             }
 
-            if (!data.verb.Equals("share"))
+            if (data.bookmarked)
+            {
+                IC_Favorite.Kind = MaterialDesignThemes.Wpf.PackIconKind.StarOff;
+                TB_Favorite.Text = "관심글 취소";
+            }
+            else
+            {
+                IC_Favorite.Kind = MaterialDesignThemes.Wpf.PackIconKind.Star;
+                TB_Favorite.Text = "관심글 추가";
+            }
+
+                if (!data.verb.Equals("share"))
             {
                 if (data.share_count - data.sympathy_count > 0 && (bool?)TB_ShareCount.Tag != true)
                 {
@@ -676,7 +687,7 @@ namespace KSP_WPF
 
         private async Task<bool> RenewComment()
         {
-            PostData data = await KSPNotificationActivator.GetPost(feedID);
+            data = await KSPNotificationActivator.GetPost(feedID);
             SP_Comment.Children.Clear();
             RefreshComment(data.comments);
             await UpdateStats();
@@ -1077,6 +1088,14 @@ namespace KSP_WPF
         {
             if (!(e.Source is System.Windows.Controls.TextBox))
                 e.Handled = true;
+        }
+
+        private async void BT_AddFavorite_Click(object sender, RoutedEventArgs e)
+        {
+            BT_AddFavorite.IsEnabled = false;
+            await KakaoRequestClass.PinPost(data.id, data.bookmarked);
+            await RenewComment();
+            BT_AddFavorite.IsEnabled = true;
         }
     }
 }

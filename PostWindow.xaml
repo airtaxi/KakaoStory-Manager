@@ -15,6 +15,12 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <StackPanel Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_AddFavorite" Click="BT_AddFavorite_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Name="IC_Favorite" Kind="Star"/>
+                        <TextBlock Name="TB_Favorite" Text="관심글 추가" />
+                    </StackPanel>
+                </Button>
                 <Button Name="BT_Like" Click="BT_Like_Click">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Name="IC_LikeBTN" Kind="Heart"/>
