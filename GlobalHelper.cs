@@ -215,7 +215,7 @@ namespace KSP_WPF
                     }
                 });
         }
-
+        
         public static async void AssignImage(dynamic image, string uri)
         {
             if (image == null) return;

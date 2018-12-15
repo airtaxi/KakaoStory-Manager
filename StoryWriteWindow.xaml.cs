@@ -40,8 +40,8 @@ namespace KSP_WPF
         private readonly List<ImageData> imgs = new List<ImageData>();
         private readonly List<UploadedImageProp> imgsProp = new List<UploadedImageProp>();
         private static StoryWriteWindow instance;
-        private readonly List<string> with_ids = new List<string>();
-        private readonly List<string> trust_ids = new List<string>();
+        public List<string> with_ids = new List<string>();
+        public List<string> trust_ids = new List<string>();
         private readonly bool isEdit;
         private readonly bool isVideo = false;
         private readonly bool isShare = false;
@@ -53,6 +53,7 @@ namespace KSP_WPF
         private string videoPath = null;
         private VideoData.Video videoData = null;
         private string videoMediaPath = null;
+        private bool isInit = false;
 
         public StoryWriteWindow()
         {
@@ -71,6 +72,7 @@ namespace KSP_WPF
             else
                 ComboRange.SelectedIndex = 1;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => TB_Main.Focus()));
+            isInit = true;
         }
         public StoryWriteWindow(string feedID, bool isAllRead)
         {
@@ -106,6 +108,7 @@ namespace KSP_WPF
                 ComboRange.SelectedIndex = 1;
             }
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => TB_Main.Focus()));
+            isInit = true;
         }
 
         public StoryWriteWindow(string feedID, string text, string permission, List<CommentData.Medium> medias, bool isShared, bool isVideo)
@@ -159,6 +162,7 @@ namespace KSP_WPF
 
             TB_Main.Text = text;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => TB_Main.Focus()));
+            isInit = true;
         }
 
         private void TB_Main_Drop(object sender, DragEventArgs e)
@@ -757,7 +761,7 @@ namespace KSP_WPF
         private void ComboRange_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = (ComboBox)sender;
-            if (box.SelectedIndex == 2)
+            if (box.SelectedIndex == 2 && isInit)
             {
                 FriendSelectWindow friendSelectWindow = new FriendSelectWindow((ids, names) =>
                    {

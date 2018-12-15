@@ -196,5 +196,10 @@ namespace KSP_WPF
             if (!(e.Source is System.Windows.Controls.TextBox))
                 e.Handled = true;
         }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SP_Content.Children.Clear();
+        }
     }
 }

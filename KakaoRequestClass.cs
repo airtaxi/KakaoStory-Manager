@@ -254,6 +254,56 @@ namespace KSP_WPF
                 return null;
             }
         }
+        public static async Task<List<Actor>> GetSpecificFriends(string id)
+        {
+            string RequestURI = "https://story.kakao.com/a/activities/" + id + "/specific_friends";
+            MessageBox.Show(RequestURI);
+
+            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            webRequest.Method = "GET";
+            webRequest.ContentType = "application/json; charset=utf-8";
+
+            webRequest.CookieContainer = new CookieContainer();
+            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
+
+            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
+            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
+            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
+            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
+            webRequest.Headers["Cache-Control"] = "max-age=0";
+
+            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
+            webRequest.Headers["Accept-Language"] = "ko";
+
+            webRequest.Headers["DNT"] = "1";
+
+            webRequest.Headers["authority"] = "story.kakao.com";
+            webRequest.Referer = "https://story.kakao.com/";
+            webRequest.KeepAlive = true;
+            webRequest.UseDefaultCredentials = true;
+            webRequest.Host = "story.kakao.com";
+            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+            webRequest.Accept = "application/json";
+
+            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
+            webRequest.Date = DateTime.Now;
+            try
+            {
+                var ReadStream = await webRequest.GetResponseAsync();
+                var RespReader = ReadStream.GetResponseStream();
+                string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
+                RespReader.Close();
+                ReadStream.Close();
+                List<Actor> obj = JsonConvert.DeserializeObject<List<Actor>>(RespResult);
+                return obj;
+            }
+            catch (WebException e)
+            {
+                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
+                MessageBox.Show(resp);
+                return null;
+            }
+        }
 
         public static async Task<bool> LikeComment(string FeedID, string commentID, bool isDelete)
         {

@@ -9,6 +9,7 @@
         Deactivated="Window_Deactivated"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Closed="Window_Closed"
+        Closing="MetroWindow_Closing"
         ShowIconOnTitleBar="False"
         PreviewKeyDown="MetroWindow_PreviewKeyDown"
         Title="알림 확인" Icon="icon2.png" Height="450" Width="350">

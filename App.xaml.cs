@@ -23,8 +23,12 @@ namespace KSP_WPF
         {
             const string appName = "KakaoStroy Notification";
             _mutex = new Mutex(true, appName, out bool createdNew);
-            DesktopNotificationManagerCompat.RegisterAumidAndComServer<KSPNotificationActivator>(KSP_WPF.MainWindow.APP_ID);
-            DesktopNotificationManagerCompat.RegisterActivator<KSPNotificationActivator>();
+            try
+            {
+                DesktopNotificationManagerCompat.RegisterAumidAndComServer<KSPNotificationActivator>(KSP_WPF.MainWindow.APP_ID);
+                DesktopNotificationManagerCompat.RegisterActivator<KSPNotificationActivator>();
+            }
+            catch (Exception) { }
             if (!createdNew)
             {
                 if (!KSP_WPF.Properties.Settings.Default.Disable_Message)

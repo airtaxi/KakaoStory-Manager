@@ -16,25 +16,34 @@ namespace KSP_WPF
         public SettingsWindow()
         {
             InitializeComponent();
-
-            var startupTask = Windows.ApplicationModel.StartupTask.GetAsync("KSP-WPF");
-            while (startupTask.Status != AsyncStatus.Completed) { }
-            startupTask.Completed = (arg1, arg2) =>
+            try
             {
-                switch (startupTask.GetResults().State)
+                var startupTask = Windows.ApplicationModel.StartupTask.GetAsync("KSP-WPF");
+                while (startupTask.Status != AsyncStatus.Completed) { }
+                startupTask.Completed = (arg1, arg2) =>
                 {
-                    case Windows.ApplicationModel.StartupTaskState.Disabled:
-                        BT_Start.Content = "부팅시 자동 시작 설정하기";
-                        break;
-                    case Windows.ApplicationModel.StartupTaskState.DisabledByUser:
-                        BT_Start.IsEnabled = false;
-                        BT_Start.Content = "사용자 설정에 의해 비활성화됨";
-                        break;
-                    case Windows.ApplicationModel.StartupTaskState.Enabled:
-                        BT_Start.Content = "부팅시 자동 시작 해제하기";
-                        break;
-                }
-            };
+                    switch (startupTask.GetResults().State)
+                    {
+                        case Windows.ApplicationModel.StartupTaskState.Disabled:
+                            BT_Start.Content = "부팅시 자동 시작 설정하기";
+                            break;
+                        case Windows.ApplicationModel.StartupTaskState.DisabledByUser:
+                            BT_Start.IsEnabled = false;
+                            BT_Start.Content = "사용자 설정에 의해 비활성화됨";
+                            break;
+                        case Windows.ApplicationModel.StartupTaskState.Enabled:
+                            BT_Start.Content = "부팅시 자동 시작 해제하기";
+                            break;
+                    }
+                };
+            }
+            catch (Exception)
+            {
+                BT_Start.Visibility = Visibility.Collapsed;
+                CB_Mute.Visibility = Visibility.Collapsed;
+                CB_Like.Visibility = Visibility.Collapsed;
+                CB_VIP.Visibility = Visibility.Collapsed;
+            }
             CB_Mute.IsChecked = Properties.Settings.Default.Disable_Message;
             CB_Like.IsChecked = Properties.Settings.Default.Disable_Like;
             CB_VIP.IsChecked = Properties.Settings.Default.Disable_VIP;

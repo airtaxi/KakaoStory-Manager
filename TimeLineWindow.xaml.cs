@@ -349,20 +349,27 @@ namespace KSP_WPF
 
                             if (feed.@object.media_type != null && feed.@object.media_type.Equals("image"))
                             {
+                                Image lastImage = null;
                                 foreach (var media in feed.@object.media)
                                 {
-                                    string uri = media.jpg_url;
+                                    string uri = media.origin_url;
                                     if (uri.Contains(".gif"))
-                                        uri = media.origin_url;
+                                        uri = media.jpg_url;
 
                                     if (uri != null)
                                     {
                                         Image image = new Image();
+                                        image.Tag = new Image[2] { lastImage, null };
+                                        if (lastImage != null && lastImage.Tag is Image[])
+                                        {
+                                            ((Image[])lastImage.Tag)[1] = image;
+                                        }
                                         GlobalHelper.AssignImage(image, uri);
                                         image.Stretch = Stretch.UniformToFill;
                                         image.Margin = new Thickness(0, 0, 0, 10);
                                         image.MouseRightButtonDown += MainWindow.CopyImageHandler;
                                         image.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                                        lastImage = image;
                                         tlp.SP_ShareContent.Children.Add(image);
                                     }
                                 }
@@ -456,18 +463,25 @@ namespace KSP_WPF
             GlobalHelper.RefreshContent(feed.content_decorators, feed.content, tlp.TB_Content);
             if (feed.media_type != null && feed.media_type.Equals("image"))
             {
+                Image lastImage = null;
                 foreach (var media in feed.media)
-                {
-                    string uri = media.jpg_url;
+                {   
+                    string uri = media.origin_url;
                     if (uri.Contains(".gif"))
-                        uri = media.origin_url;
+                        uri = media.jpg_url;
 
                     Image img = new Image();
+                    img.Tag = new Image[2] { lastImage, null };
+                    if (lastImage != null && lastImage.Tag is Image[])
+                    {
+                        ((Image[])lastImage.Tag)[1] = img;
+                    }
                     GlobalHelper.AssignImage(img, uri);
                     img.Stretch = Stretch.UniformToFill;
                     img.Margin = new Thickness(0, 0, 0, 10);
                     img.MouseRightButtonDown += MainWindow.CopyImageHandler;
                     img.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                    lastImage = img;
                     tlp.SP_Content.Children.Add(img);
                 }
             }

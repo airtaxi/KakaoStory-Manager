@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:KSP_WPF"
              mc:Ignorable="d"
             d:DesignHeight="60" d:DesignWidth="300">
-    <Grid Name="GD_Main" Background="#CCEEFF" IsHitTestVisible="True">
+    <Grid Name="GD_Main" Background="Teal" IsHitTestVisible="True">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60"/>

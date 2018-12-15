@@ -1188,8 +1188,21 @@ namespace KSP_WPF
             public int view_count { get; set; }
         }
 
+        public class ClosestWithTag
+        {
+            public string profile_thumbnail_url { get; set; }
+            public string id { get; set; }
+            public string display_name { get; set; }
+            public string relationship { get; set; }
+            public string type { get; set; }
+            public bool is_birthday { get; set; }
+            public Relation relation { get; set; }
+        }
+
         public class PostData
         {
+            public List<string> allowed_profile_ids { get; set; }
+            public List<ClosestWithTag> closest_with_tags { get; set; }
             public int comment_count { get; set; }
             public bool downloadable { get; set; }
             public bool pinned { get; set; }

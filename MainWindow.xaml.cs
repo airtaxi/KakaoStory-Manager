@@ -22,6 +22,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
 using MahApps.Metro;
+using Xceed.Wpf.Toolkit.Zoombox;
 
 namespace KSP_WPF
 {
@@ -207,7 +208,9 @@ namespace KSP_WPF
             imageViewer.Show();
             imageViewer.Activate();
             imageViewer.Focus();
+            imageViewer.currentImage = (System.Windows.Controls.Image)source;
             imageViewer.IMG_Main.Source = ((System.Windows.Controls.Image)source).Source;
+            imageViewer.ZB_Main.FitToBounds();
             e.Handled = true;
         }
 

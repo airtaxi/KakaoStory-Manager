@@ -20,6 +20,7 @@ namespace KSP_WPF
     /// </summary>
     public partial class ImageViewerWindow : MetroWindow
     {
+        public Image currentImage;
         public ImageViewerWindow()
         {
             InitializeComponent();
@@ -35,7 +36,31 @@ namespace KSP_WPF
             }
             else if (e.Key == Key.F5 || (e.Key == Key.R && Keyboard.Modifiers == ModifierKeys.Control))
             {
-                ZB_Main.Reset();
+                ZB_Main.FitToBounds();
+            }
+            else if (e.Key == Key.Left)
+            {
+                if (currentImage.Tag is Image[] nextPrev)
+                {
+                    if (nextPrev[0] != null)
+                    {
+                        currentImage = nextPrev[0];
+                        IMG_Main.Source = currentImage.Source;
+                        ZB_Main.FitToBounds();
+                    }
+                }
+            }
+            else if (e.Key == Key.Right)
+            {
+                if (currentImage.Tag is Image[] nextPrev)
+                {
+                    if (nextPrev[1] != null)
+                    {
+                        currentImage = nextPrev[1];
+                        IMG_Main.Source = currentImage.Source;
+                        ZB_Main.FitToBounds();
+                    }
+                }
             }
         }
 
@@ -54,7 +79,7 @@ namespace KSP_WPF
 
         private void BT_Reset_Click(object sender, RoutedEventArgs e)
         {
-            ZB_Main.Reset();
+            ZB_Main.FitToBounds();
         }
 
         private void MetroWindow_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

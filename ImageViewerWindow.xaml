@@ -9,11 +9,12 @@
         mc:Ignorable="d"
         ShowIconOnTitleBar="False"
         PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="이미지 뷰어" Height="450" Width="450" Icon="icon2.png" Background="#333333">
     <Grid Focusable="False" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
-        <local:ZoomBorder x:Name="ZB_Main" ClipToBounds="True">
+        <xctk:Zoombox Name="ZB_Main" KeepContentInBounds="True" ZoomModifiers="" DragModifiers="">
             <Image Name="IMG_Main" Stretch="Uniform" IsHitTestVisible="True"/>
-        </local:ZoomBorder>
+        </xctk:Zoombox>
     </Grid>
 
     <controls:MetroWindow.RightWindowCommands>

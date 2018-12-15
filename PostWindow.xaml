@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:KSP_WPF"
         mc:Ignorable="d"
         Closed="Window_Closed"
+        Closing="MetroWindow_Closing"
         ShowIconOnTitleBar="False"
         PreviewKeyDown="MetroWindow_PreviewKeyDown"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"

@@ -191,7 +191,7 @@ namespace KSP_WPF
 
             comment.Grid.MouseEnter += (s, e) =>
             {
-                comment.Grid.Background = Brushes.LightSkyBlue;
+                comment.Grid.Background = Brushes.Teal;
             };
             comment.Grid.MouseLeave += (s, e) =>
             {
@@ -381,12 +381,18 @@ namespace KSP_WPF
                         if (data.@object.media_type != null && data.@object.media_type.Equals("image"))
                         {
                             bool isFirst = true;
+                            Image lastImage = null;
                             foreach (var media in data.@object.media)
                             {
                                 string uri = media.origin_url;
                                 if (uri != null)
                                 {
                                     Image image = new Image();
+                                    image.Tag = new Image[2] { lastImage, null };
+                                    if(lastImage != null && lastImage.Tag is Image[])
+                                    {
+                                        ((Image[]) lastImage.Tag)[1] = image;
+                                    }
                                     GlobalHelper.AssignImage(image, uri);
                                     image.Stretch = Stretch.UniformToFill;
                                     if (!isFirst)
@@ -394,6 +400,7 @@ namespace KSP_WPF
                                     isFirst = false;
                                     image.MouseRightButtonDown += MainWindow.CopyImageHandler;
                                     image.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                                    lastImage = image;
                                     SP_ShareContent.Children.Add(image);
                                 }
                             }
@@ -448,12 +455,18 @@ namespace KSP_WPF
             bool isFirst = true;
             if (data.media_type != null && data.media != null && data.media_type.Equals("image"))
             {
+                Image lastImage = null;
                 foreach (var media in data.media)
                 {
                     string uri = media.origin_url;
                     if (uri != null)
                     {
                         Image image = new Image();
+                        image.Tag = new Image[2] { lastImage, null };
+                        if (lastImage != null && lastImage.Tag is Image[])
+                        {
+                            ((Image[])lastImage.Tag)[1] = image;
+                        }
                         GlobalHelper.AssignImage(image, uri);
                         image.Stretch = Stretch.UniformToFill;
                         if (!isFirst)
@@ -461,6 +474,7 @@ namespace KSP_WPF
                         isFirst = false;
                         image.MouseRightButtonDown += MainWindow.CopyImageHandler;
                         image.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                        lastImage = image;
                         SP_Content.Children.Add(image);
                         SP_Content.Visibility = Visibility.Visible;
                     }
@@ -960,11 +974,20 @@ namespace KSP_WPF
         private async void BT_Edit_Click(object sender, RoutedEventArgs e)
         {
             string content = GlobalHelper.GetStringFromQuoteData(data.content_decorators, true);
-            
-            StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null, isVideo)
+
+            StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null, isVideo);
+            sww.Owner = this;
+            if(data.allowed_profile_ids != null)
+                sww.trust_ids = data.allowed_profile_ids;
+            if (data.closest_with_tags != null)
             {
-                Owner = this
-            };
+                List<string> with_ids = new List<string>();
+                foreach (var friend in data.closest_with_tags)
+                {
+                    with_ids.Add(friend.id);
+                }
+                sww.with_ids = with_ids;
+            }
             sww.ShowDialog();
             data = await KSPNotificationActivator.GetPost(feedID);
             GlobalHelper.RefreshContent(data.content_decorators, data.content, TB_Content);
@@ -1095,6 +1118,14 @@ namespace KSP_WPF
             await KakaoRequestClass.PinPost(data.id, data.bookmarked);
             await RenewComment();
             BT_AddFavorite.IsEnabled = true;
+        }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SP_Comment.Children.Clear();
+            SP_Content.Children.Clear();
+            SP_Share.Children.Clear();
+            SP_ShareContent.Children.Clear();
         }
     }
 }
