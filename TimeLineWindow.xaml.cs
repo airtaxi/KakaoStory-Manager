@@ -585,19 +585,31 @@ namespace KSP_WPF
         {
             if (relationship.relationship.Equals("F"))
             {
-                await KakaoRequestClass.DeleteFriend(relationship.id);
-                await RefreshTimeline(null, true);
+                bool isDelete = MessageBox.Show("친구를 삭제하시겠습니까?", "안내", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+                if (isDelete)
+                {
+                    await KakaoRequestClass.DeleteFriend(relationship.id);
+                    await RefreshTimeline(null, true);
+                }
             }
             else if (relationship.relationship.Equals("R"))
             {
-                await KakaoRequestClass.FriendRequest(relationship.id, true);
-                await RefreshTimeline(null, true);
+                bool isRequest = MessageBox.Show("이 사용자에게 친구 신청을 보내시겠습니까?", "안내", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;
+                if (isRequest)
+                {
+                    await KakaoRequestClass.FriendRequest(relationship.id, true);
+                    await RefreshTimeline(null, true);
+                }
             }
             else if (relationship.relationship.Equals("C"))
             {
-                bool isDelete = MessageBox.Show("친구 신청을 수락하시겠습니까?", "안내", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No;
-                await KakaoRequestClass.FriendAccept(relationship.id, isDelete);
-                await RefreshTimeline(null, true);
+                var question = MessageBox.Show("친구 신청을 수락하시겠습니까?", "안내", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if(question != MessageBoxResult.Cancel && question != MessageBoxResult.None)
+                {
+                    bool isDelete = question == MessageBoxResult.No;
+                    await KakaoRequestClass.FriendAccept(relationship.id, isDelete);
+                    await RefreshTimeline(null, true);
+                }
             }
             else if (relationship.relationship.Equals("N"))
             {

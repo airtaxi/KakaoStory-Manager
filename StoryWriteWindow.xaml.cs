@@ -43,6 +43,7 @@ namespace KSP_WPF
         private readonly List<string> with_ids = new List<string>();
         private readonly List<string> trust_ids = new List<string>();
         private readonly bool isEdit;
+        private readonly bool isVideo = false;
         private readonly bool isShare = false;
         private readonly string editFeedID;
         private readonly List<string> editOldMediaPath = new List<string>();
@@ -51,6 +52,7 @@ namespace KSP_WPF
         private string linkData;
         private string videoPath = null;
         private VideoData.Video videoData = null;
+        private string videoMediaPath = null;
 
         public StoryWriteWindow()
         {
@@ -106,7 +108,7 @@ namespace KSP_WPF
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => TB_Main.Focus()));
         }
 
-        public StoryWriteWindow(string feedID, string text, string permission, List<CommentData.Medium> medias, bool isShared)
+        public StoryWriteWindow(string feedID, string text, string permission, List<CommentData.Medium> medias, bool isShared, bool isVideo)
         {
             InitializeComponent();
             instance = this;
@@ -115,16 +117,20 @@ namespace KSP_WPF
             BT_LinkShow.Foreground = Brushes.LightGray;
             BT_Link.IsEnabled = false;
             isEdit = true;
+            this.isVideo = isVideo;
             editFeedID = feedID;
             if(medias != null)
             {
                 foreach(var media in medias)
                 {
-                    editOldMediaPath.Add(media.media_path);
-                    string path = System.IO.Path.GetTempFileName();
-                    WebClient client = new WebClient();
-                    client.DownloadFile(media.origin_url, path);
-                    AddImage(path);
+                    if(!isVideo)
+                    {
+                        editOldMediaPath.Add(media.media_path);
+                        string path = System.IO.Path.GetTempFileName();
+                        WebClient client = new WebClient();
+                        client.DownloadFile(media.origin_url, path);
+                        AddImage(path);
+                    }
                 }
                 ValidatePanelHeight();
             }
@@ -157,7 +163,7 @@ namespace KSP_WPF
 
         private void TB_Main_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) && videoMediaPath == null)
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 foreach (string path in files)
@@ -218,14 +224,22 @@ namespace KSP_WPF
                 BT_Video.IsEnabled = false;
                 BT_Video.Foreground = Brushes.LightGray;
             }
-            else if(videoPath != null) {
+            else if(videoPath != null || isVideo) {
                 SP_Pictures.Visibility = Visibility.Collapsed;
                 BT_Link.IsEnabled = false;
                 BT_Link.Foreground = Brushes.LightGray;
                 BT_LinkShow.Foreground = Brushes.LightGray;
                 BT_Pic.IsEnabled = false;
                 BT_Pic.Foreground = Brushes.LightGray;
-                BT_Video.Kind = MaterialDesignThemes.Wpf.PackIconKind.Delete;
+                if (!isVideo)
+                {
+                    BT_Video.Kind = MaterialDesignThemes.Wpf.PackIconKind.Delete;
+                }
+                else
+                {
+                    BT_Video.IsEnabled = false;
+                    BT_Video.Foreground = Brushes.LightGray;
+                }
             }
             else
             {
@@ -891,7 +905,7 @@ namespace KSP_WPF
 
         private void BT_Video_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(BT_Video.IsEnabled && videoPath == null)
+            if(BT_Video.IsEnabled && videoPath == null && videoMediaPath == null)
             {
                 OpenFileDialog ofd = new OpenFileDialog
                 {

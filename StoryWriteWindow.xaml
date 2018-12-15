@@ -50,30 +50,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Name="BT_Submit" Content="올리기" Grid.Column="2" Click="BT_Submit_Click" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus"/>
                 <ComboBox Name="ComboRange" Grid.Column="0" SelectedIndex="1" SelectionChanged="ComboRange_SelectionChanged" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
-                    <ComboBoxItem Name="CBI_All">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Globe" Foreground="Gray" Width="17.5" Height="17.5"/>
-                            <TextBlock Text="전체 공개" Margin="5,0,0,0" Foreground="Black"/>
-                        </StackPanel>
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="People" Foreground="Gray" Width="17.5" Height="17.5"/>
-                            <TextBlock Text="친구 공개" Margin="5,0,0,0" Foreground="Black"/>
-                        </StackPanel>
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="PersonAdd" Foreground="Gray" Width="17.5" Height="17.5"/>
-                            <TextBlock Text="편한 친구 공개" Margin="5,0,0,0" Foreground="Black"/>
-                        </StackPanel>
-                    </ComboBoxItem>
-                    <ComboBoxItem>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Person" Foreground="Gray" Width="17.5" Height="17.5"/>
-                            <TextBlock Text="나만 보기" Margin="5,0,0,0" Foreground="Black"/>
-                        </StackPanel>
-                    </ComboBoxItem>
+                    <ComboBoxItem Name="CBI_All" Content="전체 공개"/>
+                    <ComboBoxItem Content="친구 공개"/>
+                    <ComboBoxItem Content="편한 친구 공개" />
+                    <ComboBoxItem Content="나만 보기"/>
                 </ComboBox>
             </Grid>
             <Grid Grid.Row="1" Margin="0,5,0,0">

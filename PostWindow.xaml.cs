@@ -36,6 +36,8 @@ namespace KSP_WPF
         private string feedID;
         private bool isAllRead = true;
         UploadedImageProp commentImage = null;
+        private bool isVideo = false;
+        private string lastVideo;
         private readonly Hashtable ht = new Hashtable();
 
         private void AddComment(string path, string name, string message, string uri, string commentID, string commentName, bool liked, string id, string imageUri, string timestamp, int likes, Comment commentProf)
@@ -312,21 +314,6 @@ namespace KSP_WPF
                         MessageBox.Show("접근이 불가능한 스토리입니다.");
                     }
                 };
-                
-                if (data.media?.Count > 0 && data.media?[0]?.url_hq != null)
-                {
-                    TextBlock videoText = new TextBlock();
-                    videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
-                    MainWindow.SetClickObject(videoText);
-                    videoText.MouseLeftButtonDown += (s, e) =>
-                    {
-                        System.Diagnostics.Process.Start(data.media?[0]?.url_hq);
-                        e.Handled = true;
-                    };
-                    SP_Content.Children.Add(videoText);
-                    SP_Content.Visibility = Visibility.Visible;
-                }
-
                 RefreshComment(data.comments);
 
                 if (data.verb != null && data.verb.Equals("share"))
@@ -391,7 +378,7 @@ namespace KSP_WPF
                             MessageBox.Show("클립보드에 공유한 글 내용이 복사됐습니다.");
                             e.Handled = true;
                         };
-
+                        
                         if (data.@object.media_type != null && data.@object.media_type.Equals("image"))
                         {
                             bool isFirst = true;
@@ -479,6 +466,21 @@ namespace KSP_WPF
                         SP_Content.Visibility = Visibility.Visible;
                     }
                 }
+            }
+
+            if (data.media?.Count > 0 && data.media?[0]?.url_hq != null)
+            {
+                TextBlock videoText = new TextBlock();
+                videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
+                MainWindow.SetClickObject(videoText);
+                videoText.MouseLeftButtonDown += (s, e) =>
+                {
+                    System.Diagnostics.Process.Start(data.media?[0]?.url_hq);
+                    e.Handled = true;
+                };
+                SP_Content.Children.Add(videoText);
+                SP_Content.Visibility = Visibility.Visible;
+                isVideo = true;
             }
         }
 
@@ -948,8 +950,8 @@ namespace KSP_WPF
         private async void BT_Edit_Click(object sender, RoutedEventArgs e)
         {
             string content = GlobalHelper.GetStringFromQuoteData(data.content_decorators, true);
-
-            StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null)
+            
+            StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null, isVideo)
             {
                 Owner = this
             };

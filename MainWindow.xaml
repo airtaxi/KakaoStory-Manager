@@ -37,6 +37,9 @@
             <PasswordBox Name="TBX_Password" FontSize="17" Password="" FontWeight="Bold" BorderThickness="0" VerticalContentAlignment="Center" Margin="40,130,0,0" Width="460" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top" controls:TextBoxHelper.Watermark="패스워드" KeyDown="TBX_Password_KeyDown"/>
             <CheckBox Name="CB_AutoLogin" Content="로그인 유지" FontWeight="Bold" FontSize="17.5" VerticalContentAlignment="Center" Margin="40,170,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="CB_AutoLogin_Click" KeyDown="TBX_Password_KeyDown"/>
         </Grid>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
+            <CheckBox Content="야간 모드" Name="TSW_DarkMode" Click="TSW_DarkMode_Click"/>
+        </StackPanel>
         <Grid Name="GD_Profile" Margin="0,75,0,0" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Ellipse Name="EL_Profile" Width="170" Height="170" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="35,0,0,0" MouseLeftButtonDown="TB_MyProfile_MouseLeftButtonDown" Stretch="UniformToFill"/>
             <Grid Margin="220,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">

@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
+using MahApps.Metro;
 
 namespace KSP_WPF
 {
@@ -46,6 +47,8 @@ namespace KSP_WPF
         public MainWindow()
         {
             InitializeComponent();
+            TSW_DarkMode.IsChecked = Properties.Settings.Default.DarkMode;
+            TSW_DarkMode_Click(null, null);
 
 
             CB_AutoLogin.IsChecked = Properties.Settings.Default.AutoLogin;
@@ -573,6 +576,16 @@ namespace KSP_WPF
         {
             if (!(e.Source is System.Windows.Controls.TextBox) && !(e.Source is System.Windows.Controls.PasswordBox))
                 e.Handled = true;
+        }
+
+        private void TSW_DarkMode_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.DarkMode = TSW_DarkMode.IsChecked == true;
+            if (Properties.Settings.Default.DarkMode == true)
+                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent("Teal"), ThemeManager.GetAppTheme("BaseDark"));
+            else
+                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent("Teal"), ThemeManager.GetAppTheme("BaseLight"));
+            Properties.Settings.Default.Save();
         }
     }
 }
