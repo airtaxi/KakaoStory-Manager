@@ -47,6 +47,11 @@ namespace KSP_WPF
             if (Properties.Settings.Default.W10Warn == false)
             {
                 BT_Homepage.Visibility = Visibility.Collapsed;
+                TB_Version.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                TB_Version.Text = "버전 : " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
             CB_Mute.IsChecked = Properties.Settings.Default.Disable_Message;
             CB_Like.IsChecked = Properties.Settings.Default.Disable_Like;

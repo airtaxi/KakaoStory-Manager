@@ -12,6 +12,7 @@
         Title="설정" Icon="icon2.png" SizeToContent="WidthAndHeight" ResizeMode="NoResize">
     <ScrollViewer Name="SV_Main" Height="290" VerticalScrollBarVisibility="Auto" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus" PanningMode="VerticalOnly">
         <StackPanel Orientation="Vertical" Margin="10,10,10,10">
+            <TextBlock Name="TB_Version" Text="버전 : " Margin="0,0,0,5"/>
             <Button Name="BT_Start" Margin="0,0,0,0" Content="부팅시 자동 시작 설정하기" Click="BT_Start_Click"/>
             <Button Name="BT_DeleteBlinded" Margin="0,5,0,0" Content="제한된 사용자 삭제" Click="BT_DeleteBlinded_Click"/>
             <Button Name="BT_DeletePosts" Margin="0,5,0,0" Content="스토리 일괄 삭제" Click="BT_DeletePosts_Click"/>
