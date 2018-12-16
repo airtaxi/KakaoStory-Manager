@@ -12,51 +12,48 @@ namespace KSP_WPF
     /// </summary>
     public partial class SettingsWindow : MetroWindow
     {
+        public void InitStartOption()
+        {
+            var startupTask = Windows.ApplicationModel.StartupTask.GetAsync("KSP-WPF");
+            while (startupTask.Status != Windows.Foundation.AsyncStatus.Completed) { }
+            startupTask.Completed = (arg1, arg2) =>
+            {
+                switch (startupTask.GetResults().State)
+                {
+                    case Windows.ApplicationModel.StartupTaskState.Disabled:
+                        BT_Start.Content = "부팅시 자동 시작 설정하기";
+                        break;
+                    case Windows.ApplicationModel.StartupTaskState.DisabledByUser:
+                        BT_Start.IsEnabled = false;
+                        BT_Start.Content = "사용자 설정에 의해 비활성화됨";
+                        break;
+                    case Windows.ApplicationModel.StartupTaskState.Enabled:
+                        BT_Start.Content = "부팅시 자동 시작 해제하기";
+                        break;
+                }
+            };
+        }
         public SettingsWindow()
         {
             InitializeComponent();
-            try
+            if (Environment.OSVersion.Version.Major == 10)
             {
-                var startupTask = Windows.ApplicationModel.StartupTask.GetAsync("KSP-WPF");
-                while (startupTask.Status != Windows.Foundation.AsyncStatus.Completed) { }
-                startupTask.Completed = (arg1, arg2) =>
-                {
-                    switch (startupTask.GetResults().State)
-                    {
-                        case Windows.ApplicationModel.StartupTaskState.Disabled:
-                            BT_Start.Content = "부팅시 자동 시작 설정하기";
-                            break;
-                        case Windows.ApplicationModel.StartupTaskState.DisabledByUser:
-                            BT_Start.IsEnabled = false;
-                            BT_Start.Content = "사용자 설정에 의해 비활성화됨";
-                            break;
-                        case Windows.ApplicationModel.StartupTaskState.Enabled:
-                            BT_Start.Content = "부팅시 자동 시작 해제하기";
-                            break;
-                    }
-                };
+                BT_Homepage.Visibility = Visibility.Collapsed;
+                TB_Version.Visibility = Visibility.Collapsed;
+                InitStartOption();
             }
-            catch (Exception)
+            else
             {
+                TB_Version.Text = "버전 : " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
                 BT_Start.Visibility = Visibility.Collapsed;
                 CB_Mute.Visibility = Visibility.Collapsed;
                 CB_Like.Visibility = Visibility.Collapsed;
                 CB_VIP.Visibility = Visibility.Collapsed;
             }
-            if (Properties.Settings.Default.W10Warn == false)
-            {
-                BT_Homepage.Visibility = Visibility.Collapsed;
-                TB_Version.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                TB_Version.Text = "버전 : " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            }
             CB_Mute.IsChecked = Properties.Settings.Default.Disable_Message;
             CB_Like.IsChecked = Properties.Settings.Default.Disable_Like;
             CB_VIP.IsChecked = Properties.Settings.Default.Disable_VIP;
             CB_Memory.IsChecked = Properties.Settings.Default.MemoryControl;
-            //CB_ImageClick.IsChecked = Properties.Settings.Default.ImageClick;
             CB_FullScreen.IsChecked = Properties.Settings.Default.FullScreen;
             CB_TimelineScroll.IsChecked = Properties.Settings.Default.ScrollTimeline;
             CB_NoGIF.IsChecked = !Properties.Settings.Default.UseGIF;
@@ -87,8 +84,6 @@ namespace KSP_WPF
                 Properties.Settings.Default.Disable_Message = check;
             else if (sender.Equals(CB_Memory))
                 Properties.Settings.Default.MemoryControl = check;
-            //else if (sender.Equals(CB_ImageClick))
-            //    Properties.Settings.Default.ImageClick = check;
             else if (sender.Equals(CB_FullScreen))
                 Properties.Settings.Default.FullScreen = check;
             else if (sender.Equals(CB_TimelineScroll))
@@ -111,35 +106,38 @@ namespace KSP_WPF
             else if (sender.Equals(CB_DefaultMinimize))
                 Properties.Settings.Default.DefaultMinimize = check;
             else if (sender.Equals(CB_AutoMinimize))
-                Properties.Settings.Default.AutoMinimize= check;
+                Properties.Settings.Default.AutoMinimize = check;
 
             Properties.Settings.Default.Save();
         }
 
         private void BT_Start_Click(object sender, RoutedEventArgs e)
         {
-            var startupTask = Windows.ApplicationModel.StartupTask.GetAsync("KSP-WPF");
-            while (startupTask.Status != Windows.Foundation.AsyncStatus.Completed) { }
-            if (startupTask.GetResults().State == Windows.ApplicationModel.StartupTaskState.Enabled)
+            if (Environment.OSVersion.Version.Major == 10)
             {
-                startupTask.GetResults().Disable();
-                BT_Start.Content = "부팅시 자동 시작 설정하기";
-            }
-            else
-            {
-                var request = startupTask.GetResults().RequestEnableAsync();
-                while (request.Status != Windows.Foundation.AsyncStatus.Completed) { }
-                var state = startupTask.GetResults().State;
-                switch (state)
+                var startupTask = Windows.ApplicationModel.StartupTask.GetAsync("KSP-WPF");
+                while (startupTask.Status != Windows.Foundation.AsyncStatus.Completed) { }
+                if (startupTask.GetResults().State == Windows.ApplicationModel.StartupTaskState.Enabled)
                 {
-                    case Windows.ApplicationModel.StartupTaskState.DisabledByUser:
-                        MessageBox.Show("사용자 설정에 의해 작업이 비활성화 됐습니다.");
-                        BT_Start.IsEnabled = false;
-                        BT_Start.Content = "사용자 설정에 의해 비활성화됨";
-                        break;
-                    case Windows.ApplicationModel.StartupTaskState.Enabled:
-                        BT_Start.Content = "부팅시 자동 시작 해제하기";
-                        break;
+                    startupTask.GetResults().Disable();
+                    BT_Start.Content = "부팅시 자동 시작 설정하기";
+                }
+                else
+                {
+                    var request = startupTask.GetResults().RequestEnableAsync();
+                    while (request.Status != Windows.Foundation.AsyncStatus.Completed) { }
+                    var state = startupTask.GetResults().State;
+                    switch (state)
+                    {
+                        case Windows.ApplicationModel.StartupTaskState.DisabledByUser:
+                            MessageBox.Show("사용자 설정에 의해 작업이 비활성화 됐습니다.");
+                            BT_Start.IsEnabled = false;
+                            BT_Start.Content = "사용자 설정에 의해 비활성화됨";
+                            break;
+                        case Windows.ApplicationModel.StartupTaskState.Enabled:
+                            BT_Start.Content = "부팅시 자동 시작 해제하기";
+                            break;
+                    }
                 }
             }
         }

@@ -278,23 +278,17 @@ namespace KSP_WPF
             Dispatcher.InvokeAsync(async() =>
             {
                 IsLoggedIn = true;
-                await Task.Delay(1);
-                if (!Properties.Settings.Default.Disable_Message)
-                    GlobalHelper.ShowNotification("안내", "프로그램이 최소화됐습니다.\r\n시스템 트레이의 프로그램 아이콘을 클릭하여 창을 복구할 수 있습니다.", null);
                 await UpdateProfile();
-                await Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
-                {
-                    GD_Login.Visibility = Visibility.Collapsed;
-                    GD_Profile.Visibility = Visibility.Visible;
-                    TB_Name.Text = userProfile.display_name;
-                    TB_Email.Text = TBX_Email.Text;
-                    TB_Login.Visibility = Visibility.Collapsed;
-                    TB_LoginProgress.Visibility = Visibility.Collapsed;
-                    TB_Logout.Visibility = Visibility.Visible;
-                    IMG_Login.Visibility = Visibility.Collapsed;
-                    EL_Profile.Fill = new ImageBrush(new BitmapImage(new Uri(userProfile.profile_image_url)));
-                    BT_Login.IsEnabled = true;
-                }));
+                GD_Login.Visibility = Visibility.Collapsed;
+                GD_Profile.Visibility = Visibility.Visible;
+                TB_Name.Text = userProfile.display_name;
+                TB_Email.Text = TBX_Email.Text;
+                TB_Login.Visibility = Visibility.Collapsed;
+                TB_LoginProgress.Visibility = Visibility.Collapsed;
+                TB_Logout.Visibility = Visibility.Visible;
+                IMG_Login.Visibility = Visibility.Collapsed;
+                EL_Profile.Fill = new ImageBrush(new BitmapImage(new Uri(userProfile.profile_image_url)));
+                BT_Login.IsEnabled = true;
                 if(Properties.Settings.Default.AutoMinimize)
                 {
                     TB_Tray_MouseLeftButtonDown(null, null);

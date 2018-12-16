@@ -29,6 +29,15 @@ namespace KSP_WPF
         {
             public Image Image;
             public string Path;
+            public string EditKey;
+            public void SetKey(string key)
+            {
+                EditKey = key;
+            }
+            public string GetKey()
+            {
+                return EditKey;
+            }
             public void Remove(object arg0, dynamic arg1)
             {
                 instance.imgs.Remove(this);
@@ -38,7 +47,6 @@ namespace KSP_WPF
             }
         };
         private readonly List<ImageData> imgs = new List<ImageData>();
-        private readonly List<UploadedImageProp> imgsProp = new List<UploadedImageProp>();
         private static StoryWriteWindow instance;
         public List<string> with_ids = new List<string>();
         public List<string> trust_ids = new List<string>();
@@ -132,7 +140,7 @@ namespace KSP_WPF
                         string path = System.IO.Path.GetTempFileName();
                         WebClient client = new WebClient();
                         client.DownloadFile(media.origin_url, path);
-                        AddImage(path);
+                        AddImage(path, media.media_path);
                     }
                 }
                 ValidatePanelHeight();
@@ -186,6 +194,10 @@ namespace KSP_WPF
 
         private bool AddImage(string path)
         {
+            return AddImage(path, null);
+        }
+        private bool AddImage(string path, string editKey)
+        {
             try
             {
                 if (imgs.Count < 20)
@@ -197,7 +209,7 @@ namespace KSP_WPF
                     image.Width = 80;
                     image.Height = image.Width;
                     image.Stretch = Stretch.UniformToFill;
-                    ImageData imgData = new ImageData() { Image = image, Path = path };
+                    ImageData imgData = new ImageData() { Image = image, Path = path, EditKey=editKey };
                     image.MouseLeftButtonDown += imgData.Remove;
                     imgs.Add(imgData);
                     SP_Pictures.Children.Add(image);
@@ -305,6 +317,18 @@ namespace KSP_WPF
             postDataBuilder.Append("permission=" + permission + "&comment_all_writable=" + commentable + "&is_must_read=false&enable_share=" + sharable);
             postDataBuilder.Append("&content=" + textContent);
 
+            List<string> keys = new List<string>();
+            foreach (ImageData img in imgs)
+            {
+                string key;
+                if (img.EditKey == null)
+                    key = await UploadImage(img);
+                else
+                    key = img.EditKey;
+
+                keys.Add(key);
+            }
+
             if (with_ids.Count > 0)
                 postDataBuilder.Append("&with_tags=" + Uri.EscapeDataString(JsonConvert.SerializeObject(with_ids)));
             if (trust_ids.Count > 0)
@@ -322,17 +346,13 @@ namespace KSP_WPF
             {
                 postDataBuilder.Append("&" + Uri.EscapeDataString("caption[]") + "=");
             }
-            foreach (UploadedImageProp img in imgsProp)
+            foreach (string key in keys)
             {
-                postDataBuilder.Append("&" + Uri.EscapeDataString("media_path[]") + "=" + Uri.EscapeDataString(img.access_key + "/" + img.info.original.filename + "?width=" + img.info.original.width + "&height=" + img.info.original.height));
-                postDataBuilder.Append(Uri.EscapeDataString("&avg=" + img.info.original.avg));
+                postDataBuilder.Append("&" + Uri.EscapeDataString("media_path[]") + "=" + Uri.EscapeDataString(key));
             }
-            if (isEdit)
+            foreach (string mediaPath in editOldMediaPath)
             {
-                foreach (string mediaPath in editOldMediaPath)
-                {
-                    postDataBuilder.Append("&" + Uri.EscapeDataString("old_media_path[]") + "=" + Uri.EscapeDataString(mediaPath));
-                }
+                postDataBuilder.Append("&" + Uri.EscapeDataString("old_media_path[]") + "=" + Uri.EscapeDataString(mediaPath));
             }
 
             if (linkData != null)
@@ -434,9 +454,9 @@ namespace KSP_WPF
             return true;
         }
 
-        private async Task<bool> UploadImage(string filepath)
+        private async Task<string> UploadImage(ImageData img)
         {
-            StreamReader fileStream = new StreamReader(filepath);
+            StreamReader fileStream = new StreamReader(img.Path);
 
             string requestURI = "https://up-api-kage-4story.kakao.com/web/webstory-img/";
 
@@ -467,7 +487,7 @@ namespace KSP_WPF
 
             Stream writeStream = await request.GetRequestStreamAsync();
 
-            WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(filepath), System.Web.MimeMapping.GetMimeMapping(filepath), fileStream.BaseStream);
+            WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(img.Path), System.Web.MimeMapping.GetMimeMapping(img.Path), fileStream.BaseStream);
             fileStream.Close();
 
             var readStream = await request.GetResponseAsync();
@@ -477,9 +497,7 @@ namespace KSP_WPF
             respReader.Close();
 
             UploadedImageProp result = JsonConvert.DeserializeObject<UploadedImageProp>(respResult);
-
-            imgsProp.Add(result);
-            return true;
+            return result.access_key + "/" + result.info.original.filename + "?width=" + result.info.original.width + "&height=" + result.info.original.height + "&avg=" + result.info.original.avg;
         }
         /// <summary>
         /// Writes multi part HTTP POST request. Author : Farhan Ghumra
@@ -554,10 +572,6 @@ namespace KSP_WPF
                 BT_Submit.IsEnabled = false;
                 string baseStr = "게시중...";
                 BT_Submit.Content = baseStr;
-                foreach (ImageData img in imgs)
-                {
-                    await UploadImage(img.Path);
-                }
                 if(videoPath != null)
                 {
                     await UploadVideo(videoPath);

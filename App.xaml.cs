@@ -27,9 +27,19 @@ namespace KSP_WPF
             {
                 if (KSP_WPF.Properties.Settings.Default.W10Warn == false)
                 {
+                    KSP_WPF.Properties.Settings.Default.Upgrade();
                     KSP_WPF.Properties.Settings.Default.W10Warn = true;
                     KSP_WPF.Properties.Settings.Default.Save();
                     MessageBox.Show("현재 버전은 윈도우 7,8 호환모드로 작동하고있습니다.\n윈도우 10을 사용중이시라면 마이크로소프트 스토어에 KakaoStory Manager를 검색하여 스토어 버전을 받아주세요.", "경고");
+                }
+            }
+            else
+            {
+                if (KSP_WPF.Properties.Settings.Default.Upgraded == false)
+                {
+                    KSP_WPF.Properties.Settings.Default.Upgrade();
+                    KSP_WPF.Properties.Settings.Default.Upgraded = true;
+                    KSP_WPF.Properties.Settings.Default.Save();
                 }
             }
             if (!createdNew)
