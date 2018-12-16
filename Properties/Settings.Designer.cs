@@ -274,5 +274,17 @@ namespace KSP_WPF.Properties {
                 this["DarkMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool W10Warn {
+            get {
+                return ((bool)(this["W10Warn"]));
+            }
+            set {
+                this["W10Warn"] = value;
+            }
+        }
     }
 }

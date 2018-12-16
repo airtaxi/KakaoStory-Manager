@@ -44,6 +44,10 @@ namespace KSP_WPF
                 CB_Like.Visibility = Visibility.Collapsed;
                 CB_VIP.Visibility = Visibility.Collapsed;
             }
+            if (Properties.Settings.Default.W10Warn == false)
+            {
+                BT_Homepage.Visibility = Visibility.Collapsed;
+            }
             CB_Mute.IsChecked = Properties.Settings.Default.Disable_Message;
             CB_Like.IsChecked = Properties.Settings.Default.Disable_Like;
             CB_VIP.IsChecked = Properties.Settings.Default.Disable_VIP;
@@ -197,6 +201,11 @@ namespace KSP_WPF
         {
             if (!(e.Source is System.Windows.Controls.TextBox))
                 e.Handled = true;
+        }
+
+        private void BT_Homepage_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://kagamine-rin.com/");
         }
     }
 

@@ -1,13 +1,7 @@
 ﻿//using DesktopNotifications;
 using DesktopNotifications;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -28,11 +22,20 @@ namespace KSP_WPF
                 DesktopNotificationManagerCompat.RegisterAumidAndComServer<KSPNotificationActivator>(KSP_WPF.MainWindow.APP_ID);
                 DesktopNotificationManagerCompat.RegisterActivator<KSPNotificationActivator>();
             }
-            catch (Exception) { }
+            catch (Exception){}
+            if(Environment.OSVersion.Version.Major != 10)
+            {
+                if (KSP_WPF.Properties.Settings.Default.W10Warn == false)
+                {
+                    KSP_WPF.Properties.Settings.Default.W10Warn = true;
+                    KSP_WPF.Properties.Settings.Default.Save();
+                    MessageBox.Show("현재 버전은 윈도우 7,8 호환모드로 작동하고있습니다.\n윈도우 10을 사용중이시라면 마이크로소프트 스토어에 KakaoStory Manager를 검색하여 스토어 버전을 받아주세요.", "경고");
+                }
+            }
             if (!createdNew)
             {
                 if (!KSP_WPF.Properties.Settings.Default.Disable_Message)
-                    KSP_WPF.GlobalHelper.ShowNotification("안내", "프로그램이 이미 실행중이므로 자동 종료되었습니다.", null);
+                    GlobalHelper.ShowNotification("안내", "프로그램이 이미 실행중이므로 자동 종료되었습니다.", null);
                 Current.Shutdown();
             }
             else
