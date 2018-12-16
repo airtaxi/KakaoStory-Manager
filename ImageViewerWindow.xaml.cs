@@ -29,12 +29,12 @@ namespace KSP_WPF
 
         private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)
+            if (e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 GlobalHelper.CopyImageHandler(IMG_Main, null);
                 e.Handled = true;
             }
-            else if (e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control)
+            else if (e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 Close();
                 e.Handled = true;
