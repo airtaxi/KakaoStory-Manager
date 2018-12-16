@@ -24,19 +24,25 @@ namespace KSP_WPF
         public ImageViewerWindow()
         {
             InitializeComponent();
-            IMG_Main.PreviewMouseRightButtonDown += MainWindow.CopyImageHandler;
+            IMG_Main.PreviewMouseRightButtonDown += GlobalHelper.CopyImageHandler;
         }
 
         private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)
             {
+                GlobalHelper.CopyImageHandler(IMG_Main, null);
                 e.Handled = true;
+            }
+            else if (e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control)
+            {
                 Close();
+                e.Handled = true;
             }
             else if (e.Key == Key.F5 || (e.Key == Key.R && Keyboard.Modifiers == ModifierKeys.Control))
             {
                 ZB_Main.FitToBounds();
+                e.Handled = true;
             }
             else if (e.Key == Key.Left)
             {
@@ -49,6 +55,7 @@ namespace KSP_WPF
                         ZB_Main.FitToBounds();
                     }
                 }
+                e.Handled = true;
             }
             else if (e.Key == Key.Right)
             {
@@ -61,6 +68,7 @@ namespace KSP_WPF
                         ZB_Main.FitToBounds();
                     }
                 }
+                e.Handled = true;
             }
         }
 
@@ -69,11 +77,11 @@ namespace KSP_WPF
             try
             {
                 Image img = IMG_Main;
-                MainWindow.SaveImageToFile(img);
+                GlobalHelper.SaveImageToFile(img);
             }
             catch (Exception)
             {
-                MainWindow.SaveGIFImage(IMG_Main);
+                GlobalHelper.SaveGIFImage(IMG_Main);
             }
         }
 
@@ -90,7 +98,7 @@ namespace KSP_WPF
 
         private void BT_Clipboard_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.CopyImageHandler(IMG_Main, null);
+            GlobalHelper.CopyImageHandler(IMG_Main, null);
         }
     }
 }
