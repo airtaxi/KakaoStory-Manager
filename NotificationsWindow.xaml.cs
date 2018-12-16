@@ -64,7 +64,9 @@ namespace KSP_WPF
                 NotificationControl content = new NotificationControl();
                 MainWindow.SetClickObject(content);
                 content.TB_Content.Text = message;
+                content.TB_Content.ToolTip = content.TB_Content.Text;
                 content.TB_Message.Text = notification.content ?? "내용 없음";
+                content.TB_Message.ToolTip = content.TB_Message.Text;
                 if(!notification.is_new)
                 {
                     content.GD_Main.Background = Brushes.Transparent;
