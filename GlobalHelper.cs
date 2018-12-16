@@ -61,6 +61,80 @@ namespace KSP_WPF
             }
         }
 
+        public static void CopyImageHandler(object source, MouseButtonEventArgs e)
+        {
+            try
+            {
+                System.Windows.Controls.Image img = (System.Windows.Controls.Image)source;
+                System.Windows.Clipboard.SetImage(img.Source as BitmapImage);
+                MessageBox.Show("클립보드에 이미지가 복사됐습니다");
+            }
+            catch (Exception)
+            {
+                System.Windows.Controls.Image image = (System.Windows.Controls.Image)source;
+                if (image.Tag is string uri)
+                    SaveGIFImage(image);
+            }
+            if (e != null)
+                e.Handled = true;
+        }
+
+        public static void SaveGIFImage(System.Windows.Controls.Image image)
+        {
+            string uri = (string)image.Tag;
+            if (uri != null)
+            {
+                Microsoft.Win32.SaveFileDialog sdf = new Microsoft.Win32.SaveFileDialog
+                {
+                    FileName = "image.gif",
+                    Filter = "GIF Image|*.gif",
+                    Title = "GIF 이미지 저장"
+                };
+
+                if (sdf.ShowDialog() == true)
+                    using (WebClient client = new WebClient())
+                        client.DownloadFile(uri, sdf.FileName);
+            }
+        }
+
+        public static void SaveImageHandler(object source, MouseButtonEventArgs e)
+        {
+            ImageViewerWindow imageViewer = new ImageViewerWindow();
+            imageViewer.Show();
+            imageViewer.Activate();
+            imageViewer.Focus();
+            imageViewer.currentImage = (System.Windows.Controls.Image)source;
+            imageViewer.IMG_Main.Source = ((System.Windows.Controls.Image)source).Source;
+            imageViewer.ZB_Main.FitToBounds();
+            e.Handled = true;
+        }
+
+        public static void SaveImageToFile(System.Windows.Controls.Image image)
+        {
+            if (image.Tag is string uri)
+            {
+                if (uri.Contains(".gif"))
+                {
+                    SaveGIFImage(image);
+                    return;
+                }
+            }
+            Microsoft.Win32.SaveFileDialog sdf = new Microsoft.Win32.SaveFileDialog
+            {
+                FileName = "image.png",
+                Filter = "Png Image|*.png",
+                Title = "이미지 저장"
+            };
+
+            if (sdf.ShowDialog() == true)
+            {
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create((BitmapSource)image.Source));
+                FileStream stream = new FileStream(sdf.FileName, FileMode.Create);
+                encoder.Save(stream);
+            }
+        }
+
         public static void ShowNotification(string title, string message, string URL, string commentID, string id, string name, string writer, string identity, string thumbnailURL)
         {
             if(Environment.OSVersion.Version.Major == 10)

@@ -367,8 +367,8 @@ namespace KSP_WPF
                                         GlobalHelper.AssignImage(image, uri);
                                         image.Stretch = Stretch.UniformToFill;
                                         image.Margin = new Thickness(0, 0, 0, 10);
-                                        image.MouseRightButtonDown += MainWindow.CopyImageHandler;
-                                        image.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                                        image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                                        image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
                                         lastImage = image;
                                         tlp.SP_ShareContent.Children.Add(image);
                                     }
@@ -479,8 +479,8 @@ namespace KSP_WPF
                     GlobalHelper.AssignImage(img, uri);
                     img.Stretch = Stretch.UniformToFill;
                     img.Margin = new Thickness(0, 0, 0, 10);
-                    img.MouseRightButtonDown += MainWindow.CopyImageHandler;
-                    img.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                    img.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                    img.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
                     lastImage = img;
                     tlp.SP_Content.Children.Add(img);
                 }

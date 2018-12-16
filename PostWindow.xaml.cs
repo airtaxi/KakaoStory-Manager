@@ -97,8 +97,8 @@ namespace KSP_WPF
             {
                 comment.IMG_Comment.Visibility = Visibility.Visible;
                 GlobalHelper.AssignImage(comment.IMG_Comment, imageUri);
-                comment.IMG_Comment.MouseRightButtonDown += MainWindow.CopyImageHandler;
-                comment.IMG_Comment.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                comment.IMG_Comment.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                comment.IMG_Comment.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
             }
             else
                 comment.IMG_Comment.Visibility = Visibility.Collapsed;
@@ -396,8 +396,8 @@ namespace KSP_WPF
                                     if (!isFirst)
                                         image.Margin = new Thickness(0, 10, 0, 10);
                                     isFirst = false;
-                                    image.MouseRightButtonDown += MainWindow.CopyImageHandler;
-                                    image.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                                    image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                                    image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
                                     lastImage = image;
                                     SP_ShareContent.Children.Add(image);
                                 }
@@ -470,8 +470,8 @@ namespace KSP_WPF
                         if (!isFirst)
                             image.Margin = new Thickness(0, 10, 0, 10);
                         isFirst = false;
-                        image.MouseRightButtonDown += MainWindow.CopyImageHandler;
-                        image.MouseLeftButtonDown += MainWindow.SaveImageHandler;
+                        image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                        image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
                         lastImage = image;
                         SP_Content.Children.Add(image);
                         SP_Content.Visibility = Visibility.Visible;
