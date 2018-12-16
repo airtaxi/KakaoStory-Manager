@@ -60,7 +60,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AutoMinimize" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="DarkMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

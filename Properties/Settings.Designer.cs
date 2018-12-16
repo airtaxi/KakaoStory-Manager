@@ -253,7 +253,7 @@ namespace KSP_WPF.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool AutoMinimize {
             get {
                 return ((bool)(this["AutoMinimize"]));
