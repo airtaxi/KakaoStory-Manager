@@ -109,7 +109,7 @@ namespace KSP_WPF
                 MainWindow.SetClickObject(BT_Write);
                 MainWindow.SetClickObject(IC_Friend);
                 SP_Content.Margin = new Thickness(0, 10, 0, 0);
-                if (id.Equals(MainWindow.FriendData.profile.id) && showBookmarked != true)
+                if (id.Equals(MainWindow.userProfile.id) && showBookmarked != true)
                 {
                     if (MainWindow.profileTimeLineWindow != null)
                     {
@@ -233,7 +233,7 @@ namespace KSP_WPF
                     nextRequest = profile.activities[profile.activities.Count - 1].id;
                 }
 
-                if (MainWindow.FriendData.profile.id.Equals(profileID) && showBookmarked != true)
+                if (MainWindow.userProfile.id.Equals(profileID) && showBookmarked != true)
                 {
                     Title = "내 프로필";
                     TB_Desc2.Text = profile.profile.activity_count.ToString() + "개의 스토리";
@@ -569,7 +569,7 @@ namespace KSP_WPF
             }
             else if (isProfile)
             {
-                if (profileID != null && !profileID.Equals(MainWindow.FriendData.profile.id))
+                if (profileID != null && !profileID.Equals(MainWindow.userProfile.id))
                 {
                     profiles.Remove(profileID);
                 }

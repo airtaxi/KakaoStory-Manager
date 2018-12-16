@@ -1,16 +1,12 @@
 ﻿using DesktopNotifications;
-using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.Windows.Shapes;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
 using System.Windows.Media;
 using XamlAnimatedGif;
 using System.IO;
@@ -66,17 +62,17 @@ namespace KSP_WPF
         {
             try
             {
-                var Visual = new ToastVisual()
+                var Visual = new Microsoft.Toolkit.Uwp.Notifications.ToastVisual()
                 {
-                    BindingGeneric = new ToastBindingGeneric()
+                    BindingGeneric = new Microsoft.Toolkit.Uwp.Notifications.ToastBindingGeneric()
                     {
                         Children = {
-                            new AdaptiveText()
+                            new Microsoft.Toolkit.Uwp.Notifications.AdaptiveText()
                             {
                                 Text = title
                             },
 
-                            new AdaptiveText()
+                            new Microsoft.Toolkit.Uwp.Notifications.AdaptiveText()
                             {
                                 Text = message
                             }
@@ -85,59 +81,59 @@ namespace KSP_WPF
                 };
                 if (thumbnailURL != null)
                 {
-                    Visual.BindingGeneric.HeroImage = new ToastGenericHeroImage()
+                    Visual.BindingGeneric.HeroImage = new Microsoft.Toolkit.Uwp.Notifications.ToastGenericHeroImage()
                     {
                         Source = thumbnailURL,
                     };
                 }
-                ToastActionsCustom Action;
+                Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom Action;
                 if (URL == null)
                 {
-                    Action = new ToastActionsCustom();
+                    Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom();
                 }
                 else
                 {
                     if (commentID != null)
                     {
-                        Action = new ToastActionsCustom()
+                        Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
                         {
                             Inputs = {
-                                new ToastTextBox("tbReply")
+                                new Microsoft.Toolkit.Uwp.Notifications.ToastTextBox("tbReply")
                                 {
                                     PlaceholderContent = "답장 작성하기",
                                 },
                             },
                             Buttons =
                             {
-                                new ToastButton("보내기", URL + "REPLY!@#$%" + "R!@=!!" + id + "R!@=!!" + name + "R!@=!!" + writer + "R!@=!!" + identity)
+                                new Microsoft.Toolkit.Uwp.Notifications.ToastButton("보내기", URL + "REPLY!@#$%" + "R!@=!!" + id + "R!@=!!" + name + "R!@=!!" + writer + "R!@=!!" + identity)
                                 {
-                                    ActivationType = ToastActivationType.Background,
+                                    ActivationType = Microsoft.Toolkit.Uwp.Notifications.ToastActivationType.Background,
                                     TextBoxId = "tbReply"
                                 },
-                                new ToastButton("좋아요", URL + "LIKE!@#$%" + commentID),
-                                new ToastButton("열기", URL)
+                                new Microsoft.Toolkit.Uwp.Notifications.ToastButton("좋아요", URL + "LIKE!@#$%" + commentID),
+                                new Microsoft.Toolkit.Uwp.Notifications.ToastButton("열기", URL)
                             },
                         };
                     }
                     else
                     {
-                        Action = new ToastActionsCustom()
+                        Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
                         {
                             Buttons =
                             {
-                                new ToastButton("열기", URL)
+                                new Microsoft.Toolkit.Uwp.Notifications.ToastButton("열기", URL)
                             },
                         };
                     }
                 }
-                var toastContent = new ToastContent()
+                var toastContent = new Microsoft.Toolkit.Uwp.Notifications.ToastContent()
                 {
                     Visual = Visual,
                     Actions = Action,
                 };
-                var toastXml = new XmlDocument();
+                var toastXml = new Windows.Data.Xml.Dom.XmlDocument();
                 toastXml.LoadXml(toastContent.GetContent());
-                var toast = new ToastNotification(toastXml);
+                var toast = new Windows.UI.Notifications.ToastNotification(toastXml);
                 DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
             }
             catch (Exception) { }

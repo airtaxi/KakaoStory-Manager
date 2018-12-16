@@ -70,7 +70,7 @@ namespace KSP_WPF
             SP_Content.Children.Clear();
             controls.Clear();
 
-            foreach (var friend in MainWindow.FriendData.friends)
+            foreach (var friend in MainWindow.userFriends.profiles)
             {
                 if (friend.blocked != true && friend.display_name.ToLower().Contains(filter.ToLower()))
                 {

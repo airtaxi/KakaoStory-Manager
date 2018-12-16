@@ -7,22 +7,13 @@ using System.Net;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Threading;
-using Microsoft.Toolkit.Uwp.Notifications;
-using Windows.UI.Notifications;
-using Windows.Data.Xml.Dom;
-using Windows.Foundation;
-using DesktopNotifications;
-using Microsoft.Win32;
 using System.Threading.Tasks;
 using MessageBox = System.Windows.MessageBox;
-using System.Text;
-using Microsoft.QueryStringDotNET;
 using System.Windows.Media.Imaging;
 using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
 using MahApps.Metro;
-using Xceed.Wpf.Toolkit.Zoombox;
 
 namespace KSP_WPF
 {
@@ -43,7 +34,8 @@ namespace KSP_WPF
         public static SettingsWindow settingsWindow = null;
         public static FriendSelectWindow friendListWindow = null;
         public static Dictionary<string, PostWindow> posts = new Dictionary<string, PostWindow>();
-        public static FriendInitData.FriendData FriendData;
+        public static FriendData.Friends userFriends { get; private set; }
+        public static UserProfile.ProfileData userProfile { get; private set; }
 
         public MainWindow()
         {
@@ -272,6 +264,15 @@ namespace KSP_WPF
             }
         }
 
+        public static async Task<bool> UpdateProfile()
+        {
+            string friendRawData = await KakaoRequestClass.GetFriendData();
+            string profileRawData = await KakaoRequestClass.GetProfileData();
+            userFriends = JsonConvert.DeserializeObject<FriendData.Friends>(friendRawData);
+            userProfile = JsonConvert.DeserializeObject<UserProfile.ProfileData>(profileRawData);
+            return true;
+        }
+
         public void StartTimer()
         {
             Dispatcher.InvokeAsync(async() =>
@@ -280,19 +281,18 @@ namespace KSP_WPF
                 await Task.Delay(1);
                 if (!Properties.Settings.Default.Disable_Message)
                     GlobalHelper.ShowNotification("안내", "프로그램이 최소화됐습니다.\r\n시스템 트레이의 프로그램 아이콘을 클릭하여 창을 복구할 수 있습니다.", null);
-
-                FriendData = JsonConvert.DeserializeObject<FriendInitData.FriendData>(WebViewWindow.rawDataNow.Replace("\\x", ""));
+                await UpdateProfile();
                 await Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, new Action(() =>
                 {
                     GD_Login.Visibility = Visibility.Collapsed;
                     GD_Profile.Visibility = Visibility.Visible;
-                    TB_Name.Text = FriendData.profile.display_name;
+                    TB_Name.Text = userProfile.display_name;
                     TB_Email.Text = TBX_Email.Text;
                     TB_Login.Visibility = Visibility.Collapsed;
                     TB_LoginProgress.Visibility = Visibility.Collapsed;
                     TB_Logout.Visibility = Visibility.Visible;
                     IMG_Login.Visibility = Visibility.Collapsed;
-                    EL_Profile.Fill = new ImageBrush(new BitmapImage(new Uri(FriendData.profile.profile_image_url)));
+                    EL_Profile.Fill = new ImageBrush(new BitmapImage(new Uri(userProfile.profile_image_url)));
                     BT_Login.IsEnabled = true;
                 }));
                 if(Properties.Settings.Default.AutoMinimize)
@@ -432,7 +432,7 @@ namespace KSP_WPF
             {
                 if(profileTimeLineWindow == null)
                 {
-                    profileTimeLineWindow = new TimeLineWindow(FriendData.profile.id);
+                    profileTimeLineWindow = new TimeLineWindow(userProfile.id);
                     profileTimeLineWindow.Show();
                     profileTimeLineWindow.Focus();
                     profileTimeLineWindow.Activate();
@@ -597,7 +597,7 @@ namespace KSP_WPF
             else
             {
                 TimeLineWindow.showBookmarkedGlobal = true;
-                TimeLineWindow timeLineWindow = new TimeLineWindow(FriendData.profile.id);
+                TimeLineWindow timeLineWindow = new TimeLineWindow(userProfile.id);
                 timeLineWindow.Show();
                 timeLineWindow.Focus();
                 timeLineWindow.Activate();

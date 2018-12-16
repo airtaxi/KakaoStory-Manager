@@ -4,7 +4,6 @@ using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Navigation;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -99,20 +98,8 @@ namespace KSP_WPF
                 cookieContainer = GetUriCookieContainerForOnce(new Uri("https://story.kakao.com/"));
                 isLoginSuccess = true;
                 MainWindow.instance.StartTimer();
-                mshtml.HTMLDocument document = WebBrwoserView.Document as mshtml.HTMLDocument;
-                string html = document.documentElement.innerHTML;
-                int indexStart = html.IndexOf(@"boot.parseInitialData(") + @"boot.parseInitialData(".Length;
-                int indexEnd = html.IndexOf(@");</script>", indexStart);
-                try
-                {
-                    string rawData = html.Substring(indexStart, indexEnd - indexStart);
-                    rawDataNow = rawData;
-                }
-                finally
-                {
-                    Dispose();
-                    Close();
-                }
+                Dispose();
+                Close();
             }
             else if(!IsLoggedIn)
             {

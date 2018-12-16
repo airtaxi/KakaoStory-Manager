@@ -20,8 +20,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Windows.Foundation;
-using Windows.Storage;
 using XamlAnimatedGif;
 using static KSP_WPF.CommentData;
 
@@ -108,8 +106,8 @@ namespace KSP_WPF
             if (liked)
                 comment.IC_Like.Foreground = Brushes.Red;
             
-            bool deletable = commentID.Equals(MainWindow.FriendData.profile.id) || data.actor.id.Equals(MainWindow.FriendData.profile.id);
-            bool editable = commentID.Equals(MainWindow.FriendData.profile.id);
+            bool deletable = commentID.Equals(MainWindow.userProfile.id) || data.actor.id.Equals(MainWindow.userProfile.id);
+            bool editable = commentID.Equals(MainWindow.userProfile.id);
 
             if (!deletable)
                 comment.BT_Delete.IsEnabled = false;
@@ -288,9 +286,9 @@ namespace KSP_WPF
                     TB_Content.Visibility = Visibility.Collapsed;
                 }
 
-                if (!data.actor.id.Equals(MainWindow.FriendData.profile.id))
+                if (!data.actor.id.Equals(MainWindow.userProfile.id))
                     BT_Delte.IsEnabled = false;
-                if (!data.actor.id.Equals(MainWindow.FriendData.profile.id))
+                if (!data.actor.id.Equals(MainWindow.userProfile.id))
                     BT_Edit.IsEnabled = false;
 
                 if (data.actor.profile_image_url != null) { }
@@ -832,9 +830,7 @@ namespace KSP_WPF
 
         public async Task<UploadedImageProp> UploadImage(string filepath)
         {
-            var fileTask = StorageFile.GetFileFromPathAsync(filepath);
-            while (fileTask.Status != AsyncStatus.Completed) { }
-            StorageFile file = fileTask.GetResults();
+            string filename = System.IO.Path.GetFileName(filepath);
             StreamReader fileStream = new StreamReader(filepath);
 
             string requestURI = "https://up-api-kage-4story.kakao.com/web/webstory-img/";
@@ -866,7 +862,7 @@ namespace KSP_WPF
 
             Stream writeStream = await request.GetRequestStreamAsync();
 
-            WriteMultipartForm(writeStream, boundary, null, file.Name, file.ContentType, fileStream.BaseStream);
+            WriteMultipartForm(writeStream, boundary, null, filename, System.Web.MimeMapping.GetMimeMapping(filename), fileStream.BaseStream);
 
             var readStream = await request.GetResponseAsync();
             var respReader = readStream.GetResponseStream();

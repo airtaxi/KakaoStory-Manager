@@ -24,7 +24,7 @@ namespace KSP_WPF
         private Task deleteTask;
         private CancellationTokenSource cts;
 
-        public ProgressWindow(List<FriendInitData.Friend> blinded)
+        public ProgressWindow(List<FriendData.Profile> blinded)
         {
             InitializeComponent();
             cts = new CancellationTokenSource();
@@ -45,11 +45,12 @@ namespace KSP_WPF
                             PB_Main.Value = (double) count / blinded.Count * 100.0;
                         });
                     }
-                    Dispatcher.Invoke(() =>
+                    await Dispatcher.Invoke(async() =>
                     {
-                        MessageBox.Show("제한된 사용자의 삭제가 완료됐습니다.\n프로그램을 재시작해주세요.");
-                        Environment.Exit(0);
+                        await MainWindow.UpdateProfile();
+                        MessageBox.Show("제한된 사용자의 삭제가 완료됐습니다.");
                     });
+                    Close();
                 }
                 catch (OperationCanceledException)
                 {

@@ -513,51 +513,8 @@ namespace KSP_WPF
         public string hashtag_type_id;
     };
 
-    public class FriendInitData
+    public class FriendData
     {
-        public class Placeholder
-        {
-            public string text { get; set; }
-            public string type { get; set; }
-        }
-
-        public class HashtagSuggestionPlaceholder
-        {
-            public int placeholder_id { get; set; }
-            public int exposure_count { get; set; }
-            public string type { get; set; }
-            public List<Placeholder> placeholder { get; set; }
-            public string desc { get; set; }
-            public string desc_en { get; set; }
-            public string desc_ja { get; set; }
-        }
-
-        public class MediaFiltersNew
-        {
-            public string filter_id { get; set; }
-            public int exposure_count { get; set; }
-            public bool tooltip { get; set; }
-        }
-
-        public class RnbWithworth
-        {
-            public bool display { get; set; }
-            public string url { get; set; }
-            public string label { get; set; }
-        }
-
-        public class SearchPlaceholder
-        {
-            public string gnb_text { get; set; }
-            public string gnb_text_en { get; set; }
-        }
-
-
-        public class AppConfig
-        {
-            public string checksum { get; set; }
-        }
-
         public class Relation
         {
             public bool feed_blocked { get; set; }
@@ -565,7 +522,47 @@ namespace KSP_WPF
             public bool self { get; set; }
             public string follow { get; set; }
             public bool favorite { get; set; }
-            public string ban { get; set; }
+        }
+
+        public class Profile
+        {
+            public bool message_rejectee { get; set; }
+            public bool is_favorite { get; set; }
+            public bool allow_following { get; set; }
+            public string profile_thumbnail_url { get; set; }
+            public bool message_sendable { get; set; }
+            public string type { get; set; }
+            public string display_name { get; set; }
+            public Relation relation { get; set; }
+            public bool is_valid_user { get; set; }
+            public string id { get; set; }
+            public string relationship { get; set; }
+            public bool vip { get; set; }
+            public bool is_feed_blocked { get; set; }
+            public bool is_birthday { get; set; }
+            public string profile_video_url_hq { get; set; }
+            public string profile_video_url_square { get; set; }
+            public string profile_video_url_square_micro_small { get; set; }
+            public string profile_video_url_square_small { get; set; }
+            public long? recently_with_friends_priority { get; set; }
+            public string profile_video_url_lq { get; set; }
+            public bool? message_received_bomb { get; set; }
+            public long? message_receiver_priority { get; set; }
+            public bool? blocked { get; set; }
+        }
+
+        public class Friends
+        {
+            public List<Profile> profiles { get; set; }
+            public int invitation_count { get; set; }
+        }
+    }
+
+    public class UserProfile
+    {
+        public class AbTest
+        {
+            public bool use_feed_filter { get; set; }
         }
 
         public class StatusObject
@@ -573,129 +570,92 @@ namespace KSP_WPF
             public string object_type { get; set; }
             public string message { get; set; }
         }
-
-        public class Profile
+        public class ProfileData
         {
-            public string bg_image_url2 { get; set; }
-            public string profile_video_url_hq { get; set; }
-            public bool is_favorite { get; set; }
-            public string gender { get; set; }
+            public bool sharable_all_publish { get; set; }
+            public bool allow_events_agreed { get; set; }
+            public bool allow_profile_info_collect_agreed { get; set; }
             public bool need_verify { get; set; }
-            public bool birth_leap_type { get; set; }
+            public bool talk_birthday_active { get; set; }
+            public bool sharable { get; set; }
             public string birth_type { get; set; }
-            public string profile_image_url2 { get; set; }
+            public bool name_searchable { get; set; }
+            public bool content_searchable { get; set; }
             public string type { get; set; }
-            public int follower_count { get; set; }
-            public Relation relation { get; set; }
+            public string expose_up_permission { get; set; }
             public string profile_video_url_square_small { get; set; }
-            public bool is_celebratable { get; set; }
-            public int default_bg_id { get; set; }
-            public int activity_count { get; set; }
-            public bool is_valid_user { get; set; }
+            public bool push_notification_invite_friend_active { get; set; }
+            public bool push_notification_birthday_active { get; set; }
+            public string push_notification_comment_like_active { get; set; }
+            public bool show_highlight_zodiac_sign { get; set; }
+            public AbTest ab_test { get; set; }
             public string id { get; set; }
-            public string relationship { get; set; }
             public bool vip { get; set; }
             public int friend_count { get; set; }
-            public string profile_video_url_lq { get; set; }
+            public string tagged_activity_view_permission { get; set; }
             public bool is_birthday { get; set; }
-            public string bg_image_url { get; set; }
             public string profile_video_url_square { get; set; }
             public bool allow_following { get; set; }
-            public string profile_thumbnail_url { get; set; }
             public List<StatusObject> status_objects { get; set; }
-            public string profile_video_url_square_micro_small { get; set; }
-            public string profile_image_url { get; set; }
+            public string push_notification_comment_active { get; set; }
+            public bool push_notification_qna_activity_active { get; set; }
+            public string birth { get; set; }
+            public string expose_followee_permission { get; set; }
+            public bool push_notification_favorite_user_active { get; set; }
+            public bool uri_searchable { get; set; }
+            public bool comment_all_writable { get; set; }
             public string display_name { get; set; }
             public string gender_permission { get; set; }
-            public string permalink { get; set; }
-            public bool is_default_profile_image { get; set; }
-            public bool is_feed_blocked { get; set; }
-        }
-
-        public class Relation2
-        {
-            public bool feed_blocked { get; set; }
-            public string friend { get; set; }
-            public bool self { get; set; }
-            public string follow { get; set; }
-            public bool favorite { get; set; }
-        }
-
-        public class Call2action
-        {
-            public string action_url { get; set; }
-            public string install_url { get; set; }
-            public string action_format { get; set; }
-            public string type { get; set; }
-            public string analysis_url { get; set; }
-        }
-
-        public class ChannelObject
-        {
-            public Call2action call2action { get; set; }
-            public List<string> keywords { get; set; }
-            public List<object> outlinks { get; set; }
-            public bool certified { get; set; }
-            public string category { get; set; }
-            public int follower_count { get; set; }
-            public DateTime start_date { get; set; }
-        }
-
-        public class Friend
-        {
-            public string birthday { get; set; }
-            public string bg_image_url2 { get; set; }
-            public bool is_favorite { get; set; }
-            public int birthday_left { get; set; }
-            public string gender { get; set; }
-            public bool birth_leap_type { get; set; }
-            public string birth_type { get; set; }
-            public string profile_image_url2 { get; set; }
-            public string type { get; set; }
-            public int follower_count { get; set; }
-            public Relation2 relation { get; set; }
-            public bool is_celebratable { get; set; }
-            public int default_bg_id { get; set; }
-            public int activity_count { get; set; }
-            public bool is_valid_user { get; set; }
-            public object recently_with_friends_priority { get; set; }
-            public string id { get; set; }
-            public string relationship { get; set; }
-            public bool vip { get; set; }
-            public int friend_count { get; set; }
-            public bool is_birthday { get; set; }
-            public bool message_rejectee { get; set; }
-            public string bg_image_url { get; set; }
-            public bool allow_following { get; set; }
-            public string profile_thumbnail_url { get; set; }
-            public List<object> status_objects { get; set; }
-            public bool message_sendable { get; set; }
-            public string profile_image_url { get; set; }
-            public string display_name { get; set; }
-            public string permalink { get; set; }
-            public bool is_default_profile_image { get; set; }
-            public bool is_feed_blocked { get; set; }
-            public ChannelObject channel_object { get; set; }
+            public string highlight_zodiac_sign_permission { get; set; }
+            public string push_notification_feeling_active { get; set; }
+            public string name { get; set; }
+            public bool location_agreed { get; set; }
+            public bool push_notification_following_active { get; set; }
+            public string hashed_account_id { get; set; }
+            public bool show_highlight_best_friends { get; set; }
+            public bool talk_profile_school_active { get; set; }
+            public bool biz_info_active { get; set; }
+            public bool push_notification_alert { get; set; }
+            public string highlight_visit_counter_permission { get; set; }
+            public bool push_notification_suggest_active { get; set; }
+            public bool allow_action_graph { get; set; }
             public string profile_video_url_hq { get; set; }
-            public string profile_video_url_square_small { get; set; }
+            public string expose_friend_permission { get; set; }
+            public string gender { get; set; }
+            public string display_id { get; set; }
+            public string expose_bookmark_permission { get; set; }
+            public bool birth_leap_type { get; set; }
+            public bool show_highlight_visit_counter { get; set; }
+            public bool message_all_sendable { get; set; }
+            public string push_notification_share_active { get; set; }
+            public string profile_uri { get; set; }
+            public bool talk_profile_active { get; set; }
+            public int follower_count { get; set; }
+            public int service_user_id { get; set; }
+            public bool suggest_friend_expose_active { get; set; }
+            public bool talk_gotostory_active { get; set; }
+            public int activity_count { get; set; }
+            public int default_bg_id { get; set; }
+            public string friend_accept_level { get; set; }
             public string profile_video_url_lq { get; set; }
-            public string profile_video_url_square { get; set; }
+            public string first_name { get; set; }
+            public bool talk_profile_gender_active { get; set; }
+            public bool talk_profile_address_active { get; set; }
+            public string bg_image_url { get; set; }
+            public string profile_thumbnail_url { get; set; }
+            public bool show_highlight_keywords { get; set; }
             public string profile_video_url_square_micro_small { get; set; }
-            public bool? message_received_bomb { get; set; }
-            public bool? blocked { get; set; }
-            public long? message_receiver_priority { get; set; }
-        }
-
-        public class FriendData
-        {
-            public bool authenticated { get; set; }
-            public AppConfig appConfig { get; set; }
-            public Profile profile { get; set; }
-            public bool fromTalk { get; set; }
-            public bool has_profile { get; set; }
-            public List<Friend> friends { get; set; }
+            public bool push_notification_message_active { get; set; }
+            public bool talk_profile_company_active { get; set; }
+            public string last_name { get; set; }
+            public string profile_image_url { get; set; }
+            public bool birth_agreed { get; set; }
+            public bool is_default_profile_image { get; set; }
+            public bool is_talk_user { get; set; }
+            public string highlight_keywords_permission { get; set; }
         }
     }
+
     public class CommentDecorators
     {
         public List<QuoteData> decorators;

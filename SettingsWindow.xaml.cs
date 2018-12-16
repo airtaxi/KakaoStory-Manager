@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Windows.Foundation;
 
 namespace KSP_WPF
 {
@@ -19,7 +18,7 @@ namespace KSP_WPF
             try
             {
                 var startupTask = Windows.ApplicationModel.StartupTask.GetAsync("KSP-WPF");
-                while (startupTask.Status != AsyncStatus.Completed) { }
+                while (startupTask.Status != Windows.Foundation.AsyncStatus.Completed) { }
                 startupTask.Completed = (arg1, arg2) =>
                 {
                     switch (startupTask.GetResults().State)
@@ -120,7 +119,7 @@ namespace KSP_WPF
         private void BT_Start_Click(object sender, RoutedEventArgs e)
         {
             var startupTask = Windows.ApplicationModel.StartupTask.GetAsync("KSP-WPF");
-            while (startupTask.Status != AsyncStatus.Completed) { }
+            while (startupTask.Status != Windows.Foundation.AsyncStatus.Completed) { }
             if (startupTask.GetResults().State == Windows.ApplicationModel.StartupTaskState.Enabled)
             {
                 startupTask.GetResults().Disable();
@@ -129,7 +128,7 @@ namespace KSP_WPF
             else
             {
                 var request = startupTask.GetResults().RequestEnableAsync();
-                while (request.Status != AsyncStatus.Completed) { }
+                while (request.Status != Windows.Foundation.AsyncStatus.Completed) { }
                 var state = startupTask.GetResults().State;
                 switch (state)
                 {
@@ -148,8 +147,8 @@ namespace KSP_WPF
         {
             if (MainWindow.IsLoggedIn && !MainWindow.isOffline)
             {
-                List<FriendInitData.Friend> blinded = new List<FriendInitData.Friend>();
-                foreach (var friend in MainWindow.FriendData.friends)
+                List<FriendData.Profile> blinded = new List<FriendData.Profile>();
+                foreach (var friend in MainWindow.userFriends.profiles)
                 {
                     if (friend.blocked == true)
                     {
