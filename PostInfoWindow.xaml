@@ -9,8 +9,8 @@
         ShowIconOnTitleBar="False"
         PreviewKeyDown="MetroWindow_PreviewKeyDown"
         Title="포스트 정보" Icon="icon2.png" Height="450" Width="300">
-    <Grid PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
-        <controls:MetroAnimatedTabControl Name="TC_Main">
+    <Grid>
+        <controls:MetroAnimatedTabControl Name="TC_Main" controls:TabControlHelper.Underlined="TabPanel">
             <TabItem Header="느낌">
                 <ScrollViewer Name="SV_Emotions" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" PanningMode="VerticalOnly">
                     <StackPanel Name="SP_Emotions"/>

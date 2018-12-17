@@ -18,9 +18,9 @@ namespace KSP_WPF
 
         public static async Task<string> GetScrapData(string url)
         {
-            string RequestURI = "https://story.kakao.com/a/scraper?url=" + Uri.EscapeDataString(url);
+            string requestURI = "https://story.kakao.com/a/scraper?url=" + Uri.EscapeDataString(url);
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -50,12 +50,12 @@ namespace KSP_WPF
             webRequest.Date = DateTime.Now;
             try
             {
-                var ReadStream = await webRequest.GetResponseAsync();
-                var RespReader = ReadStream.GetResponseStream();
-                string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-                RespReader.Close();
-                ReadStream.Close();
-                return RespResult;
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                return respResult;
             }
             catch (WebException e)
             {
@@ -66,12 +66,12 @@ namespace KSP_WPF
 
         public static async Task<ProfileData.ProfileObject> GetProfileFeed(string id, string from)
         {
-            string RequestURI = "https://story.kakao.com/a/profiles/" + id + "?with=activities";
+            string requestURI = "https://story.kakao.com/a/profiles/" + id + "?with=activities";
             if (from != null)
             {
-                RequestURI += "&since=" + from;
+                requestURI += "&since=" + from;
             }
-            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -100,19 +100,19 @@ namespace KSP_WPF
             webRequest.AutomaticDecompression = DecompressionMethods.GZip;
             webRequest.Date = DateTime.Now;
 
-            var ReadStream = await webRequest.GetResponseAsync();
-            var RespReader = ReadStream.GetResponseStream();
-            string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-            RespReader.Close();
-            ReadStream.Close();
-            ProfileData.ProfileObject obj = JsonConvert.DeserializeObject<ProfileData.ProfileObject>(RespResult);
+            var readStream = await webRequest.GetResponseAsync();
+            var respReader = readStream.GetResponseStream();
+            string respResult = await new StreamReader(respReader).ReadToEndAsync();
+            respReader.Close();
+            readStream.Close();
+            ProfileData.ProfileObject obj = JsonConvert.DeserializeObject<ProfileData.ProfileObject>(respResult);
             return obj;
         }
 
         public static async Task<ProfileRelationshipData.ProfileRelationship> GetProfileRelationship(string id)
         {
-            string RequestURI = "https://story.kakao.com/a/profiles/" + id + "?profile_only=true";
-            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            string requestURI = "https://story.kakao.com/a/profiles/" + id + "?profile_only=true";
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -141,25 +141,25 @@ namespace KSP_WPF
             webRequest.AutomaticDecompression = DecompressionMethods.GZip;
             webRequest.Date = DateTime.Now;
 
-            var ReadStream = await webRequest.GetResponseAsync();
-            var RespReader = ReadStream.GetResponseStream();
-            string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-            RespReader.Close();
-            ReadStream.Close();
-            ProfileRelationshipData.ProfileRelationship obj = JsonConvert.DeserializeObject<ProfileRelationshipData.ProfileRelationship>(RespResult);
+            var readStream = await webRequest.GetResponseAsync();
+            var respReader = readStream.GetResponseStream();
+            string respResult = await new StreamReader(respReader).ReadToEndAsync();
+            respReader.Close();
+            readStream.Close();
+            ProfileRelationshipData.ProfileRelationship obj = JsonConvert.DeserializeObject<ProfileRelationshipData.ProfileRelationship>(respResult);
             return obj;
         }
 
         public static async Task<TimeLineData.TimeLine> GetFeed(string from)
         {
-            string RequestURI = "https://story.kakao.com/a/feeds";
+            string requestURI = "https://story.kakao.com/a/feeds";
 
             if (from != null)
             {
-                RequestURI += "?since=" + from;
+                requestURI += "?since=" + from;
             }
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -189,12 +189,12 @@ namespace KSP_WPF
             webRequest.Date = DateTime.Now;
             try
             {
-                var ReadStream = await webRequest.GetResponseAsync();
-                var RespReader = ReadStream.GetResponseStream();
-                string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-                RespReader.Close();
-                ReadStream.Close();
-                TimeLineData.TimeLine obj = JsonConvert.DeserializeObject<TimeLineData.TimeLine>(RespResult);
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                TimeLineData.TimeLine obj = JsonConvert.DeserializeObject<TimeLineData.TimeLine>(respResult);
                 return obj;
             }
             catch (WebException e)
@@ -207,9 +207,9 @@ namespace KSP_WPF
 
         public static async Task<BookmarkData.Bookmarks> GetBookmark(string id)
         {
-            string RequestURI = "https://story.kakao.com/a/profiles/" + id + "/sections/bookmark";
+            string requestURI = "https://story.kakao.com/a/profiles/" + id + "/sections/bookmark";
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -239,12 +239,12 @@ namespace KSP_WPF
             webRequest.Date = DateTime.Now;
             try
             {
-                var ReadStream = await webRequest.GetResponseAsync();
-                var RespReader = ReadStream.GetResponseStream();
-                string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-                RespReader.Close();
-                ReadStream.Close();
-                BookmarkData.Bookmarks obj = JsonConvert.DeserializeObject<BookmarkData.Bookmarks>(RespResult);
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                BookmarkData.Bookmarks obj = JsonConvert.DeserializeObject<BookmarkData.Bookmarks>(respResult);
                 return obj;
             }
             catch (WebException e)
@@ -257,9 +257,9 @@ namespace KSP_WPF
 
         public static async Task<string> GetFriendData()
         {
-            string RequestURI = "https://story.kakao.com/a/friends/";
+            string requestURI = "https://story.kakao.com/a/friends/";
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -289,12 +289,12 @@ namespace KSP_WPF
             webRequest.Date = DateTime.Now;
             try
             {
-                var ReadStream = await webRequest.GetResponseAsync();
-                var RespReader = ReadStream.GetResponseStream();
-                string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-                RespReader.Close();
-                ReadStream.Close();
-                return RespResult;
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                return respResult;
             }
             catch (WebException e)
             {
@@ -304,11 +304,134 @@ namespace KSP_WPF
             }
         }
 
+        private static HttpWebRequest GenerateDefaultProfile(string requestURI, string method)
+        {
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
+            webRequest.Method = method.ToUpper();
+            webRequest.ContentType = "application/json; charset=utf-8";
+
+            webRequest.CookieContainer = new CookieContainer();
+            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
+
+            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
+            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
+            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
+            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
+            webRequest.Headers["Cache-Control"] = "max-age=0";
+
+            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
+            webRequest.Headers["Accept-Language"] = "ko";
+
+            webRequest.Headers["DNT"] = "1";
+
+            webRequest.Headers["authority"] = "story.kakao.com";
+            webRequest.Referer = "https://story.kakao.com/";
+            webRequest.KeepAlive = true;
+            webRequest.UseDefaultCredentials = true;
+            webRequest.Host = "story.kakao.com";
+            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+            webRequest.Accept = "application/json";
+
+            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
+            webRequest.Date = DateTime.Now;
+
+            return webRequest;
+        }
+
+        private static string GetBoolString(bool src)
+        {
+            return src ? "true" : "false";
+        }
+
+        public static async Task<bool> SetActivityProfile(string id, string permission, bool enable_share, bool comment_all_writable, bool is_must_read)
+        {
+            string requestURI = "https://story.kakao.com/a/activities/" + id;
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "PUT");
+            string postData = $"permission={permission}&enable_share={GetBoolString(enable_share)}&comment_all_writable={GetBoolString(comment_all_writable)}&is_must_read={GetBoolString(is_must_read)}";
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            try
+            {
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                return true;
+            }
+            catch (WebException e)
+            {
+                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
+                MessageBox.Show(resp);
+                return false;
+            }
+        }
+
+        public static async Task<bool> MutePost(string id, bool mute)
+        {
+            string requestURI = "https://story.kakao.com/a/activities/" + id + "/mute_push";
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, mute ? "POST" : "DELETE");
+            string postData = $"push_mute={mute}";
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            try
+            {
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                return true;
+            }
+            catch (WebException e)
+            {
+                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
+                MessageBox.Show(resp);
+                return false;
+            }
+        }
+
+        public static async Task<List<CommentData.Comment>> GetComment(string id, string since)
+        {
+            string requestURI = "https://story.kakao.com/a/activities/" + id + "/comments?lpp=30&order=desc";
+            if(since != null)
+            {
+                requestURI += "&since=" + since;
+            }
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "GET");
+            try
+            {
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                List<CommentData.Comment> returnVar = JsonConvert.DeserializeObject<List<CommentData.Comment>>(respResult);
+                return returnVar;
+            }
+            catch (WebException e)
+            {
+                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
+                MessageBox.Show(resp, "DOGE");
+            }
+            return null;
+        }
+
         public static async Task<string> GetProfileData()
         {
-            string RequestURI = "https://story.kakao.com/a/settings/profile";
+            string requestURI = "https://story.kakao.com/a/settings/profile";
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -338,12 +461,12 @@ namespace KSP_WPF
             webRequest.Date = DateTime.Now;
             try
             {
-                var ReadStream = await webRequest.GetResponseAsync();
-                var RespReader = ReadStream.GetResponseStream();
-                string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-                RespReader.Close();
-                ReadStream.Close();
-                return RespResult;
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                return respResult;
             }
             catch (WebException e)
             {
@@ -355,10 +478,10 @@ namespace KSP_WPF
 
         public static async Task<List<Actor>> GetSpecificFriends(string id)
         {
-            string RequestURI = "https://story.kakao.com/a/activities/" + id + "/specific_friends";
-            MessageBox.Show(RequestURI);
+            string requestURI = "https://story.kakao.com/a/activities/" + id + "/specific_friends";
+            MessageBox.Show(requestURI);
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -388,12 +511,12 @@ namespace KSP_WPF
             webRequest.Date = DateTime.Now;
             try
             {
-                var ReadStream = await webRequest.GetResponseAsync();
-                var RespReader = ReadStream.GetResponseStream();
-                string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-                RespReader.Close();
-                ReadStream.Close();
-                List<Actor> obj = JsonConvert.DeserializeObject<List<Actor>>(RespResult);
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                List<Actor> obj = JsonConvert.DeserializeObject<List<Actor>>(respResult);
                 return obj;
             }
             catch (WebException e)
@@ -976,9 +1099,9 @@ namespace KSP_WPF
         {
             if (MainWindow.IsLoggedIn)
             {
-                string RequestURI = "https://story.kakao.com/a/notifications";
+                string requestURI = "https://story.kakao.com/a/notifications";
 
-                HttpWebRequest webRequest = WebRequest.CreateHttp(RequestURI);
+                HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
                 webRequest.Method = "GET";
                 webRequest.ContentType = "application/json; charset=utf-8";
 
@@ -1009,12 +1132,12 @@ namespace KSP_WPF
                 webRequest.Date = DateTime.Now;
                 try
                 {
-                    var ReadStream = await webRequest.GetResponseAsync();
-                    var RespReader = ReadStream.GetResponseStream();
-                    string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-                    RespReader.Close();
-                    ReadStream.Close();
-                    List<CSNotification> obj = JsonConvert.DeserializeObject<List<CSNotification>>(RespResult);
+                    var readStream = await webRequest.GetResponseAsync();
+                    var respReader = readStream.GetResponseStream();
+                    string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                    respReader.Close();
+                    readStream.Close();
+                    List<CSNotification> obj = JsonConvert.DeserializeObject<List<CSNotification>>(respResult);
                     if (isReturn) return obj;
                     int countTemp = 0;
                     for (int count = 0; count < obj.Count; count++)
@@ -1097,7 +1220,7 @@ namespace KSP_WPF
             }
             return null;
         }
-        
+
         public static async void DeletePost(string id)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + id;
@@ -1273,12 +1396,12 @@ namespace KSP_WPF
             NotificationGetRequest.AutomaticDecompression = DecompressionMethods.GZip;
             NotificationGetRequest.Date = DateTime.Now;
 
-            var ReadStream = await NotificationGetRequest.GetResponseAsync();
-            var RespReader = ReadStream.GetResponseStream();
-            string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-            RespReader.Close();
-            ReadStream.Close();
-            return JsonConvert.DeserializeObject<List<ShareData.Share>>(RespResult);
+            var readStream = await NotificationGetRequest.GetResponseAsync();
+            var respReader = readStream.GetResponseStream();
+            string respResult = await new StreamReader(respReader).ReadToEndAsync();
+            respReader.Close();
+            readStream.Close();
+            return JsonConvert.DeserializeObject<List<ShareData.Share>>(respResult);
         }
     }
 }

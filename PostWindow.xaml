@@ -132,6 +132,7 @@
                 <Button Name="BT_Delte" Content="삭제" Click="BT_Delte_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
                 <Button Name="BT_Share" Content="공유" Click="BT_Share_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
                 <Button Name="BT_UP" Content="UP하기" Click="BT_UP_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_Mute" Content="알림 받지 않기" Click="BT_Mute_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
             </StackPanel>
         </controls:Flyout>
     </Grid>

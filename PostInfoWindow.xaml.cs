@@ -140,11 +140,5 @@ namespace KSP_WPF
                 Close();
             }
         }
-
-        private void MetroWindow_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (!(e.Source is System.Windows.Controls.TextBox))
-                e.Handled = true;
-        }
     }
 }

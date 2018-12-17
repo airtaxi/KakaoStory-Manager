@@ -37,11 +37,12 @@ namespace KSP_WPF
         private bool isVideo = false;
         private readonly Hashtable ht = new Hashtable();
 
-        private void AddComment(string path, string name, string message, string uri, string commentID, string commentName, bool liked, string id, string imageUri, string timestamp, int likes, Comment commentProf)
+
+        private void AddComment(Comment commentProf, bool insert)
         {
             CommentControl comment = new CommentControl();
-            comment.TB_Name.Text = name;
-            comment.TB_Content.Tag = message;
+            comment.TB_Name.Text = commentProf.writer.display_name;
+            comment.TB_Content.Tag = commentProf.text;
             foreach (var decorator in commentProf.decorators)
             {
                 if (decorator.type.Equals("profile"))
@@ -69,10 +70,10 @@ namespace KSP_WPF
                 MessageBox.Show("클립보드에 댓글 내용이 복사됐습니다.");
                 e.Handled = true;
             };
-            if (likes > 0)
-                comment.TB_Like.Text = $"좋아요 {likes.ToString()}개";
+            if (commentProf.like_count > 0)
+                comment.TB_Like.Text = $"좋아요 {commentProf.like_count.ToString()}개";
 
-            comment.TB_MetaData.Text = timestamp;
+            comment.TB_MetaData.Text = GetTimeString(commentProf.created_at);
             string imgUri = commentProf.writer.profile_image_url ?? commentProf.writer.profile_thumbnail_url;
             //string imgUri = commentProf.writer.profile_video_url_square_small ?? commentProf.writer.profile_image_url ?? commentProf.writer.profile_thumbnail_url;
             GlobalHelper.AssignImage(comment.IMG_Profile, imgUri);
@@ -82,7 +83,7 @@ namespace KSP_WPF
             {
                 try
                 {
-                    TimeLineWindow tlw = new TimeLineWindow(commentID);
+                    TimeLineWindow tlw = new TimeLineWindow(commentProf.writer.id);
                     tlw.Show();
                     tlw.Focus();
                     e.Handled = true;
@@ -92,6 +93,15 @@ namespace KSP_WPF
                     MessageBox.Show("접근이 불가능한 스토리입니다.");
                 }
             };
+
+            string imageUri = null;
+            foreach (var decorator in commentProf.decorators)
+            {
+                if (decorator.type.Equals("image"))
+                {
+                    imageUri = decorator.media?.origin_url;
+                }
+            }
 
             if (imageUri != null)
             {
@@ -103,18 +113,18 @@ namespace KSP_WPF
             else
                 comment.IMG_Comment.Visibility = Visibility.Collapsed;
 
-            if (liked)
+            if (commentProf.liked)
                 comment.IC_Like.Foreground = Brushes.Red;
             
-            bool deletable = commentID.Equals(MainWindow.userProfile.id) || data.actor.id.Equals(MainWindow.userProfile.id);
-            bool editable = commentID.Equals(MainWindow.userProfile.id);
+            bool deletable = commentProf.writer.id.Equals(MainWindow.userProfile.id) || data.actor.id.Equals(MainWindow.userProfile.id);
+            bool editable = commentProf.writer.id.Equals(MainWindow.userProfile.id);
 
             if (!deletable)
                 comment.BT_Delete.IsEnabled = false;
 
             comment.BT_Delete.Click += async (s, e) =>
             {
-                await KakaoRequestClass.DeleteComment(id, data);
+                await KakaoRequestClass.DeleteComment(commentProf.id, data);
                 await RenewComment();
             };
 
@@ -182,7 +192,7 @@ namespace KSP_WPF
                     comment.IC_Like.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
                     comment.IC_Like.Foreground = Brushes.Gray;
                     comment.BT_Like.IsEnabled = false;
-                    await KakaoRequestClass.LikeComment(feedID, id, liked);
+                    await KakaoRequestClass.LikeComment(feedID, commentProf.id, commentProf.liked);
                     await RenewComment();
                 }
             };
@@ -203,13 +213,21 @@ namespace KSP_WPF
                 TB_Comment.CaretIndex = lastPos + append.Length;
                 Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => TB_Comment.Focus()));
             };
-            SP_Comment.Children.Add(comment);
             Rectangle sep = new Rectangle
             {
                 Stroke = Brushes.LightGray,
                 VerticalAlignment = VerticalAlignment.Bottom
             };
-            SP_Comment.Children.Add(sep);
+            if (!insert)
+            {
+                SP_Comment.Children.Add(comment);
+                SP_Comment.Children.Add(sep);
+            }
+            else
+            {
+                SP_Comment.Children.Insert(0, sep);
+                SP_Comment.Children.Insert(0, comment);
+            }
         }
 
         public static void ShowPostWindow(PostData data, string feedID)
@@ -644,28 +662,34 @@ namespace KSP_WPF
                 BT_Share.IsEnabled = false;
                 BT_UP.IsEnabled = false;
             }
+
+            if (data.push_mute)
+                BT_Mute.Content = "알림 다시 받기";
+            else
+                BT_Mute.Content = "알림 받지 않기";
             return true;
         }
 
+        private string lastComment;
         private void RefreshComment(List<Comment> comments)
         {
+            SP_Comment.Children.Clear();
+            requestingCommentID = null;
+
             if (comments.Count == 0)
                 TB_CommentInfo.Text = "댓글이 없습니다";
 
+            if (comments.Count == 30)
+                lastComment = comments.First().id;
+            else
+                lastComment = null;
             Dispatcher.InvokeAsync(() =>
             {
                 foreach (Comment comment in comments)
                 {
-                    string imageUri = null;
-                    foreach (var decorator in comment.decorators)
-                    {
-                        if (decorator.type.Equals("image"))
-                        {
-                            imageUri = decorator.media?.origin_url;
-                        }
-                    }
-                    AddComment("", comment.writer.display_name, comment.text, comment.writer.profile_thumbnail_url, comment.writer.id, comment.writer.display_name, comment.liked, comment.id, imageUri, GetTimeString(comment.created_at), comment.like_count, comment);
+                    AddComment(comment, false);
                 }
+                SV_Comment.ScrollToEnd();
             });
         }
 
@@ -699,15 +723,37 @@ namespace KSP_WPF
         private async Task<bool> RenewComment()
         {
             data = await KSPNotificationActivator.GetPost(feedID);
-            SP_Comment.Children.Clear();
             RefreshComment(data.comments);
             await UpdateStats();
             return true;
         }
 
-        private void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
+        private string requestingCommentID = null;
+        private async void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             GlobalHelper.HandleScroll(sender, e);
+            if(SV_Comment.VerticalOffset == 0 && e.Delta > 0 && lastComment != null && (requestingCommentID != lastComment))
+            {
+                requestingCommentID = lastComment;
+                double origHeight = SV_Comment.ScrollableHeight;
+                var comments = await KakaoRequestClass.GetComment(feedID, lastComment);
+
+                for (int i = comments.Count - 1; i >= 0; i--)
+                {
+                    var comment = comments[i];
+                    AddComment(comment, true);
+                }
+                await SV_Comment.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
+                {
+                    if (comments.Count == 30)
+                        lastComment = comments.First().id;
+                    else
+                        lastComment = null;
+
+                    double diff = SV_Comment.ScrollableHeight - origHeight;
+                    SV_Comment.ScrollToVerticalOffset(diff);
+                }));
+            }
         }
 
         private async void BT_CommentRefresh_Click(object sender, RoutedEventArgs e)
@@ -1122,6 +1168,14 @@ namespace KSP_WPF
             SP_Content.Children.Clear();
             SP_Share.Children.Clear();
             SP_ShareContent.Children.Clear();
+        }
+
+        private async void BT_Mute_Click(object sender, RoutedEventArgs e)
+        {
+            BT_Mute.IsEnabled = false;
+            await KakaoRequestClass.MutePost(data.id, !data.push_mute);
+            await RenewComment();
+            BT_Mute.IsEnabled = true;
         }
     }
 }
