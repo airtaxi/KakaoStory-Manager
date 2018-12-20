@@ -77,6 +77,8 @@ namespace KSP_WPF
                     };
                     MainWindow.SetClickObject(fsc.Grid);
                     string imgUri = friend.profile_thumbnail_url;
+                    if (Properties.Settings.Default.GIFProfile && friend.profile_video_url_square_small != null)
+                        imgUri = friend.profile_video_url_square_small;
                     GlobalHelper.AssignImage(fsc.IMG_Profile, imgUri);
                     fsc.TB_Name.Text = friend.display_name;
                     fsc.TB_Name.Tag = friend.is_favorite;

@@ -205,10 +205,13 @@ namespace KSP_WPF
             }
         }
 
-        public static async Task<BookmarkData.Bookmarks> GetBookmark(string id)
+        public static async Task<BookmarkData.Bookmarks> GetBookmark(string id, string from)
         {
             string requestURI = "https://story.kakao.com/a/profiles/" + id + "/sections/bookmark";
 
+            if (from != null)
+                requestURI += $"?since={from}";
+            
             HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = "GET";
             webRequest.ContentType = "application/json; charset=utf-8";

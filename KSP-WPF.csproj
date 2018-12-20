@@ -288,6 +288,9 @@
     <Compile Include="StoryDeleteWindow.xaml.cs">
       <DependentUpon>StoryDeleteWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StoryModifyWindow.xaml.cs">
+      <DependentUpon>StoryModifyWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StoryWriteWindow.xaml.cs">
       <DependentUpon>StoryWriteWindow.xaml</DependentUpon>
     </Compile>
@@ -370,6 +373,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StoryDeleteWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StoryModifyWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

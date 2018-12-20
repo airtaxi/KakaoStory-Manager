@@ -59,13 +59,19 @@ namespace KSP_WPF
             foreach (var notification in notifications)
             {
                 string thumbnailURL = notification.actor?.profile_thumbnail_url ?? "";
+                if (Properties.Settings.Default.GIFProfile && notification.actor?.profile_video_url_square_small != null)
+                    thumbnailURL = notification.actor?.profile_video_url_square_small;
                 string message = notification.message;
                 string timestamp = PostWindow.GetTimeString(notification.created_at);
                 NotificationControl content = new NotificationControl();
                 MainWindow.SetClickObject(content);
                 content.TB_Content.Text = message;
                 content.TB_Content.ToolTip = content.TB_Content.Text;
-                content.TB_Message.Text = notification.content ?? "내용 없음";
+                string contentMessage = notification.content ?? "내용 없음";
+                if (contentMessage.Contains("\n"))
+                    contentMessage = contentMessage.Split(new string[] { "\n" }, StringSplitOptions.None)[0];
+
+                content.TB_Message.Text = contentMessage;
                 content.TB_Message.ToolTip = content.TB_Message.Text;
                 if(!notification.is_new)
                 {

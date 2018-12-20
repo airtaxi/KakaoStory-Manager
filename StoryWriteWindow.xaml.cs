@@ -203,12 +203,11 @@ namespace KSP_WPF
                 if (imgs.Count < 20)
                 {
                     Image image = new Image();
-                    BitmapImage bi = new BitmapImage(new Uri(path));
-                    image.Source = bi;
+                    GlobalHelper.AssignImage(image, path);
                     image.Margin = new Thickness(5, 5, 5, 5);
                     image.Width = 80;
                     image.Height = image.Width;
-                    image.Stretch = Stretch.UniformToFill;
+                    image.Stretch = Stretch.Uniform;
                     ImageData imgData = new ImageData() { Image = image, Path = path, EditKey=editKey };
                     image.MouseLeftButtonDown += imgData.Remove;
                     imgs.Add(imgData);

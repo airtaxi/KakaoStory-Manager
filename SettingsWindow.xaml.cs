@@ -57,6 +57,7 @@ namespace KSP_WPF
             CB_FullScreen.IsChecked = Properties.Settings.Default.FullScreen;
             CB_TimelineScroll.IsChecked = Properties.Settings.Default.ScrollTimeline;
             CB_NoGIF.IsChecked = !Properties.Settings.Default.UseGIF;
+            CB_GIFProfile.IsChecked = Properties.Settings.Default.GIFProfile;
             CB_DefaultFriendOnly.IsChecked = Properties.Settings.Default.DefaultFriendOnly;
             CB_HideScrollBar.IsChecked = Properties.Settings.Default.HideScrollBar;
             CB_ShowComment.IsChecked = Properties.Settings.Default.ShowComment;
@@ -90,6 +91,8 @@ namespace KSP_WPF
                 Properties.Settings.Default.ScrollTimeline = check;
             else if (sender.Equals(CB_NoGIF))
                 Properties.Settings.Default.UseGIF = !check;
+            else if (sender.Equals(CB_GIFProfile))
+                Properties.Settings.Default.GIFProfile = check;
             else if (sender.Equals(CB_DefaultFriendOnly))
                 Properties.Settings.Default.DefaultFriendOnly = check;
             else if (sender.Equals(CB_HideScrollBar))
@@ -208,6 +211,15 @@ namespace KSP_WPF
         private void BT_Homepage_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://kagamine-rin.com/");
+        }
+
+        private void BT_BatchEditPosts_Click(object sender, RoutedEventArgs e)
+        {
+            StoryModifyWindow window = new StoryModifyWindow()
+            {
+                Owner = this
+            };
+            window.ShowDialog();
         }
     }
 

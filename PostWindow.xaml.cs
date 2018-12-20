@@ -75,7 +75,8 @@ namespace KSP_WPF
 
             comment.TB_MetaData.Text = GetTimeString(commentProf.created_at);
             string imgUri = commentProf.writer.profile_image_url ?? commentProf.writer.profile_thumbnail_url;
-            //string imgUri = commentProf.writer.profile_video_url_square_small ?? commentProf.writer.profile_image_url ?? commentProf.writer.profile_thumbnail_url;
+            if (Properties.Settings.Default.GIFProfile && commentProf.writer.profile_video_url_square_small != null)
+                imgUri = commentProf.writer.profile_video_url_square_small;
             GlobalHelper.AssignImage(comment.IMG_Profile, imgUri);
 
             MainWindow.SetClickObject(comment.IMG_Profile);
@@ -308,10 +309,10 @@ namespace KSP_WPF
                     BT_Delte.IsEnabled = false;
                 if (!data.actor.id.Equals(MainWindow.userProfile.id))
                     BT_Edit.IsEnabled = false;
-
-                if (data.actor.profile_image_url != null) { }
-                //string imgUri = data.actor.profile_video_url_square_small ?? data.actor.profile_image_url ?? data.actor.profile_thumbnail_url;
-                string imgUri = data.actor.profile_thumbnail_url;
+                
+                string imgUri = data.actor.profile_image_url ?? data.actor.profile_thumbnail_url;
+                if (Properties.Settings.Default.GIFProfile && data.actor.profile_video_url_square_small != null)
+                    imgUri = data.actor.profile_video_url_square_small;
                 GlobalHelper.AssignImage(IMG_Profile, imgUri);
 
                 MainWindow.SetClickObject(IMG_Profile);
@@ -362,8 +363,11 @@ namespace KSP_WPF
                                 MessageBox.Show("접근할 수 없는 포스트입니다.");
                             }
                         };
-                        string imgUri2 = data.@object.actor.profile_image_url;
-                        //string imgUri2 = data.@object.actor.profile_video_url_square_small ?? data.@object.actor.profile_image_url;
+
+                        string imgUri2 = data.@object.actor.profile_image_url ?? data.@object.actor.profile_thumbnail_url;
+                        if (Properties.Settings.Default.GIFProfile && data.@object.actor.profile_video_url_square_small != null)
+                            imgUri2 = data.@object.actor.profile_video_url_square_small;
+
                         GlobalHelper.AssignImage(IMG_ProfileShare, imgUri2);
 
                         MainWindow.SetClickObject(IMG_ProfileShare);

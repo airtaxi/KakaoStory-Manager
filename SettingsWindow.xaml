@@ -16,6 +16,7 @@
             <Button Name="BT_Start" Margin="0,0,0,0" Content="부팅시 자동 시작 설정하기" Click="BT_Start_Click"/>
             <Button Name="BT_DeleteBlinded" Margin="0,5,0,0" Content="제한된 사용자 삭제" Click="BT_DeleteBlinded_Click"/>
             <Button Name="BT_DeletePosts" Margin="0,5,0,0" Content="스토리 일괄 삭제" Click="BT_DeletePosts_Click"/>
+            <Button Name="BT_BatchEditPosts" Margin="0,5,0,0" Content="스토리 일괄 변경" Click="BT_BatchEditPosts_Click"/>
             <Button Name="BT_Credits" Margin="0,5,0,0" Content="개발자 스토리 방문" Click="BT_Credits_Click"/>
             <Button Name="BT_Homepage" Margin="0,5,0,0" Content="개발자 홈페이지 방문 (업데이트 조회 가능)" Click="BT_Homepage_Click"/>
             <CheckBox Name="CB_Mute" Margin="0,5,0,0" Content="프로그램 상태 알림 끄기" Click="CB_Click"/>
@@ -26,7 +27,8 @@
             <CheckBox Name="CB_FullScreen" Margin="0,5,0,0" Content="포스트 열 때 전체화면으로 전환" Click="CB_Click"/>
             <CheckBox Name="CB_TimelineScroll" Margin="0,5,0,0" Content="타임라인 내용이 길면 스크롤바 생성" Click="CB_Click"/>
             <CheckBox Name="CB_HideScrollBar" Margin="0,5,0,0" Content="스크롤바 숨기기" Click="CB_Click"/>
-            <CheckBox Name="CB_NoGIF" Margin="0,5,0,0" Content="GIF 이미지 사용안함(저사양 PC 권장)" Click="CB_Click"/>
+            <CheckBox Name="CB_NoGIF" Margin="0,5,0,0" Content="GIF 이미지 사용안함 (저사양 PC 권장)" Click="CB_Click"/>
+            <CheckBox Name="CB_GIFProfile" Margin="0,5,0,0" Content="움직이는 프로필 사용 (저사양 PC 권장 안함)" Click="CB_Click"/>
             <CheckBox Name="CB_DefaultFriendOnly" Margin="0,5,0,0" Content="기본 공개범위를 친구공개로 설정" Click="CB_Click"/>
             <CheckBox Name="CB_ShowComment" Margin="0,5,0,0" Content="포스트 창의 댓글창 자동으로 펼치기" Click="CB_Click"/>
             <CheckBox Name="CB_PositionPostToTop" Margin="0,5,0,0" Content="포스트 조회시 창의 위치를 맨위로 설정하기" Click="CB_Click"/>

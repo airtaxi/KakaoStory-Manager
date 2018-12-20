@@ -109,7 +109,7 @@ namespace KSP_WPF.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool MemoryControl {
             get {
                 return ((bool)(this["MemoryControl"]));
@@ -296,6 +296,18 @@ namespace KSP_WPF.Properties {
             }
             set {
                 this["Upgraded"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool GIFProfile {
+            get {
+                return ((bool)(this["GIFProfile"]));
+            }
+            set {
+                this["GIFProfile"] = value;
             }
         }
     }

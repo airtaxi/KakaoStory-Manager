@@ -1,0 +1,48 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.StoryModifyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        Closed="MetroWindow_Closed"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        ShowIconOnTitleBar="False"
+        Title="스토리 일괄 변경" Icon="icon2.png" SizeToContent="Height" Width="240" ResizeMode="NoResize">
+    <Grid Name="Grid" PreviewGotKeyboardFocus="Grid_PreviewGotKeyboardFocus" Margin="5,5,5,5">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+            <TextBlock Text="변경 대상"/>
+            <ComboBox Name="CB_Target" Width="200" Margin="0,5,0,0" SelectionChanged="CB_Target_SelectionChanged" HorizontalAlignment="Left">
+                <ComboBoxItem Content="모든 글"/>
+                <ComboBoxItem Content="전체 공개글"/>
+                <ComboBoxItem Content="친구 공개글"/>
+                <ComboBoxItem Content="편한 친구글"/>
+                <ComboBoxItem Content="나만 보기글"/>
+                <ComboBoxItem Content="관심글"/>
+            </ComboBox>
+            <CheckBox Name="CB_ExcludeFavorite" Content="관심글 제외" Margin="0,5,0,0"/>
+            <Separator Margin="0,5,0,0"/>
+            <TextBlock Text="작업 선택" Margin="0,5,0,0"/>
+            <ComboBox Name="CB_Task" SelectionChanged="CB_Task_SelectionChanged" Margin="0,5,0,0">
+                <ComboBoxItem Content="공개 범위 변경"/>
+                <ComboBoxItem Content="링크 추출"/>
+                <ComboBoxItem Name="CBI_Bookmark" Content="관심글에 추가"/>
+            </ComboBox>
+            <StackPanel Name="SP_RangeSetting" Margin="0,5,0,0" Visibility="Collapsed">
+                <TextBlock Text="공개 범위"/>
+                <ComboBox Name="CB_Range" SelectedIndex="0" Margin="0,5,0,0">
+                    <ComboBoxItem Content="전체 공개"/>
+                    <ComboBoxItem Content="친구 공개"/>
+                    <ComboBoxItem Content="나만 보기"/>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Name="SP_Progress" Visibility="Collapsed">
+                <TextBlock Name="TB_Progress" Text="" Margin="0,5,0,0"/>
+                <controls:ProgressRing Name="PR_Main" IsActive="false" Foreground="Teal" Width="40" Height="40" Margin="0,5,0,0"/>
+                <controls:MetroProgressBar Name="PB_Main" Visibility="Collapsed" Value="0" Foreground="Teal" Margin="0,5,0,0"/>
+            </StackPanel>
+            <Button Name="BT_Execute" Content="실행" Margin="0,5,0,0" Click="BT_Execute_Click"/>
+        </StackPanel>
+    </Grid>
+</controls:MetroWindow>

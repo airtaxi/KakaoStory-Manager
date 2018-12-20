@@ -32,7 +32,10 @@ namespace KSP_WPF
                 fsc.Background = Brushes.Transparent;
             };
             fsc.TB_Name.Text = actor.display_name;
-            GlobalHelper.AssignImage(fsc.IMG_Profile, actor.profile_thumbnail_url);
+            string imgUri = actor.profile_thumbnail_url;
+            if (Properties.Settings.Default.GIFProfile && actor.profile_video_url_square_small != null)
+                imgUri = actor.profile_video_url_square_small;
+            GlobalHelper.AssignImage(fsc.IMG_Profile, imgUri);
             fsc.IMG_Profile.Tag = actor.id;
             fsc.IMG_Profile.MouseLeftButtonDown += GlobalHelper.SubContentMouseEvent;
 

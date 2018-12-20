@@ -151,6 +151,7 @@ namespace KSP_WPF
         private bool isClose = false;
         private ProfileRelationshipData.ProfileRelationship relationship;
         public bool isScrollOver = false;
+        private bool scrollEnd = false;
 
         public async Task<bool> RefreshTimeline(string from, bool isClear)
         {
@@ -167,11 +168,16 @@ namespace KSP_WPF
             }
             else
             {
-                var profile = await KakaoRequestClass.GetProfileFeed(profileID, from);
+                string from2 = from;
+                if (showBookmarked)
+                    from2 = null;
+                var profile = await KakaoRequestClass.GetProfileFeed(profileID, from2);
                 relationship = await KakaoRequestClass.GetProfileRelationship(profileID);
                 if (profile.profile.bg_image_url != null)
                 {
-                    string imgUri = profile.profile.profile_video_url_square_small ?? profile.profile.profile_image_url ?? profile.profile.profile_thumbnail_url;
+                    string imgUri = profile.profile.profile_image_url ?? profile.profile.profile_thumbnail_url;
+                    if (Properties.Settings.Default.GIFProfile && profile.profile.profile_video_url_square_small != null)
+                        imgUri = profile.profile.profile_video_url_square_small;
                     GlobalHelper.AssignImage(IMG_Profile, imgUri);
                     GlobalHelper.AssignImage(IMG_ProfileBG, profile.profile.bg_image_url);
                     TB_Name.Text = profile.profile.display_name;
@@ -230,7 +236,7 @@ namespace KSP_WPF
                 BT_Write.Visibility = Visibility.Collapsed;
                 if (profile.activities.Count > 15)
                 {
-                    nextRequest = profile.activities[profile.activities.Count - 1].id;
+                    nextRequest = profile.activities.Last().id;
                 }
 
                 if (MainWindow.userProfile.id.Equals(profileID) && showBookmarked != true)
@@ -243,17 +249,20 @@ namespace KSP_WPF
                 if (showBookmarked)
                 {
                     Title = "관심글 조회";
-                    var bookmarks = await KakaoRequestClass.GetBookmark(profileID);
+                    var bookmarks = await KakaoRequestClass.GetBookmark(profileID, from);
                     var feedsNow = new List<CommentData.PostData>();
                     foreach(var bookmark in bookmarks.bookmarks)
                     {
                         feedsNow.Add(bookmark.activity);
                     }
                     feeds = feedsNow;
+                    nextRequest = bookmarks.bookmarks.Last().id;
                 }
                 else
                     feeds = profile.activities;
             }
+            
+            if ((isProfile && feeds.Count != 18)) scrollEnd = true;
 
             if (isClear)
             {
@@ -330,7 +339,10 @@ namespace KSP_WPF
                             tlp.GD_Share.Tag = feed.@object.id;
                             tlp.GD_Share.MouseLeftButtonDown += ShareContentMouseEvent;
 
-                            GlobalHelper.AssignImage(tlp.IMG_ProfileShare, feed.@object.actor.profile_thumbnail_url ?? feed.@object.actor.profile_image_url);
+                            string imgUri = feed.@object.actor.profile_image_url ?? feed.@object.actor.profile_thumbnail_url;
+                            if (Properties.Settings.Default.GIFProfile && feed.@object.actor.profile_video_url_square_small != null)
+                                imgUri = feed.@object.actor.profile_video_url_square_small;
+                            GlobalHelper.AssignImage(tlp.IMG_ProfileShare, imgUri);
                             MainWindow.SetClickObject(tlp.IMG_ProfileShare);
 
                             tlp.IMG_ProfileShare.Tag = feed.@object.actor.id;
@@ -353,7 +365,7 @@ namespace KSP_WPF
                                 foreach (var media in feed.@object.media)
                                 {
                                     string uri = media.origin_url;
-                                    if (uri.Contains(".gif"))
+                                    if (uri.Contains(".gif") && !Properties.Settings.Default.UseGIF)
                                         uri = media.jpg_url;
 
                                     if (uri != null)
@@ -418,40 +430,14 @@ namespace KSP_WPF
             TB_Loading.Visibility = Visibility.Collapsed;
             return true;
         }
-
-        //private void AddComment(CommentData.Comment comment, CommentData.PostData feed, TimeLinePageControl tlp)
-        //{
-        //    if (comment == null)
-        //        return;
-        //    TimelineCommentContol tlcc = new TimelineCommentContol();
-        //    string imgUri2 = comment.writer.profile_thumbnail_url ?? comment.writer.profile_image_url;
-        //    PostWindow.AssignImage(tlcc.IMG_Profile, imgUri2);
-
-        //    MainWindow.SetClickObject(tlcc.IMG_Profile);
-
-        //    tlcc.IMG_Profile.Tag = comment.writer.id;
-        //    tlcc.IMG_Profile.MouseDown += SubContentMouseEvent;
-
-        //    tlcc.TB_Name.Text = comment.writer.display_name;
-        //    comment.text = comment.text.Replace("\r\n", " ").Replace("\n", " ");
-        //    PostWindow.RefreshContent(comment.decorators, comment.text, tlcc.TB_Content);
-        //    tlcc.TB_LikeCount.Text = $"느낌 {comment.like_count.ToString()}개";
-        //    if (comment.liked)
-        //    {
-        //        tlcc.BT_Like.Content = "취소";
-        //    }
-
-        //    tlcc.BT_Like.Tag = new object[] { feed.id, comment.id, comment.liked, tlp };
-        //    tlcc.BT_Like.Click += LikeClickEvent;
-        //    tlcc.Height = 45;
-        //    tlp.SP_Comments.Children.Add(tlcc);
-        //}
-
+        
         private void RefreshTimeLineFeed(TimeLinePageControl tlp, CommentData.PostData feed)
         {
             tlp.SP_Comments?.Children?.Clear();
             tlp.SP_Content?.Children?.Clear();
-            string imgUri = feed.actor.profile_thumbnail_url ?? feed.actor.profile_image_url;
+            string imgUri = feed.actor.profile_image_url ?? feed.actor.profile_thumbnail_url;
+            if (Properties.Settings.Default.GIFProfile && feed.actor.profile_video_url_square_small != null)
+                imgUri = feed.actor.profile_video_url_square_small;
             GlobalHelper.AssignImage(tlp.IMG_Profile, imgUri);
 
             MainWindow.SetClickObject(tlp.IMG_Profile);
@@ -467,7 +453,7 @@ namespace KSP_WPF
                 foreach (var media in feed.media)
                 {   
                     string uri = media.origin_url;
-                    if (uri.Contains(".gif"))
+                    if (uri.Contains(".gif") && !Properties.Settings.Default.UseGIF)
                         uri = media.jpg_url;
 
                     Image img = new Image();
@@ -516,11 +502,12 @@ namespace KSP_WPF
             else
                 tlp.TB_LikeCount.Visibility = Visibility.Collapsed;
 
-            if (feed.share_count > 0)
+            int shares = feed.share_count - feed.sympathy_count;
+            if (shares > 0)
             {
                 willDisplayInfo = true;
                 tlp.TB_ShareCount.Visibility = Visibility.Visible;
-                var txt = new Bold(new Run($" {feed.share_count.ToString()}  "));
+                var txt = new Bold(new Run($" {shares.ToString()}  "));
                 txt.FontSize = 12;
                 tlp.TB_ShareCount.Inlines.Add(txt);
             }
@@ -583,9 +570,9 @@ namespace KSP_WPF
         
         private async void SV_Content_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            if(showBookmarked != true)
+            ScrollViewer scrollViewer = (ScrollViewer)sender;
+            if (!scrollEnd)
             {
-                ScrollViewer scrollViewer = (ScrollViewer)sender;
                 if (scrollViewer.VerticalOffset > Height && lastOffset != scrollViewer.ScrollableHeight && scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
                 {
                     lastOffset = scrollViewer.ScrollableHeight;
