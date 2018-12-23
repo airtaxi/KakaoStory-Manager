@@ -30,19 +30,23 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="포스트">
-                <StackPanel Orientation="Vertical" Margin="5,5,5,5">
-                    <TextBlock FontSize="18" Text="새로고침 : Ctrl+R"/>
-                    <TextBlock FontSize="18" Text="빠른 전송 : Ctrl+Enter" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="느낌 : Ctrl+L" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="공유 : Ctrl+S" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="UP : Ctrl+U" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="알림 설정 변경 : Ctrl+N" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="브라우저로 열기 : Ctrl+B" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="이미지 붙여넣기 : (텍스트 상자에서) Ctrl+V" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="메뉴 닫기 : ESC" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="메뉴 열기 : Ctrl+M" Margin="0,5,0,0"/>
-                    <TextBlock FontSize="18" Text="창 닫기 : Ctrl+W 또는 Alt+F4" Margin="0,5,0,0"/>
-                </StackPanel>
+                <ScrollViewer Name="SV_Post" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" VerticalScrollBarVisibility="Hidden">
+                    <StackPanel Orientation="Vertical" Margin="5,5,5,5">
+                        <TextBlock FontSize="18" Text="새로고침 : Ctrl+R"/>
+                        <TextBlock FontSize="18" Text="빠른 전송 : Ctrl+Enter" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="느낌 : Ctrl+L" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="공유 : Ctrl+S" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="UP : Ctrl+U" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="알림 설정 변경 : Ctrl+N" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="브라우저로 열기 : Ctrl+B" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="첨부파일 추가 : Ctrl+O" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="관심글 추가 및 제거 : Ctrl+F" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="이미지 붙여넣기 : (텍스트 상자에서) Ctrl+V" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="메뉴 닫기 : ESC" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="메뉴 열기 : Ctrl+M" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="창 닫기 : Ctrl+W 또는 Alt+F4" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="타임라인 및 프로필">
                 <StackPanel Orientation="Vertical" Margin="5,5,5,5">

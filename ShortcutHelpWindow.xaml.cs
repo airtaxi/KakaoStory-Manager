@@ -23,6 +23,10 @@ namespace KSP_WPF
         public ShortcutHelpWindow()
         {
             InitializeComponent();
+            if (!Properties.Settings.Default.HideScrollBar)
+            {
+                SV_Post.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            }
         }
 
         private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -32,6 +36,11 @@ namespace KSP_WPF
                 e.Handled = true;
                 Close();
             }
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            GlobalHelper.HandleScroll(sender, e);
         }
     }
 }
