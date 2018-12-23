@@ -1177,7 +1177,10 @@ namespace KSP_WPF
 
                             if (willShow && obj[count].is_new)
                             {
-                                GlobalHelper.ShowNotification(Message, Content, Uri, obj[count].comment_id, obj[count].actor?.id, obj[count].actor?.display_name, Profile, Identity, obj[count].thumbnail_url ?? obj[count].actor?.profile_thumbnail_url);
+                                if (Environment.OSVersion.Version.Major == 10)
+                                    GlobalHelper.ShowNotification(Message, Content, Uri, obj[count].comment_id, obj[count].actor?.id, obj[count].actor?.display_name, Profile, Identity, obj[count].thumbnail_url ?? obj[count].actor?.profile_thumbnail_url);
+                                else
+                                    GlobalHelper.ShowNotification(Message, Content, Uri);
                             }
                             try
                             {
@@ -1207,7 +1210,7 @@ namespace KSP_WPF
                 }
                 catch (Exception)
                 {
-                    if (!MainWindow.isOffline)
+                    if (!MainWindow.isOffline && Environment.OSVersion.Version.Major == 10)
                     {
                         MainWindow.instance.Title = MainWindow.instance.Title.Replace(OfflineStr, "") + OfflineStr;
                         MainWindow.isOffline = true;

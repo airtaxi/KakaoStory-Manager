@@ -159,7 +159,7 @@ namespace KSP_WPF
                     {
                         if (extractedLink.Length > 0)
                         {
-                            Clipboard.SetText(extractedLink.ToString());
+                            Clipboard.SetDataObject(extractedLink.ToString());
                             MessageBox.Show("링크 추출 완료\n추출된 링크는 클립보드에 복사되었습니다. Ctrl+V를 사용하여 붙여넣기하세요.", "안내");
                         }
                         else

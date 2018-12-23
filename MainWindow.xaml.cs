@@ -26,7 +26,7 @@ namespace KSP_WPF
         public bool isClose = false;
         public static bool notificationRequested = true;
         public static bool isOffline = false;
-        private readonly NotifyIcon _notifyIcon = null;
+        public readonly NotifyIcon _notifyIcon = null;
         public static StoryWriteWindow storyWriteWindow = null;
         public static TimeLineWindow timeLineWindow = null;
         public static TimeLineWindow profileTimeLineWindow = null;
@@ -43,6 +43,16 @@ namespace KSP_WPF
             TSW_DarkMode.IsChecked = Properties.Settings.Default.DarkMode;
             TSW_DarkMode_Click(null, null);
 
+            Dispatcher.InvokeAsync(async () =>
+            {
+                if(Environment.OSVersion.Version.Major != 10)
+                {
+                    bool isLatest = await GlobalHelper.CheckUpdate();
+                    if (!isLatest)
+                        if (MessageBox.Show("새로운 업데이트를 확인했습니다.\n 업데이트를 받으시겠습니까?", "안내", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                            System.Diagnostics.Process.Start("https://kagamine-rin.com/?p=186");
+                }
+            });
 
             CB_AutoLogin.IsChecked = Properties.Settings.Default.AutoLogin;
 
@@ -61,8 +71,21 @@ namespace KSP_WPF
                 
                 Activate();
             };
+            _notifyIcon.BalloonTipClicked += (s, e) =>
+            {
+                if(_notifyIcon.Tag != null)
+                {
+                    KSPNotificationActivator.ActivateHandler((string) _notifyIcon.Tag, null);
+                    _notifyIcon.Tag = null;
+                }
+                else
+                {
+                    Show();
+                    Activate();
+                }
+            };
 
-            ContextMenu menu = new ContextMenu();;
+            ContextMenu menu = new ContextMenu();
             MenuItem timeline = new MenuItem
             {
                 Index = 0,
@@ -280,7 +303,7 @@ namespace KSP_WPF
         private void BT_Write_Click(object sender, RoutedEventArgs e)
         {
             if (!IsLoggedIn && !isOffline)
-                ShowOfflineMessage();
+                GlobalHelper.ShowOfflineMessage();
             else
             {
                 if (storyWriteWindow == null)
@@ -318,7 +341,7 @@ namespace KSP_WPF
                 }
             }
             else
-                ShowOfflineMessage();
+                GlobalHelper.ShowOfflineMessage();
         }
 
         public void BT_Notifiations_Click(object sender, RoutedEventArgs e)
@@ -339,14 +362,9 @@ namespace KSP_WPF
                 }
             }
             else
-                ShowOfflineMessage();
+                GlobalHelper.ShowOfflineMessage();
         }
         
-        public static void ShowOfflineMessage()
-        {
-            MessageBox.Show("로그인상태가 아니거나 오프라인 상태입니다.");
-        }
-
         private async void BT_MyProfile_Click(object sender, RoutedEventArgs e)
         {
             if (IsLoggedIn && !isOffline)
@@ -367,7 +385,7 @@ namespace KSP_WPF
                 }
             }
             else
-                ShowOfflineMessage();
+                GlobalHelper.ShowOfflineMessage();
         }
 
         private void BT_Settings_Click(object sender, RoutedEventArgs e)
@@ -410,7 +428,7 @@ namespace KSP_WPF
                 }
             }
             else
-                ShowOfflineMessage();
+                GlobalHelper.ShowOfflineMessage();
         }
 
         private void TB_Tray_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -514,7 +532,7 @@ namespace KSP_WPF
         private void BT_Favorite_Click(object sender, RoutedEventArgs e)
         {
             if (!IsLoggedIn && !isOffline)
-                ShowOfflineMessage();
+                GlobalHelper.ShowOfflineMessage();
             else
             {
                 TimeLineWindow.showBookmarkedGlobal = true;
@@ -523,6 +541,15 @@ namespace KSP_WPF
                 timeLineWindow.Focus();
                 timeLineWindow.Activate();
             }
+        }
+
+        private void BT_Shortcut_Click(object sender, RoutedEventArgs e)
+        {
+            ShortcutHelpWindow window = new ShortcutHelpWindow()
+            {
+                Owner=this
+            };
+            window.ShowDialog();
         }
     }
 }

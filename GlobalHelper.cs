@@ -59,6 +59,11 @@ namespace KSP_WPF
             {
                 ShowNotification(title, message, URL, null, null, null, null, null, null);
             }
+            else
+            {
+                MainWindow.instance._notifyIcon.ShowBalloonTip(5, title, message, System.Windows.Forms.ToolTipIcon.Info);
+                MainWindow.instance._notifyIcon.Tag = URL;
+            }
         }
 
         public static void CopyImageHandler(object source, MouseButtonEventArgs e)
@@ -107,6 +112,31 @@ namespace KSP_WPF
             imageViewer.IMG_Main.Source = ((System.Windows.Controls.Image)source).Source;
             imageViewer.ZB_Main.FitToBounds();
             e.Handled = true;
+        }
+
+        public static void ShowOfflineMessage()
+        {
+            MessageBox.Show("로그인상태가 아니거나 오프라인 상태입니다.");
+        }
+
+        public async static Task<bool> CheckUpdate()
+        {
+            HttpWebRequest webRequest = WebRequest.CreateHttp("https://project-6817963503898600526.firebaseapp.com/KSP/latest.version");
+            webRequest.Method = "GET";
+            try
+            {
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
+                respReader.Close();
+                readStream.Close();
+                if (respResult.Equals(System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()))
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception) { }
+            return true;
         }
 
         public static void SaveImageToFile(System.Windows.Controls.Image image)

@@ -46,9 +46,6 @@ namespace KSP_WPF
             {
                 TB_Version.Text = "버전 : " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
                 BT_Start.Visibility = Visibility.Collapsed;
-                CB_Mute.Visibility = Visibility.Collapsed;
-                CB_Like.Visibility = Visibility.Collapsed;
-                CB_VIP.Visibility = Visibility.Collapsed;
             }
             CB_Mute.IsChecked = Properties.Settings.Default.Disable_Message;
             CB_Like.IsChecked = Properties.Settings.Default.Disable_Like;
@@ -144,36 +141,6 @@ namespace KSP_WPF
                 }
             }
         }
-        private void BT_DeleteBlinded_Click(object sender, RoutedEventArgs e)
-        {
-            if (MainWindow.IsLoggedIn && !MainWindow.isOffline)
-            {
-                List<FriendData.Profile> blinded = new List<FriendData.Profile>();
-                foreach (var friend in MainWindow.userFriends.profiles)
-                {
-                    if (friend.blocked == true)
-                    {
-                        blinded.Add(friend);
-                    }
-                }
-                if (blinded.Count > 0)
-                {
-                    if (MessageBox.Show($"{blinded.Count.ToString()}명의 제한된 사용자를 삭제하시겠습니까?\n이 작업은 돌이킬 수 없습니다.", "경고", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                    {
-                        ProgressWindow pw = new ProgressWindow(blinded)
-                        {
-                            Owner = this
-                        };
-                        pw.TB_Content.Text = "초기화중...";
-                        pw.ShowDialog();
-                    }
-                }
-                else
-                    MessageBox.Show("친구 목록에 제한된 사용자가 없습니다.");
-            }
-            else
-                MainWindow.ShowOfflineMessage();
-        }
 
         private void BT_Credits_Click(object sender, RoutedEventArgs e)
         {
@@ -216,6 +183,15 @@ namespace KSP_WPF
         private void BT_BatchEditPosts_Click(object sender, RoutedEventArgs e)
         {
             StoryModifyWindow window = new StoryModifyWindow()
+            {
+                Owner = this
+            };
+            window.ShowDialog();
+        }
+
+        private void BT_FriendMenu_Click(object sender, RoutedEventArgs e)
+        {
+            FriendManageWindow window = new FriendManageWindow()
             {
                 Owner = this
             };

@@ -243,8 +243,8 @@
     <Compile Include="CookieData.cs" />
     <Compile Include="CSNotification.cs" />
     <Compile Include="DesktopNotificationManagerCompat.cs" />
-    <Compile Include="EmotionWindow.xaml.cs">
-      <DependentUpon>EmotionWindow.xaml</DependentUpon>
+    <Compile Include="FriendManageWindow.xaml.cs">
+      <DependentUpon>FriendManageWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="FriendSelectControl.xaml.cs">
       <DependentUpon>FriendSelectControl.xaml</DependentUpon>
@@ -285,6 +285,9 @@
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShiftWindowOntoScreenHelper.cs" />
+    <Compile Include="ShortcutHelpWindow.xaml.cs">
+      <DependentUpon>ShortcutHelpWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StoryDeleteWindow.xaml.cs">
       <DependentUpon>StoryDeleteWindow.xaml</DependentUpon>
     </Compile>
@@ -316,7 +319,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EmotionWindow.xaml">
+    <Page Include="FriendManageWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -369,6 +372,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ShortcutHelpWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

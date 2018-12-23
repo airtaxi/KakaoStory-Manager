@@ -790,6 +790,9 @@ namespace KSP_WPF
         {
             if (data.liked)
             {
+                TB_LikeBTN.Text = "전송중..";
+                IC_LikeBTN.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
+                BT_Like.IsEnabled = true;
                 bool isSuccess = await KakaoRequestClass.LikeFeed(feedID, null);
                 if (isSuccess)
                 {
@@ -800,14 +803,7 @@ namespace KSP_WPF
             }
             else
             {
-                IC_LikeBTN.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
-                TB_LikeBTN.Text = "전송중..";
-                BT_Like.IsEnabled = false;
-                EmotionWindow window = new EmotionWindow(feedID, this)
-                {
-                    Owner = this,
-                };
-                window.ShowDialog();
+                FL_Emotion.IsOpen = !FL_Emotion.IsOpen;
             }
             await UpdateStats();
         }
@@ -1144,11 +1140,69 @@ namespace KSP_WPF
             }
             else if (e.Key == Key.F5 || (e.Key == Key.R && Keyboard.Modifiers == ModifierKeys.Control))
             {
-                BT_CommentRefresh_Click(null, null);
+                e.Handled = true;
+                BT_CommentRefresh_Click(BT_CommentRefresh, null);
             }
             else if (e.Key == Key.Escape)
             {
+                e.Handled = true;
                 FL_Menu.IsOpen = false;
+                FL_Emotion.IsOpen = false;
+            }
+            else if (e.Key == Key.L && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                BT_Like_Click(BT_Like, null);
+            }
+            else if (e.Key == Key.M && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                IC_Menu_MouseLeftButtonDown(IC_Menu, null);
+            }
+            else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                BT_Share_Click(BT_Share, null);
+            }
+            else if (e.Key == Key.U && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                BT_UP_Click(BT_UP, null);
+            }
+            else if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                BT_Mute_Click(BT_Mute, null);
+            }
+            else if (e.Key == Key.B && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                BT_Web_Click(BT_Web, null);
+            }
+            else if (e.Key == Key.L && FL_Emotion.IsOpen)
+            {
+                e.Handled = true;
+                BT_E_Like_Click(BT_E_Like, null);
+            }
+            else if (e.Key == Key.G && FL_Emotion.IsOpen)
+            {
+                e.Handled = true;
+                BT_E_Like_Click(BT_E_Good, null);
+            }
+            else if (e.Key == Key.P && FL_Emotion.IsOpen)
+            {
+                e.Handled = true;
+                BT_E_Like_Click(BT_E_Pleasure, null);
+            }
+            else if (e.Key == Key.S && FL_Emotion.IsOpen)
+            {
+                e.Handled = true;
+                BT_E_Like_Click(BT_E_Sad, null);
+            }
+            else if (e.Key == Key.C && FL_Emotion.IsOpen)
+            {
+                e.Handled = true;
+                BT_E_Like_Click(BT_E_Cheerup, null);
             }
         }
 
@@ -1180,6 +1234,32 @@ namespace KSP_WPF
             await KakaoRequestClass.MutePost(data.id, !data.push_mute);
             await RenewComment();
             BT_Mute.IsEnabled = true;
+        }
+
+        private async void BT_E_Like_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = ((Button)sender);
+            TB_LikeBTN.Text = "전송중..";
+            IC_LikeBTN.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
+            BT_Like.IsEnabled = false;
+            bool isSucces = await KakaoRequestClass.LikeFeed(feedID, (string)button.Tag);
+            Dispatcher.Invoke(() =>
+            {
+                if (isSucces)
+                {
+                    TB_LikeBTN.Text = "느낌 취소";
+                    IC_LikeBTN.Kind = MaterialDesignThemes.Wpf.PackIconKind.Cancel;
+                }
+                else
+                {
+                    TB_LikeBTN.Text = "느낌 달기";
+                    IC_LikeBTN.Kind = MaterialDesignThemes.Wpf.PackIconKind.Heart;
+                }
+                BT_Like.IsEnabled = true;
+                data.liked = true;
+                FL_Emotion.IsOpen = false;
+            });
+            await UpdateStats();
         }
     }
 }

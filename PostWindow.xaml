@@ -135,5 +135,14 @@
                 <Button Name="BT_Mute" Content="알림 받지 않기" Click="BT_Mute_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
             </StackPanel>
         </controls:Flyout>
+        <controls:Flyout Name="FL_Emotion" Position="Right" Width="200" HorizontalAlignment="Right" Header="느낌 달기" Grid.Column="1" Grid.RowSpan="4" Theme="Accent" IsOpen="False">
+            <StackPanel Margin="5,5,5,5">
+                <Button Name="BT_E_Like" Tag="like" Content="좋아요 (L)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}"/>
+                <Button Name="BT_E_Good" Tag="good" Content="멋져요 (G)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_E_Pleasure" Tag="pleasure" Content="기뻐요 (P)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_E_Sad" Tag="sad" Content="슬퍼요 (S)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_E_Cheerup" Tag="cheerup" Content="힘내요 (C)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+            </StackPanel>
+        </controls:Flyout>
     </Grid>
 </controls:MetroWindow>

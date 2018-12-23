@@ -59,9 +59,14 @@ namespace KSP_WPF
         }
         public override void OnActivated(string invokedArgs, NotificationUserInput userInput, string appUserModelId)
         {
+            ActivateHandler(invokedArgs, userInput);
+        }
+
+        public static void ActivateHandler(string invokedArgs, NotificationUserInput userInput)
+        {
             Application.Current.Dispatcher.Invoke(async delegate
             {
-                if(!invokedArgs.Contains("default null string"))
+                if (!invokedArgs.Contains("default null string"))
                 {
                     try
                     {
@@ -75,7 +80,7 @@ namespace KSP_WPF
                         else if (invokedArgs.Contains("REPLY!@#$%"))
                         {
                             string text = invokedArgs.Substring(0, invokedArgs.IndexOf("REPLY!@#$%"));
-                            string[] datas= invokedArgs.Split(new string[] { "R!@=!!" }, StringSplitOptions.None);
+                            string[] datas = invokedArgs.Split(new string[] { "R!@=!!" }, StringSplitOptions.None);
                             string id = datas[1];
                             string name = datas[2];
                             string writer = datas[3];

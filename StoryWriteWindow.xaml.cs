@@ -902,6 +902,11 @@ namespace KSP_WPF
                 e.Handled = true;
                 Close();
             }
+            else if (e.Key == Key.M && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                BT_Menu_Click(null, null);
+            }
             else if (e.Key == Key.Escape)
             {
                 FL_Menu.IsOpen = false;

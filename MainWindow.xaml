@@ -14,6 +14,12 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Shortcut" Click="BT_Shortcut_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Keyboard"/>
+                        <TextBlock Text="단축키 확인"/>
+                    </StackPanel>
+                </Button>
                 <Button Name="BT_Favorite" Click="BT_Favorite_Click">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Star"/>
