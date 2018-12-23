@@ -1183,7 +1183,20 @@ namespace KSP_WPF
             else if (e.Key == Key.B && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                BT_Web_Click(BT_Web, null);
+                if(BT_Web.IsEnabled)
+                    BT_Web_Click(BT_Web, null);
+            }
+            else if (e.Key == Key.O && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                if (BT_Upload.IsEnabled)
+                    BT_Upload_Click(BT_Upload, null);
+            }
+            else if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                if (BT_AddFavorite.IsEnabled)
+                    BT_AddFavorite_Click(BT_AddFavorite, null);
             }
             else if (e.Key == Key.L && FL_Emotion.IsOpen)
             {
