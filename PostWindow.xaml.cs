@@ -1141,7 +1141,8 @@ namespace KSP_WPF
             else if (e.Key == Key.F5 || (e.Key == Key.R && Keyboard.Modifiers == ModifierKeys.Control))
             {
                 e.Handled = true;
-                BT_CommentRefresh_Click(BT_CommentRefresh, null);
+                if(BT_CommentRefresh.IsEnabled)
+                    BT_CommentRefresh_Click(BT_CommentRefresh, null);
             }
             else if (e.Key == Key.Escape)
             {
@@ -1152,27 +1153,32 @@ namespace KSP_WPF
             else if (e.Key == Key.L && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                BT_Like_Click(BT_Like, null);
+                if(BT_Like.IsEnabled)
+                    BT_Like_Click(BT_Like, null);
             }
             else if (e.Key == Key.M && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                IC_Menu_MouseLeftButtonDown(IC_Menu, null);
+                if(IC_Menu.IsEnabled)
+                    IC_Menu_MouseLeftButtonDown(IC_Menu, null);
             }
             else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                BT_Share_Click(BT_Share, null);
+                if(BT_Share.IsEnabled)
+                    BT_Share_Click(BT_Share, null);
             }
             else if (e.Key == Key.U && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                BT_UP_Click(BT_UP, null);
+                if(BT_UP.IsEnabled)
+                    BT_UP_Click(BT_UP, null);
             }
             else if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                BT_Mute_Click(BT_Mute, null);
+                if(BT_Mute.IsEnabled)
+                    BT_Mute_Click(BT_Mute, null);
             }
             else if (e.Key == Key.B && Keyboard.Modifiers == ModifierKeys.Control)
             {
