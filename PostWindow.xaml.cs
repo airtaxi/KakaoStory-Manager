@@ -238,6 +238,7 @@ namespace KSP_WPF
                 PostWindow postWindow = MainWindow.posts[feedID];
                 postWindow.Refresh();
                 postWindow.Show();
+                postWindow.Focus();
                 postWindow.Activate();
                 postWindow.SV_Comment.ScrollToEnd();
                 postWindow.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => postWindow.TB_Comment.Focus()));
@@ -246,6 +247,7 @@ namespace KSP_WPF
             {
                 PostWindow postWindow = new PostWindow(data, feedID);
                 postWindow.Show();
+                postWindow.Focus();
                 postWindow.Activate();
                 postWindow.SV_Comment.ScrollToEnd();
                 if(Properties.Settings.Default.PositionPostToTop)

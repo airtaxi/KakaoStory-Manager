@@ -1143,6 +1143,9 @@ namespace KSP_WPF
                     List<CSNotification> obj = JsonConvert.DeserializeObject<List<CSNotification>>(respResult);
                     if (isReturn) return obj;
                     int countTemp = 0;
+
+                    if (obj.Count > 0)
+                        LastMessageTime = obj[0].created_at;
                     for (int count = 0; count < obj.Count; count++)
                     {
                         countTemp = count;
@@ -1205,8 +1208,6 @@ namespace KSP_WPF
                         MainWindow.instance.Title = MainWindow.instance.Title.Replace(OfflineStr, "");
                         MainWindow.isOffline = false;
                     }
-                    if (obj.Count > 0)
-                        LastMessageTime = obj[0].created_at;
                 }
                 catch (Exception)
                 {
