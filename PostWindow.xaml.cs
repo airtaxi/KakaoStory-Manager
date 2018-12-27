@@ -82,8 +82,8 @@ namespace KSP_WPF
 
             comment.TB_MetaData.Text = GetTimeString(commentProf.created_at);
             string imgUri = commentProf.writer.profile_video_url_square_micro_small ?? commentProf.writer.profile_thumbnail_url;
-            if (Properties.Settings.Default.GIFProfile && commentProf.writer.profile_video_url_square_small != null)
-                imgUri = commentProf.writer.profile_video_url_square_micro_small;
+            //if (Properties.Settings.Default.GIFProfile && commentProf.writer.profile_video_url_square_small != null)
+            //    imgUri = commentProf.writer.profile_video_url_square_micro_small;
             GlobalHelper.AssignImage(comment.IMG_Profile, imgUri);
 
             MainWindow.SetClickObject(comment.IMG_Profile);
