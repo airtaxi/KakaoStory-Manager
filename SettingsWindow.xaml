@@ -23,12 +23,11 @@
             <CheckBox Name="CB_VIP" Margin="0,5,0,0" Content="관심 친구 알림 끄기" Click="CB_Click"/>
             <CheckBox Name="CB_Like" Margin="0,5,0,0" Content="느낌 알림 끄기" Click="CB_Click"/>
             <CheckBox Name="CB_Memory" Margin="0,5,0,0" Content="타임라인 메모리 절약" Click="CB_Click"/>
-            <!--<CheckBox Name="CB_ImageClick" Margin="0,5,0,0" Content="이미지 클릭시 저장" Click="CB_Click"/>-->
             <CheckBox Name="CB_FullScreen" Margin="0,5,0,0" Content="포스트 열 때 전체화면으로 전환" Click="CB_Click"/>
             <CheckBox Name="CB_TimelineScroll" Margin="0,5,0,0" Content="타임라인 내용이 길면 스크롤바 생성" Click="CB_Click"/>
             <CheckBox Name="CB_HideScrollBar" Margin="0,5,0,0" Content="스크롤바 숨기기" Click="CB_Click"/>
-            <CheckBox Name="CB_NoGIF" Margin="0,5,0,0" Content="GIF 이미지 사용안함 (저사양 PC 권장)" Click="CB_Click"/>
-            <CheckBox Name="CB_GIFProfile" Margin="0,5,0,0" Content="움직이는 프로필 사용 (저사양 PC 권장 안함)" Click="CB_Click"/>
+            <CheckBox Name="CB_NoGIF" Margin="0,5,0,0" Content="타임라인에서 GIF 이미지 사용안함 (권장)" Click="CB_Click"/>
+            <CheckBox Name="CB_GIFProfile" Margin="0,5,0,0" Content="타임라인에서 움직이는 프로필 사용 (권장 안함)" Click="CB_Click"/>
             <CheckBox Name="CB_DefaultFriendOnly" Margin="0,5,0,0" Content="기본 공개범위를 친구공개로 설정" Click="CB_Click"/>
             <CheckBox Name="CB_ShowComment" Margin="0,5,0,0" Content="포스트 창의 댓글창 자동으로 펼치기" Click="CB_Click"/>
             <CheckBox Name="CB_PositionPostToTop" Margin="0,5,0,0" Content="포스트 조회시 창의 위치를 맨위로 설정하기" Click="CB_Click"/>
