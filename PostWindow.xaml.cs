@@ -486,10 +486,10 @@ namespace KSP_WPF
         private void RefreshImage()
         {
             SP_Content.Children.Clear();
-            bool isFirst = true;
             if (data.media_type != null && data.media != null && data.media_type.Equals("image"))
             {
                 RefreshImageContent(data.media, SP_Content);
+                SP_Content.Visibility = Visibility.Visible;
             }
 
             if (data.media?.Count > 0 && data.media?[0]?.url_hq != null)
