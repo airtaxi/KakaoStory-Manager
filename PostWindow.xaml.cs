@@ -63,6 +63,13 @@ namespace KSP_WPF
                     comment.TB_Content.Inlines.Add(new Run(decorator.text.Replace("\\n", "\n")));
                 }
             }
+            
+
+            if (commentProf.updated_at.Year > 1)
+            {
+                comment.TB_Edit.Visibility = Visibility.Visible;
+                comment.TB_Edit.Text += " - " + GetTimeString(commentProf.updated_at);
+            }
 
             comment.TB_Content.MouseRightButtonDown += (s, e) =>
             {
@@ -74,9 +81,9 @@ namespace KSP_WPF
                 comment.TB_Like.Text = $"좋아요 {commentProf.like_count.ToString()}개";
 
             comment.TB_MetaData.Text = GetTimeString(commentProf.created_at);
-            string imgUri = commentProf.writer.profile_image_url ?? commentProf.writer.profile_thumbnail_url;
+            string imgUri = commentProf.writer.profile_video_url_square_micro_small ?? commentProf.writer.profile_thumbnail_url;
             if (Properties.Settings.Default.GIFProfile && commentProf.writer.profile_video_url_square_small != null)
-                imgUri = commentProf.writer.profile_video_url_square_small;
+                imgUri = commentProf.writer.profile_video_url_square_micro_small;
             GlobalHelper.AssignImage(comment.IMG_Profile, imgUri);
 
             MainWindow.SetClickObject(comment.IMG_Profile);
@@ -312,7 +319,7 @@ namespace KSP_WPF
                 if (!data.actor.id.Equals(MainWindow.userProfile.id))
                     BT_Edit.IsEnabled = false;
                 
-                string imgUri = data.actor.profile_image_url ?? data.actor.profile_thumbnail_url;
+                string imgUri = data.actor.profile_video_url_square_small ?? data.actor.profile_thumbnail_url;
                 if (Properties.Settings.Default.GIFProfile && data.actor.profile_video_url_square_small != null)
                     imgUri = data.actor.profile_video_url_square_small;
                 GlobalHelper.AssignImage(IMG_Profile, imgUri);
@@ -366,7 +373,7 @@ namespace KSP_WPF
                             }
                         };
 
-                        string imgUri2 = data.@object.actor.profile_image_url ?? data.@object.actor.profile_thumbnail_url;
+                        string imgUri2 = data.@object.actor.profile_video_url_square_small ?? data.@object.actor.profile_thumbnail_url;
                         if (Properties.Settings.Default.GIFProfile && data.@object.actor.profile_video_url_square_small != null)
                             imgUri2 = data.@object.actor.profile_video_url_square_small;
 

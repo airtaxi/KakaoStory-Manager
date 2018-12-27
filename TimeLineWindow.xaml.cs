@@ -175,7 +175,7 @@ namespace KSP_WPF
                 relationship = await KakaoRequestClass.GetProfileRelationship(profileID);
                 if (profile.profile.bg_image_url != null)
                 {
-                    string imgUri = profile.profile.profile_image_url ?? profile.profile.profile_thumbnail_url;
+                    string imgUri = profile.profile.profile_image_url2 ?? profile.profile.profile_thumbnail_url;
                     if (Properties.Settings.Default.GIFProfile && profile.profile.profile_video_url_square_small != null)
                         imgUri = profile.profile.profile_video_url_square_small;
                     GlobalHelper.AssignImage(IMG_Profile, imgUri);
@@ -339,7 +339,7 @@ namespace KSP_WPF
                             tlp.GD_Share.Tag = feed.@object.id;
                             tlp.GD_Share.MouseLeftButtonDown += ShareContentMouseEvent;
 
-                            string imgUri = feed.@object.actor.profile_image_url ?? feed.@object.actor.profile_thumbnail_url;
+                            string imgUri = feed.@object.actor.profile_image_url2 ?? feed.@object.actor.profile_thumbnail_url;
                             if (Properties.Settings.Default.GIFProfile && feed.@object.actor.profile_video_url_square_small != null)
                                 imgUri = feed.@object.actor.profile_video_url_square_small;
                             GlobalHelper.AssignImage(tlp.IMG_ProfileShare, imgUri);
@@ -435,7 +435,7 @@ namespace KSP_WPF
         {
             tlp.SP_Comments?.Children?.Clear();
             tlp.SP_Content?.Children?.Clear();
-            string imgUri = feed.actor.profile_image_url ?? feed.actor.profile_thumbnail_url;
+            string imgUri = feed.actor.profile_image_url2 ?? feed.actor.profile_thumbnail_url;
             if (Properties.Settings.Default.GIFProfile && feed.actor.profile_video_url_square_small != null)
                 imgUri = feed.actor.profile_video_url_square_small;
             GlobalHelper.AssignImage(tlp.IMG_Profile, imgUri);

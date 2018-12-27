@@ -16,6 +16,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Documents;
 using Newtonsoft.Json;
 using System.Windows.Input;
+using WPFMediaKit.DirectShow.Controls;
 
 namespace KSP_WPF
 {
@@ -321,14 +322,49 @@ namespace KSP_WPF
                     }
                 });
         }
-        
+        private static void SetImage(MediaElement image, string path, string uri, bool isGIF)
+        {
+            if (image == null) return;
+            image.Dispatcher.Invoke(async () =>
+            {
+                try
+                {
+                    image.LoadedBehavior = MediaState.Manual;
+                    image.Source = new Uri(path, UriKind.Absolute);
+                    image.Volume = 1;
+                    image.Position = TimeSpan.Zero;
+
+                    image.MediaEnded += (s, e) =>
+                    {
+                        image.Position = TimeSpan.FromMilliseconds(1);
+                        image.Play();
+                    };
+                    image.Play();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, e.StackTrace);
+                    await Task.Delay(100);
+                    SetImage(image, path, uri, isGIF);
+                }
+            });
+        }
+
         public static async void AssignImage(dynamic image, string uri)
         {
             if (image == null) return;
             if (uri != null && uri.Length > 0)
             {
                 string hash = GetHash(uri);
-                string path = System.IO.Path.Combine(defaultPath, hash + ".proftemp");
+                string path;
+                if (image is MediaElement && uri.ToLower().Contains("mp4?"))
+                    path = System.IO.Path.Combine(defaultPath, hash + ".mp4");
+                else if (image is MediaElement && uri.ToLower().Contains(".jpg?"))
+                    path = System.IO.Path.Combine(defaultPath, hash + ".jpg");
+                else if (image is MediaElement && uri.ToLower().Contains(".gif?"))
+                    path = System.IO.Path.Combine(defaultPath, hash + ".gif");
+                else
+                    path = System.IO.Path.Combine(defaultPath, hash + ".proftemp");
                 bool isGIF = uri.Contains(".gif");
                 if (File.Exists(path))
                 {
@@ -336,6 +372,8 @@ namespace KSP_WPF
                         SetImage(image as Image, path, uri, isGIF);
                     else if (image is Ellipse)
                         SetImage(image as Ellipse, path, uri, isGIF);
+                    else if (image is MediaElement)
+                        SetImage(image as MediaElement, path, uri, isGIF);
                 }
                 else
                     await Task.Run(async () =>
@@ -355,6 +393,8 @@ namespace KSP_WPF
                             SetImage(image as Image, path, uri, isGIF);
                         else if (image is Ellipse)
                             SetImage(image as Ellipse, path, uri, isGIF);
+                        else if (image is MediaElement)
+                            SetImage(image as MediaElement, path, uri, isGIF);
                     });
             }
         }

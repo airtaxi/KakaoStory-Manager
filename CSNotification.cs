@@ -919,6 +919,7 @@ namespace KSP_WPF
             public string activity_id { get; set; }
             public string index { get; set; }
             public DateTime created_at { get; set; }
+            public DateTime updated_at { get; set; }
             public string id { get; set; }
             public string text { get; set; }
             public Writer writer { get; set; }

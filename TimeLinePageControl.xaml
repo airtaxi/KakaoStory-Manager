@@ -23,7 +23,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="10"/>
                 </Grid.ColumnDefinitions>
-                <Image Name="IMG_Profile" Grid.Column="1" Width="50" Height="50" Stretch="UniformToFill"/>
+                <Image Grid.Column="1" Name="IMG_Profile" Width="50" Height="50" Stretch="UniformToFill"/>
                 <Rectangle Stroke="LightGray" Grid.Column="1" Width="50" Height="50"/>
                 <StackPanel Grid.Column="2" Orientation="Vertical">
                     <TextBlock Name="TB_Name" Text="이름" Margin="5,10,0,0" FontWeight="Bold" />

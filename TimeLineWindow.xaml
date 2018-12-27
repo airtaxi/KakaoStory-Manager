@@ -12,8 +12,9 @@
         Closing="MetroWindow_Closing"
         Loaded="Window_Loaded"
         Deactivated="Window_Deactivated"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="타임라인" Height="640" Width="450" Icon="icon2.png">
+                        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                      xmlns:controls1="clr-namespace:WPFMediaKit.DirectShow.Controls;assembly=WPFMediaKit"
+                      Title="타임라인" Height="640" Width="450" Icon="icon2.png">
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <StackPanel Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
@@ -69,7 +70,8 @@
                                     <TextBlock Name="TB_Desc" Text="소개" Margin="0,2.5,0,0" FontSize="12" FontWeight="Light" HorizontalAlignment="Left" />
                                     <TextBlock Name="TB_Desc2" Text="설명" Margin="0,2.5,0,0" FontSize="12" FontWeight="ExtraLight" HorizontalAlignment="Left" />
                                 </StackPanel>
-                                <Image Grid.Row="1" Name="IMG_Profile" Width="90" Height="90" VerticalAlignment="Top" HorizontalAlignment="Left" Stretch="UniformToFill"/>
+                                <!--<Image Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Name="IMG_Profile" Width="90" Height="90" Stretch="UniformToFill"/>-->
+                                <Image Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left" Name="IMG_Profile" Width="90" Height="90" Stretch="UniformToFill"/>
                                 <Rectangle Grid.Row="1" Stroke="LightGray" Width="90" Height="90" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                 <Rectangle Grid.Row="1" Stroke="LightGray" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
                                 <Grid Name="GD_Favorite" Grid.Row="1" VerticalAlignment="Bottom" Visibility="Visible">

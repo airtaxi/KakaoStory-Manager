@@ -21,7 +21,10 @@
                     <Rectangle Stroke="LightGray" Height="60" VerticalAlignment="Top"/>
                     <StackPanel Orientation="Vertical" Grid.Column="1" Margin="5,0,0,0" Grid.ColumnSpan="1">
                         <TextBlock Name="TB_Name" Text="이름" FontSize="15" TextWrapping="WrapWithOverflow" FontWeight="Bold"/>
-                        <TextBlock Name="TB_Content" FontSize="12" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                        <StackPanel Orientation="Vertical" Background="Transparent" IsHitTestVisible="True">
+                            <TextBlock Name="TB_Content" FontSize="12" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                            <TextBlock Name="TB_Edit" TextWrapping="Wrap" Text="(수정됨)" Foreground="Gray" FontSize="10" FontWeight="ExtraLight" Margin="0,5,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                        </StackPanel>
                         <Image Name="IMG_Comment" Width="Auto" Stretch="UniformToFill" Margin="0,5,0,0" Visibility="Collapsed"/>
                         <StackPanel Orientation="Horizontal" Margin="0,5,0,0" HorizontalAlignment="Left">
                             <TextBlock Name="TB_MetaData" TextWrapping="Wrap" Text="방금 전" FontSize="10" FontWeight="ExtraLight"/>
