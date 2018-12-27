@@ -409,30 +409,7 @@ namespace KSP_WPF
                         
                         if (data.@object.media_type != null && data.@object.media_type.Equals("image"))
                         {
-                            bool isFirst = true;
-                            Image lastImage = null;
-                            foreach (var media in data.@object.media)
-                            {
-                                string uri = media.origin_url;
-                                if (uri != null)
-                                {
-                                    Image image = new Image();
-                                    image.Tag = new Image[2] { lastImage, null };
-                                    if(lastImage != null && lastImage.Tag is Image[])
-                                    {
-                                        ((Image[]) lastImage.Tag)[1] = image;
-                                    }
-                                    GlobalHelper.AssignImage(image, uri);
-                                    image.Stretch = Stretch.UniformToFill;
-                                    if (!isFirst)
-                                        image.Margin = new Thickness(0, 10, 0, 10);
-                                    isFirst = false;
-                                    image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
-                                    image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
-                                    lastImage = image;
-                                    SP_ShareContent.Children.Add(image);
-                                }
-                            }
+                            RefreshImageContent(data.@object.media, SP_ShareContent);
                             SP_ShareContent.Visibility = Visibility.Visible;
                         }
 
@@ -478,36 +455,41 @@ namespace KSP_WPF
             });
         }
 
+        private void RefreshImageContent(List<CommentData.Medium> medias, StackPanel panel)
+        {
+            bool isFirst = true;
+            Image lastImage = null;
+            foreach (var media in medias)
+            {
+                string uri = media.origin_url;
+                if (uri != null)
+                {
+                    Image image = new Image();
+                    image.Tag = new Image[2] { lastImage, null };
+                    if (lastImage != null && lastImage.Tag is Image[])
+                    {
+                        ((Image[])lastImage.Tag)[1] = image;
+                    }
+                    GlobalHelper.AssignImage(image, uri);
+                    image.Stretch = Stretch.UniformToFill;
+                    if (!isFirst)
+                        image.Margin = new Thickness(0, 10, 0, 10);
+                    isFirst = false;
+                    image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                    image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
+                    lastImage = image;
+                    panel.Children.Add(image);
+                }
+            }
+        }
+
         private void RefreshImage()
         {
             SP_Content.Children.Clear();
             bool isFirst = true;
             if (data.media_type != null && data.media != null && data.media_type.Equals("image"))
             {
-                Image lastImage = null;
-                foreach (var media in data.media)
-                {
-                    string uri = media.origin_url;
-                    if (uri != null)
-                    {
-                        Image image = new Image();
-                        image.Tag = new Image[2] { lastImage, null };
-                        if (lastImage != null && lastImage.Tag is Image[])
-                        {
-                            ((Image[])lastImage.Tag)[1] = image;
-                        }
-                        GlobalHelper.AssignImage(image, uri);
-                        image.Stretch = Stretch.UniformToFill;
-                        if (!isFirst)
-                            image.Margin = new Thickness(0, 10, 0, 10);
-                        isFirst = false;
-                        image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
-                        image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
-                        lastImage = image;
-                        SP_Content.Children.Add(image);
-                        SP_Content.Visibility = Visibility.Visible;
-                    }
-                }
+                RefreshImageContent(data.media, SP_Content);
             }
 
             if (data.media?.Count > 0 && data.media?[0]?.url_hq != null)
