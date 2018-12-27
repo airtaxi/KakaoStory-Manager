@@ -175,9 +175,9 @@ namespace KSP_WPF
                 relationship = await KakaoRequestClass.GetProfileRelationship(profileID);
                 if (profile.profile.bg_image_url != null)
                 {
-                    string imgUri = profile.profile.profile_video_url_square ?? profile.profile.profile_thumbnail_url;
+                    string imgUri = profile.profile.profile_video_url_square_small ?? profile.profile.profile_thumbnail_url;
                     if (Properties.Settings.Default.GIFProfile && profile.profile.profile_video_url_square_small != null)
-                        imgUri = profile.profile.profile_video_url_square;
+                        imgUri = profile.profile.profile_video_url_square_small;
                     GlobalHelper.AssignImage(IMG_Profile, imgUri);
                     GlobalHelper.AssignImage(IMG_ProfileBG, profile.profile.bg_image_url);
                     TB_Name.Text = profile.profile.display_name;
