@@ -361,30 +361,7 @@ namespace KSP_WPF
 
                             if (feed.@object.media_type != null && feed.@object.media_type.Equals("image"))
                             {
-                                Image lastImage = null;
-                                foreach (var media in feed.@object.media)
-                                {
-                                    string uri = media.origin_url;
-                                    if (uri.Contains(".gif") && !Properties.Settings.Default.UseGIF)
-                                        uri = media.jpg_url;
-
-                                    if (uri != null)
-                                    {
-                                        Image image = new Image();
-                                        image.Tag = new Image[2] { lastImage, null };
-                                        if (lastImage != null && lastImage.Tag is Image[])
-                                        {
-                                            ((Image[])lastImage.Tag)[1] = image;
-                                        }
-                                        GlobalHelper.AssignImage(image, uri);
-                                        image.Stretch = Stretch.UniformToFill;
-                                        image.Margin = new Thickness(0, 0, 0, 10);
-                                        image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
-                                        image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
-                                        lastImage = image;
-                                        tlp.SP_ShareContent.Children.Add(image);
-                                    }
-                                }
+                                RefreshImageContent(feed.@object.media, tlp.SP_ShareContent);
                             }
                             if (feed.@object.scrap != null)
                             {
@@ -431,6 +408,45 @@ namespace KSP_WPF
             return true;
         }
         
+        private void RefreshImageContent(List<CommentData.Medium> medias, StackPanel panel)
+        {
+            Image lastImage = null;
+            foreach (var media in medias)
+            {
+                string uri = media.origin_url;
+                bool overrideGif = false;
+                if (uri.Contains(".gif") && !Properties.Settings.Default.UseGIF)
+                {
+                    overrideGif = true;
+                    uri = media.jpg_url;
+                }
+
+                if (uri != null)
+                {
+                    Image image = new Image();
+                    if (overrideGif != true)
+                    {
+                        image.Tag = new Image[2] { lastImage, null };
+                        if (lastImage != null && lastImage.Tag is Image[])
+                        {
+                            ((Image[])lastImage.Tag)[1] = image;
+                        }
+                    }
+                    else
+                    {
+                        image.Tag = media.origin_url;
+                    }
+                    GlobalHelper.AssignImage(image, uri);
+                    image.Stretch = Stretch.UniformToFill;
+                    image.Margin = new Thickness(0, 0, 0, 10);
+                    image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                    image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
+                    lastImage = image;
+                    panel.Children.Add(image);
+                }
+            }
+        }
+
         private void RefreshTimeLineFeed(TimeLinePageControl tlp, CommentData.PostData feed)
         {
             tlp.SP_Comments?.Children?.Clear();
@@ -449,27 +465,7 @@ namespace KSP_WPF
             GlobalHelper.RefreshContent(feed.content_decorators, feed.content, tlp.TB_Content);
             if (feed.media_type != null && feed.media_type.Equals("image"))
             {
-                Image lastImage = null;
-                foreach (var media in feed.media)
-                {   
-                    string uri = media.origin_url;
-                    if (uri.Contains(".gif") && !Properties.Settings.Default.UseGIF)
-                        uri = media.jpg_url;
-
-                    Image img = new Image();
-                    img.Tag = new Image[2] { lastImage, null };
-                    if (lastImage != null && lastImage.Tag is Image[])
-                    {
-                        ((Image[])lastImage.Tag)[1] = img;
-                    }
-                    GlobalHelper.AssignImage(img, uri);
-                    img.Stretch = Stretch.UniformToFill;
-                    img.Margin = new Thickness(0, 0, 0, 10);
-                    img.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
-                    img.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
-                    lastImage = img;
-                    tlp.SP_Content.Children.Add(img);
-                }
+                RefreshImageContent(feed.media, tlp.SP_Content);
             }
 
             bool willDisplayInfo = false;

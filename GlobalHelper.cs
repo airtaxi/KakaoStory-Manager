@@ -71,13 +71,13 @@ namespace KSP_WPF
         {
             try
             {
-                System.Windows.Controls.Image img = (System.Windows.Controls.Image)source;
+                Image img = (Image)source;
                 System.Windows.Clipboard.SetImage(img.Source as BitmapImage);
                 MessageBox.Show("클립보드에 이미지가 복사됐습니다");
             }
             catch (Exception)
             {
-                System.Windows.Controls.Image image = (System.Windows.Controls.Image)source;
+                Image image = (Image)source;
                 if (image.Tag is string uri)
                     SaveGIFImage(image);
             }
@@ -85,7 +85,7 @@ namespace KSP_WPF
                 e.Handled = true;
         }
 
-        public static void SaveGIFImage(System.Windows.Controls.Image image)
+        public static void SaveGIFImage(Image image)
         {
             string uri = (string)image.Tag;
             if (uri != null)
@@ -105,12 +105,16 @@ namespace KSP_WPF
 
         public static void SaveImageHandler(object source, MouseButtonEventArgs e)
         {
+            Image image = (Image)source;
             ImageViewerWindow imageViewer = new ImageViewerWindow();
             imageViewer.Show();
             imageViewer.Activate();
             imageViewer.Focus();
-            imageViewer.currentImage = (System.Windows.Controls.Image)source;
-            imageViewer.IMG_Main.Source = ((System.Windows.Controls.Image)source).Source;
+            imageViewer.currentImage = image;
+            if(image.Tag is string)
+                AssignImage(imageViewer.IMG_Main, (string) image.Tag);
+            else
+                imageViewer.IMG_Main.Source = ((Image)source).Source;
             imageViewer.ZB_Main.FitToBounds();
             e.Handled = true;
         }
@@ -140,7 +144,7 @@ namespace KSP_WPF
             return true;
         }
 
-        public static void SaveImageToFile(System.Windows.Controls.Image image)
+        public static void SaveImageToFile(Image image)
         {
             if (image.Tag is string uri)
             {
