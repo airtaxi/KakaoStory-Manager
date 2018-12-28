@@ -1197,12 +1197,7 @@ namespace KSP_WPF
                                     MainWindow.posts[activityID].SV_Comment.ScrollToEnd();
                                 }
                             }
-                            catch (Exception)
-                            {
-                            }
-                            finally
-                            {
-                            }
+                            catch (Exception) {}
                         }
                         else
                         {
