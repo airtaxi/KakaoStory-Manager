@@ -373,14 +373,12 @@ namespace KSP_WPF
                 {
                     profileTimeLineWindow = new TimeLineWindow(userProfile.id);
                     profileTimeLineWindow.Show();
-                    profileTimeLineWindow.Focus();
                     profileTimeLineWindow.Activate();
                 }
                 else
                 {
                     await profileTimeLineWindow.RefreshTimeline(null, true);
                     profileTimeLineWindow.Show();
-                    profileTimeLineWindow.Focus();
                     profileTimeLineWindow.Activate();
                 }
             }
@@ -538,7 +536,6 @@ namespace KSP_WPF
                 TimeLineWindow.showBookmarkedGlobal = true;
                 TimeLineWindow timeLineWindow = new TimeLineWindow(userProfile.id);
                 timeLineWindow.Show();
-                timeLineWindow.Focus();
                 timeLineWindow.Activate();
             }
         }

@@ -53,7 +53,7 @@ namespace KSP_WPF
                     {
                         TimeLineWindow tlw = new TimeLineWindow(decorator.id);
                         tlw.Show();
-                        tlw.Focus();
+                        tlw.Activate();
                         e.Handled = true;
                     };
                     comment.TB_Content.Inlines.Add(content);
@@ -93,7 +93,7 @@ namespace KSP_WPF
                 {
                     TimeLineWindow tlw = new TimeLineWindow(commentProf.writer.id);
                     tlw.Show();
-                    tlw.Focus();
+                    tlw.Activate();
                     e.Handled = true;
                 }
                 catch (Exception)
@@ -245,7 +245,6 @@ namespace KSP_WPF
                 PostWindow postWindow = MainWindow.posts[feedID];
                 postWindow.Refresh();
                 postWindow.Show();
-                postWindow.Focus();
                 postWindow.Activate();
                 postWindow.SV_Comment.ScrollToEnd();
                 postWindow.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => postWindow.TB_Comment.Focus()));
@@ -254,7 +253,6 @@ namespace KSP_WPF
             {
                 PostWindow postWindow = new PostWindow(data, feedID);
                 postWindow.Show();
-                postWindow.Focus();
                 postWindow.Activate();
                 postWindow.SV_Comment.ScrollToEnd();
                 if(Properties.Settings.Default.PositionPostToTop)
@@ -331,7 +329,7 @@ namespace KSP_WPF
                     {
                         TimeLineWindow tlw = new TimeLineWindow(data.actor.id);
                         tlw.Show();
-                        tlw.Focus();
+                        tlw.Activate();
                         e.Handled = true;
                     }
                     catch (Exception)
@@ -387,7 +385,7 @@ namespace KSP_WPF
                             {
                                 TimeLineWindow tlw = new TimeLineWindow(data.@object.actor.id);
                                 tlw.Show();
-                                tlw.Focus();
+                                tlw.Activate();
                                 e.Handled = true;
                             }
                             catch (Exception)
@@ -544,7 +542,7 @@ namespace KSP_WPF
                 index = 2;
             PostInfoWindow piw = new PostInfoWindow(data.likes, shares, ups, index);
             piw.Show();
-            piw.Focus();
+            piw.Activate();
             e.Handled = true;
         }
 

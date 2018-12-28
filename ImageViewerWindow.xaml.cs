@@ -44,6 +44,11 @@ namespace KSP_WPF
                 ZB_Main.FitToBounds();
                 e.Handled = true;
             }
+            else if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                ZB_Main.FillToBounds();
+                e.Handled = true;
+            }
             else if (e.Key == Key.Left)
             {
                 if (currentImage.Tag is Image[] nextPrev)

@@ -1133,6 +1133,8 @@ namespace KSP_WPF
 
                 webRequest.AutomaticDecompression = DecompressionMethods.GZip;
                 webRequest.Date = DateTime.Now;
+                DateTime? lastTime = null;
+
                 try
                 {
                     var readStream = await webRequest.GetResponseAsync();
@@ -1144,8 +1146,9 @@ namespace KSP_WPF
                     if (isReturn) return obj;
                     int countTemp = 0;
 
-                    if (obj.Count > 0)
-                        LastMessageTime = obj[0].created_at;
+                    if(obj.Count > 0)
+                        lastTime = obj[0].created_at;
+
                     for (int count = 0; count < obj.Count; count++)
                     {
                         countTemp = count;
@@ -1194,7 +1197,12 @@ namespace KSP_WPF
                                     MainWindow.posts[activityID].SV_Comment.ScrollToEnd();
                                 }
                             }
-                            catch (Exception) { }
+                            catch (Exception)
+                            {
+                            }
+                            finally
+                            {
+                            }
                         }
                         else
                         {
@@ -1219,6 +1227,12 @@ namespace KSP_WPF
                             GlobalHelper.ShowNotification("일반 오류", "인터넷 연결에 문제가 발생했습니다. 자동으로 복구를 시도합니다.", null);
                     }
                 }
+                finally
+                {
+                    if (lastTime != null)
+                        LastMessageTime = lastTime;
+                }
+
             }
             if (isReturn == false)
             {
