@@ -265,6 +265,9 @@
     <Compile Include="NotificationsWindow.xaml.cs">
       <DependentUpon>NotificationsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserInfoWindow.xaml.cs">
+      <DependentUpon>UserInfoWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PostInfoWindow.xaml.cs">
       <DependentUpon>PostInfoWindow.xaml</DependentUpon>
     </Compile>
@@ -308,6 +311,9 @@
       <DependentUpon>TimeLineWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UploadedImageProp.cs" />
+    <Compile Include="UserNameWithCloseButton.xaml.cs">
+      <DependentUpon>UserNameWithCloseButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WebExeption.cs" />
     <Compile Include="WebViewWindow.xaml.cs">
       <DependentUpon>WebViewWindow.xaml</DependentUpon>
@@ -356,6 +362,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserInfoWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="PostInfoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -401,6 +411,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TimeLineWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserNameWithCloseButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

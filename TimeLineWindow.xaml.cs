@@ -470,6 +470,17 @@ namespace KSP_WPF
                 RefreshImageContent(feed.media, tlp.SP_Content);
             }
 
+
+            if (feed.closest_with_tags != null && feed.closest_with_tags.Count > 0)
+            {
+                Separator sep = new Separator();
+                tlp.SP_Content.Children.Add(sep);
+                sep.Margin = new Thickness(0, 5, 0, 5);
+                var TB_Closest_With = GlobalHelper.GetWithFriendTB(feed);
+                tlp.SP_Content.Children.Add(TB_Closest_With);
+                tlp.SP_Content.Visibility = Visibility.Visible;
+            }
+
             bool willDisplayInfo = false;
 
             if (feed.comment_count > 0)
@@ -527,6 +538,7 @@ namespace KSP_WPF
             {
                 tlp.RD_CommentInfos.Height = new GridLength(0);
             }
+            
         }
 
         public static RoutedEventHandlerInfo[] GetRoutedEventHandlers(UIElement element, RoutedEvent routedEvent)

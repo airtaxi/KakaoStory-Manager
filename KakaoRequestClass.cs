@@ -33,6 +33,15 @@ namespace KSP_WPF
             return obj;
         }
 
+        public static async Task<ProfileData.ProfileObject> GetProfile(string id)
+        {
+            string requestURI = "https://story.kakao.com/a/profiles/" + id;
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            ProfileData.ProfileObject obj = JsonConvert.DeserializeObject<ProfileData.ProfileObject>(response);
+            return obj;
+        }
+
         public static async Task<ProfileRelationshipData.ProfileRelationship> GetProfileRelationship(string id)
         {
             string requestURI = "https://story.kakao.com/a/profiles/" + id + "?profile_only=true";
@@ -555,6 +564,9 @@ namespace KSP_WPF
             string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/shares/";
             if (isUP)
                 requestURI = "https://story.kakao.com/a/activities/" + data.id + "/sympathies/";
+
+            if (from != null)
+                requestURI += $"?since={from}";
             
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
             string response = await GetResponseFromRequest(webRequest);
@@ -586,14 +598,10 @@ namespace KSP_WPF
         public static async Task<List<ShareData.Share>> GetLikes(PostData data, string from)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/likes/";
-
             if(from != null)
                 requestURI += "?since=" + from;
-
             var webRequest = GenerateDefaultProfile(requestURI);
-
             string response = await GetResponseFromRequest(webRequest);
-
             return JsonConvert.DeserializeObject<List<ShareData.Share>>(response);
         }
     }

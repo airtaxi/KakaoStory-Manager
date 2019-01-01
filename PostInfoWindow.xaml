@@ -12,17 +12,17 @@
     <Grid>
         <controls:MetroAnimatedTabControl Name="TC_Main" controls:TabControlHelper.Underlined="TabPanel">
             <TabItem Header="느낌">
-                <ScrollViewer Name="SV_Emotions" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" PanningMode="VerticalOnly">
+                <ScrollViewer Name="SV_Emotions" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="SV_Emotions_PreviewMouseWheel" PanningMode="VerticalOnly">
                     <StackPanel Name="SP_Emotions"/>
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="공유">
-                <ScrollViewer Name="SV_Shares" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" PanningMode="VerticalOnly">
+                <ScrollViewer Name="SV_Shares" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="SV_Shares_PreviewMouseWheel" PanningMode="VerticalOnly">
                     <StackPanel Name="SP_Shares"/>
                 </ScrollViewer>
             </TabItem>
             <TabItem Header="UP">
-                <ScrollViewer Name="SV_UP" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel" PanningMode="VerticalOnly">
+                <ScrollViewer Name="SV_UP" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="SV_UP_PreviewMouseWheel" PanningMode="VerticalOnly">
                     <StackPanel Name="SP_UP"/>
                 </ScrollViewer>
             </TabItem>

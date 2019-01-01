@@ -60,9 +60,16 @@ namespace KSP_WPF
                 fsc.IC_Friend.Foreground = Brushes.OrangeRed;
             }
         }
-        public PostInfoWindow(List<ShareData.Share> likes, List<ShareData.Share> shares, List<ShareData.Share> ups, int index)
+
+        PostData data;
+        private string lastShareID;
+        private string lastLikeID;
+        private string lastUPID;
+
+        public PostInfoWindow(List<ShareData.Share> likes, List<ShareData.Share> shares, List<ShareData.Share> ups, PostData data, int index)
         {
             InitializeComponent();
+
             if (!Properties.Settings.Default.HideScrollBar)
             {
                 SV_Emotions.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
@@ -70,7 +77,46 @@ namespace KSP_WPF
                 SV_UP.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             }
 
+            this.data = data;
+
             TC_Main.SelectedIndex = index;
+            AddLikes(likes);
+            AddUps(ups);
+            AddShares(shares);
+
+            if(likes.Count > 0)
+                lastLikeID = likes.Last().id;
+            if(ups.Count > 0)
+                lastShareID = shares.Last().id;
+            if(shares.Count > 0)
+                lastUPID = ups.Last().id;
+        }
+
+        private void AddShares(List<ShareData.Share> shares)
+        {
+            foreach (var share in shares)
+            {
+                FriendSelectControl fsc = new FriendSelectControl();
+                AssignProfile(fsc, share.actor);
+                fsc.Grid.MouseLeftButtonDown += async (s, e) =>
+                {
+                    try
+                    {
+                        PostData pd = await KSPNotificationActivator.GetPost(share.activity_id);
+                        PostWindow.ShowPostWindow(pd, share.activity_id);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("접근할 수 없는 스토리입니다.");
+                    }
+                    e.Handled = true;
+                };
+                SP_Shares.Children.Add(fsc);
+            }
+        }
+
+        private void AddLikes(List<ShareData.Share> likes)
+        {
             foreach (var like in likes)
             {
                 FriendSelectControl fsc = new FriendSelectControl();
@@ -96,6 +142,10 @@ namespace KSP_WPF
                 };
                 SP_Emotions.Children.Add(fsc);
             }
+        }
+
+        private void AddUps(List<ShareData.Share> ups)
+        {
             foreach (var up in ups)
             {
                 FriendSelectControl fsc = new FriendSelectControl();
@@ -109,30 +159,6 @@ namespace KSP_WPF
                 };
                 SP_UP.Children.Add(fsc);
             }
-            foreach (var share in shares)
-            {
-                FriendSelectControl fsc = new FriendSelectControl();
-                AssignProfile(fsc, share.actor);
-                fsc.Grid.MouseLeftButtonDown += async (s, e) =>
-                {
-                    try
-                    {
-                        PostData pd = await KSPNotificationActivator.GetPost(share.activity_id);
-                        PostWindow.ShowPostWindow(pd, share.activity_id);
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("접근할 수 없는 스토리입니다.");
-                    }
-                    e.Handled = true;
-                };
-                SP_Shares.Children.Add(fsc);
-            }
-        }
-
-        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            GlobalHelper.HandleScroll(sender, e);
         }
 
         private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -141,6 +167,57 @@ namespace KSP_WPF
             {
                 e.Handled = true;
                 Close();
+            }
+        }
+
+        private bool isUPWorking = false;
+        private async void SV_UP_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            GlobalHelper.HandleScroll(sender, e);
+            if (SV_UP.VerticalOffset == SV_UP.ScrollableHeight && e.Delta < 0 && !isUPWorking)
+            {
+                isUPWorking = true;
+                var ups = await KakaoRequestClass.GetShares(true, data, lastUPID);
+                if (ups.Count > 0)
+                {
+                    lastUPID = ups.Last().id;
+                    AddUps(ups);
+                }
+                isUPWorking = false;
+            }
+        }
+
+        private bool isShareWorking = false;
+        private async void SV_Shares_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            GlobalHelper.HandleScroll(sender, e);
+            if (SV_Shares.VerticalOffset == SV_Shares.ScrollableHeight && e.Delta < 0 && lastShareID != null && !isShareWorking)
+            {
+                isShareWorking = true;
+                var shares = await KakaoRequestClass.GetShares(false, data, lastShareID);
+                if (shares.Count > 0)
+                {
+                    AddShares(shares);
+                    lastShareID = shares.Last().id;
+                }
+                isShareWorking = false;
+            }
+        }
+
+        private bool isEmotionWorking = false;
+        private async void SV_Emotions_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            GlobalHelper.HandleScroll(sender, e);
+            if (SV_Emotions.VerticalOffset == SV_Emotions.ScrollableHeight && e.Delta < 0 && !isEmotionWorking)
+            {
+                isEmotionWorking = true;
+                var likes = await KakaoRequestClass.GetLikes(data, lastLikeID);
+                if (likes.Count > 0)
+                {
+                    lastLikeID = likes.Last().id;
+                    AddLikes(likes);
+                }
+                isEmotionWorking = false;
             }
         }
     }

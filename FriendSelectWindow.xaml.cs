@@ -15,24 +15,48 @@ namespace KSP_WPF
     {
         public List<FriendSelectControl> controls = new List<FriendSelectControl>();
         private readonly Action<List<string>, List<string>> listener;
-        private static readonly Brush SelectedColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFDFD991"));
         private readonly bool isFriendList = false;
+        private static FriendSelectWindow instance;
+        private struct ProfileData
+        {
+            public UserNameWithCloseButton control;
+            public string id;
+            public string name;
+            public void Remove(object arg0, dynamic arg1)
+            {
+                instance.withProfiles.Remove(this);
+                instance.SP_WithFriends.Children.Remove(control);
+            }
+        };
+        private readonly List<ProfileData> withProfiles = new List<ProfileData>();
 
-        public void OnGridClick(object s, MouseButtonEventArgs e)
+        private bool DoesUserExists(string id)
+        {
+            foreach(var withProfile in withProfiles)
+            {
+                if (withProfile.id.Equals(id))
+                    return true;
+            }
+            return false;
+        }
+
+        public async void OnGridClick(object s, MouseButtonEventArgs e)
         {
             FriendSelectControl fsc = (FriendSelectControl)s;
             if (!isFriendList)
             {
-                fsc.isSelected = !fsc.isSelected;
-                if (fsc.isSelected)
+                string id = (string)fsc.Grid.Tag;
+                if(!DoesUserExists(id))
                 {
-                    fsc.Background = SelectedColor;
-                    fsc.Tag = true;
-                }
-                else
-                {
-                    fsc.Background = Brushes.Transparent;
-                    fsc.Tag = false;
+                    var user = await KakaoRequestClass.GetProfile(id);
+                    ProfileData profileData = new ProfileData() { id = id , name = user.profile.display_name };
+                    UserNameWithCloseButton control = new UserNameWithCloseButton();
+                    control.TB_Name.Text = user.profile.display_name;
+                    profileData.control = control;
+                    control.Margin = new Thickness(0, 0, 5, 0);
+                    control.IC_Close.MouseLeftButtonDown += profileData.Remove;
+                    withProfiles.Add(profileData);
+                    SP_WithFriends.Children.Add(control);
                 }
             }
             else
@@ -48,12 +72,17 @@ namespace KSP_WPF
         {
             InitializeComponent();
             this.listener = listener;
+            instance = this;
 
             if (Properties.Settings.Default.HideScrollBar)
                 SV_Content.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
 
             if (isFriendList)
+            {
                 Title = "친구 목록";
+                RD_Submit.Height = new GridLength(0);
+                RD_WithFriends.Height = new GridLength(0);
+            }
             this.isFriendList = isFriendList;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => TB_Search.Focus()));
         }
@@ -101,13 +130,10 @@ namespace KSP_WPF
         {
             List<string> ids = new List<string>();
             List<string> names = new List<string>();
-            foreach (var control in controls)
+            foreach (var withProfile in withProfiles)
             {
-                if ((bool)control.Tag == true)
-                {
-                    ids.Add(control.id);
-                    names.Add(control.name);
-                }
+                ids.Add(withProfile.id);
+                names.Add(withProfile.name);
             }
             listener.Invoke(ids, names);
             Close();
@@ -176,6 +202,15 @@ namespace KSP_WPF
         {
             if (!(e.Source is System.Windows.Controls.TextBox))
                 e.Handled = true;
+        }
+
+        private void SV_WithFriends_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            int threshold = 24;
+            ScrollViewer scv = (ScrollViewer)sender;
+            double target = scv.HorizontalOffset - Math.Min(Math.Max(e.Delta, -threshold), threshold);
+            scv.ScrollToHorizontalOffset(target);
+            e.Handled = true;
         }
     }
 }

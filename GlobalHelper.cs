@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
@@ -254,6 +255,50 @@ namespace KSP_WPF
             }
         }
 
+        public static TextBlock GetWithFriendTB(CommentData.PostData data)
+        {
+            TextBlock TB_Closest_With = new TextBlock();
+            CommentData.ClosestWithTag first = data.closest_with_tags.First();
+            string headStr;
+            string tailStr = "과 함께";
+            if (data.closest_with_tags.Count > 1)
+                headStr = $"{first.display_name}님 외 {data.closest_with_tags.Count.ToString()}명";
+            else
+                headStr = $"{first.display_name}님";
+
+            Bold boldContent = new Bold(new Run(headStr));
+            MainWindow.SetClickObject(boldContent);
+            List<string> ids = new List<string>();
+            foreach (var tag in data.closest_with_tags)
+            {
+                ids.Add(tag.id);
+            }
+            boldContent.PreviewMouseLeftButtonDown += (s, e) =>
+            {
+                if (data.closest_with_tags.Count > 1)
+                {
+                    UserInfoWindow userInfoWindow = new UserInfoWindow(ids)
+                    {
+                        Title = "함께하는 친구 목록"
+                    };
+                    userInfoWindow.Show();
+                    userInfoWindow.Focus();
+                }
+                else
+                {
+                    TimeLineWindow tlw = new TimeLineWindow(first.id);
+                    tlw.Show();
+                    tlw.Focus();
+                    e.Handled = true;
+                }
+                e.Handled = true;
+            };
+
+            TB_Closest_With.Inlines.Add(boldContent);
+            TB_Closest_With.Inlines.Add(new Run(tailStr));
+
+            return TB_Closest_With;
+        }
         public static string GetHash(string inputString)
         {
             HashAlgorithm algorithm = MD5.Create();

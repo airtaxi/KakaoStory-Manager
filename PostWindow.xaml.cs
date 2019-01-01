@@ -63,7 +63,7 @@ namespace KSP_WPF
                     comment.TB_Content.Inlines.Add(new Run(decorator.text.Replace("\\n", "\n")));
                 }
             }
-            
+
 
             if (commentProf.updated_at.Year > 1)
             {
@@ -123,7 +123,7 @@ namespace KSP_WPF
 
             if (commentProf.liked)
                 comment.IC_Like.Foreground = Brushes.Red;
-            
+
             bool deletable = commentProf.writer.id.Equals(MainWindow.userProfile.id) || data.actor.id.Equals(MainWindow.userProfile.id);
             bool editable = commentProf.writer.id.Equals(MainWindow.userProfile.id);
 
@@ -260,7 +260,7 @@ namespace KSP_WPF
                     postWindow.Topmost = true;
                     postWindow.Topmost = false;
                     postWindow.SV_Comment.ScrollToEnd();
-                    if(Properties.Settings.Default.PositionPostToTop)
+                    if (Properties.Settings.Default.PositionPostToTop)
                         postWindow.Top = 0;
                     postWindow.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => postWindow.TB_Comment.Focus()));
                 }), System.Windows.Threading.DispatcherPriority.ContextIdle);
@@ -322,7 +322,7 @@ namespace KSP_WPF
                     BT_Delte.IsEnabled = false;
                 if (!data.actor.id.Equals(MainWindow.userProfile.id))
                     BT_Edit.IsEnabled = false;
-                
+
                 string imgUri = data.actor.profile_video_url_square_small ?? data.actor.profile_thumbnail_url;
                 if (Properties.Settings.Default.GIFProfile && data.actor.profile_video_url_square_small != null)
                     imgUri = data.actor.profile_video_url_square_small;
@@ -410,7 +410,7 @@ namespace KSP_WPF
                             MessageBox.Show("클립보드에 공유한 글 내용이 복사됐습니다.");
                             e.Handled = true;
                         };
-                        
+
                         if (data.@object.media_type != null && data.@object.media_type.Equals("image"))
                         {
                             RefreshImageContent(data.@object.media, SP_ShareContent);
@@ -495,8 +495,7 @@ namespace KSP_WPF
                 RefreshImageContent(data.media, SP_Content);
                 SP_Content.Visibility = Visibility.Visible;
             }
-
-            if (data.media?.Count > 0 && data.media?[0]?.url_hq != null)
+            else if (data.media?.Count > 0 && data.media?[0]?.url_hq != null)
             {
                 TextBlock videoText = new TextBlock();
                 videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
@@ -509,6 +508,16 @@ namespace KSP_WPF
                 SP_Content.Children.Add(videoText);
                 SP_Content.Visibility = Visibility.Visible;
                 isVideo = true;
+            }
+
+            if (data.closest_with_tags != null && data.closest_with_tags.Count > 0)
+            {
+                Separator sep = new Separator();
+                SP_Content.Children.Add(sep);
+                sep.Margin = new Thickness(0, 5, 0, 5);
+                var TB_Closest_With = GlobalHelper.GetWithFriendTB(data);
+                SP_Content.Children.Add(TB_Closest_With);
+                SP_Content.Visibility = Visibility.Visible;
             }
         }
 
@@ -531,7 +540,7 @@ namespace KSP_WPF
             ShiftWindowOntoScreenHelper.ShiftWindowOntoScreen(this);
         }
 
-        
+
         private async void OnEmotionClick(object sender, MouseButtonEventArgs e)
         {
             TextBlock source = (TextBlock)sender;
@@ -547,7 +556,7 @@ namespace KSP_WPF
                 index = 1;
             if (source.Equals(TB_UpCount))
                 index = 2;
-            PostInfoWindow piw = new PostInfoWindow(likes, shares, ups, index);
+            PostInfoWindow piw = new PostInfoWindow(likes, shares, ups, data, index);
             piw.Show();
             piw.Activate();
             e.Handled = true;
@@ -565,11 +574,11 @@ namespace KSP_WPF
             }
             else if (diffTime.TotalMinutes < 60)
             {
-                dateText = ((int) diffTime.TotalMinutes).ToString() + "분 전";
+                dateText = ((int)diffTime.TotalMinutes).ToString() + "분 전";
             }
             else if (diffTime.TotalHours < 24)
             {
-                dateText = ((int) diffTime.TotalHours).ToString() + "시간 전";
+                dateText = ((int)diffTime.TotalHours).ToString() + "시간 전";
             }
             return dateText;
         }
@@ -642,7 +651,7 @@ namespace KSP_WPF
                 TB_Favorite.Text = "관심글 추가";
             }
 
-                if (!data.verb.Equals("share"))
+            if (!data.verb.Equals("share"))
             {
                 if (data.share_count - data.sympathy_count > 0 && (bool?)TB_ShareCount.Tag != true)
                 {
@@ -657,7 +666,7 @@ namespace KSP_WPF
                     TB_UpCount.MouseLeftButtonDown += OnEmotionClick;
                 }
             }
-            else if(data.verb.Equals("share"))
+            else if (data.verb.Equals("share"))
             {
                 BT_Share.IsEnabled = false;
                 BT_UP.IsEnabled = false;
@@ -732,7 +741,7 @@ namespace KSP_WPF
         private async void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             GlobalHelper.HandleScroll(sender, e);
-            if(SV_Comment.VerticalOffset == 0 && e.Delta > 0 && lastComment != null && (requestingCommentID != lastComment))
+            if (SV_Comment.VerticalOffset == 0 && e.Delta > 0 && lastComment != null && (requestingCommentID != lastComment))
             {
                 requestingCommentID = lastComment;
                 double origHeight = SV_Comment.ScrollableHeight;
@@ -914,7 +923,7 @@ namespace KSP_WPF
             UploadedImageProp result = JsonConvert.DeserializeObject<UploadedImageProp>(respResult);
             return result;
         }
-        
+
         private async void BT_Upload_Click(object sender, RoutedEventArgs e)
         {
             if (commentImage == null)
@@ -986,7 +995,7 @@ namespace KSP_WPF
             }
             return null;
         }
-            
+
         private async Task<bool> PasteImage()
         {
             if (Clipboard.ContainsImage())
@@ -1014,7 +1023,7 @@ namespace KSP_WPF
 
             StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null, isVideo);
             sww.Owner = this;
-            if(data.allowed_profile_ids != null)
+            if (data.allowed_profile_ids != null)
                 sww.trust_ids = data.allowed_profile_ids;
             if (data.closest_with_tags != null)
             {
@@ -1120,7 +1129,7 @@ namespace KSP_WPF
         {
             BT_QuoteFriend_Click(null, null);
         }
-        
+
         private void IC_Menu_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             FL_Menu.IsOpen = !FL_Menu.IsOpen;
@@ -1128,7 +1137,7 @@ namespace KSP_WPF
 
         private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)
+            if (e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
                 Close();
@@ -1136,7 +1145,7 @@ namespace KSP_WPF
             else if (e.Key == Key.F5 || (e.Key == Key.R && Keyboard.Modifiers == ModifierKeys.Control))
             {
                 e.Handled = true;
-                if(BT_CommentRefresh.IsEnabled)
+                if (BT_CommentRefresh.IsEnabled)
                     BT_CommentRefresh_Click(BT_CommentRefresh, null);
             }
             else if (e.Key == Key.Escape)
@@ -1148,37 +1157,37 @@ namespace KSP_WPF
             else if (e.Key == Key.L && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                if(BT_Like.IsEnabled)
+                if (BT_Like.IsEnabled)
                     BT_Like_Click(BT_Like, null);
             }
             else if (e.Key == Key.M && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                if(IC_Menu.IsEnabled)
+                if (IC_Menu.IsEnabled)
                     IC_Menu_MouseLeftButtonDown(IC_Menu, null);
             }
             else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                if(BT_Share.IsEnabled)
+                if (BT_Share.IsEnabled)
                     BT_Share_Click(BT_Share, null);
             }
             else if (e.Key == Key.U && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                if(BT_UP.IsEnabled)
+                if (BT_UP.IsEnabled)
                     BT_UP_Click(BT_UP, null);
             }
             else if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                if(BT_Mute.IsEnabled)
+                if (BT_Mute.IsEnabled)
                     BT_Mute_Click(BT_Mute, null);
             }
             else if (e.Key == Key.B && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 e.Handled = true;
-                if(BT_Web.IsEnabled)
+                if (BT_Web.IsEnabled)
                     BT_Web_Click(BT_Web, null);
             }
             else if (e.Key == Key.O && Keyboard.Modifiers == ModifierKeys.Control)
