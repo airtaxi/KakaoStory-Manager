@@ -587,11 +587,13 @@ namespace KSP_WPF
             }
             catch (WebException e)
             {
-                MessageBox.Show(e.Message);
                 if (count < 5)
                     return await GetResponseFromRequest(webRequest, ++count);
                 else
+                {
+                    MessageBox.Show(e.Message, "오류");
                     return null;
+                }
             }
         }
 
