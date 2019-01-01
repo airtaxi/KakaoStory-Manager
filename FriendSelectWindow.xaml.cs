@@ -57,6 +57,7 @@ namespace KSP_WPF
                     control.IC_Close.MouseLeftButtonDown += profileData.Remove;
                     withProfiles.Add(profileData);
                     SP_WithFriends.Children.Add(control);
+                    SV_WithFriends.ScrollToRightEnd();
                 }
             }
             else

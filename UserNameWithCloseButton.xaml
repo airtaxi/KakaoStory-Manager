@@ -6,8 +6,8 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:KSP_WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="35" d:DesignWidth="100">
-    <Grid Background="Transparent" IsHitTestVisible="True" Margin="5,5,0,5">
+             d:DesignHeight="30" d:DesignWidth="100">
+    <Grid Background="Transparent" IsHitTestVisible="True" Margin="5,5,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="20"/>

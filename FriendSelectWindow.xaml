@@ -17,7 +17,6 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Name="RD_WithFriends" Height="Auto"/>
-            <RowDefinition Height="5"/>
             <RowDefinition Name="RD_Submit" Height="40"/>
         </Grid.RowDefinitions>
         <Grid Margin="5,5,5,5">
@@ -27,12 +26,12 @@
             <StackPanel Name="SP_Content" Margin="0,5,0,0"/>
         </ScrollViewer>
         <TextBlock Name="TB_Empty" Foreground="Gray" Text="목록이 비어있습니다" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <ScrollViewer Name="SV_WithFriends" Height="Auto" Grid.Row="3" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Margin="0,0,0,0" PreviewMouseWheel="SV_WithFriends_PreviewMouseWheel">
+        <ScrollViewer Name="SV_WithFriends" Height="Auto" Grid.Row="3" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Margin="0,0,0,5" PreviewMouseWheel="SV_WithFriends_PreviewMouseWheel">
             <StackPanel Name="SP_WithFriends" Height="Auto" Orientation="Horizontal"/>
         </ScrollViewer>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5,0,5,0" VerticalAlignment="Bottom">
             <CheckBox Name="CB_OnlyFavorite" Content="관심 친구만 보여주기" Click="CB_OnlyFavorite_Click"/>
         </StackPanel>
-        <Button Name="BT_Submit" Content="확인" Grid.Row="5" Margin="5,5,5,5" Click="BT_Submit_Click"/>
+        <Button Name="BT_Submit" Content="확인" Grid.Row="4" Margin="5,0,5,5" Click="BT_Submit_Click"/>
     </Grid>
 </controls:MetroWindow>
