@@ -262,7 +262,7 @@ namespace KSP_WPF
             string headStr;
             string tailStr = "과 함께";
             if (data.closest_with_tags.Count > 1)
-                headStr = $"{first.display_name}님 외 {data.closest_with_tags.Count.ToString()}명";
+                headStr = $"{first.display_name}님 외 {(data.closest_with_tags.Count - 1).ToString()}명";
             else
                 headStr = $"{first.display_name}님";
 
@@ -399,7 +399,7 @@ namespace KSP_WPF
             });
         }
 
-        public static async void AssignImage(dynamic image, string uri)
+        public static async void AssignImage(dynamic image, string urif)
         {
             if (image == null) return;
             if (uri != null && uri.Length > 0)

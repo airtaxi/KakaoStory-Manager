@@ -86,9 +86,9 @@ namespace KSP_WPF
 
             if(likes.Count > 0)
                 lastLikeID = likes.Last().id;
-            if(ups.Count > 0)
-                lastShareID = shares.Last().id;
             if(shares.Count > 0)
+                lastShareID = shares.Last().id;
+            if(ups.Count > 0)
                 lastUPID = ups.Last().id;
         }
 
