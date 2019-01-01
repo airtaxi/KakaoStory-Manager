@@ -273,7 +273,7 @@ namespace KSP_WPF
             Dispatcher.InvokeAsync(async () =>
             {
                 if (!Properties.Settings.Default.ShowComment)
-                    IC_CommentShow_PreviewMouseLeftButtonDown(null, null);
+                    IC_CommentShow_PreviewMouseLeftButtonDown(IC_CommentShow, null);
                 if (!Properties.Settings.Default.HideScrollBar)
                 {
                     SV_Content.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
@@ -1159,6 +1159,12 @@ namespace KSP_WPF
                 e.Handled = true;
                 if (BT_Like.IsEnabled)
                     BT_Like_Click(BT_Like, null);
+            }
+            else if (e.Key == Key.T && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                if (IC_CommentShow.IsEnabled)
+                    IC_CommentShow_PreviewMouseLeftButtonDown(IC_CommentShow, null);
             }
             else if (e.Key == Key.M && Keyboard.Modifiers == ModifierKeys.Control)
             {
