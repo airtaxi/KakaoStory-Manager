@@ -537,8 +537,9 @@ namespace KSP_WPF
             TextBlock source = (TextBlock)sender;
             source.Tag = true;
             data = await KSPNotificationActivator.GetPost(feedID);
-            var shares = await KakaoRequestClass.GetShares(false, data);
-            var ups = await KakaoRequestClass.GetShares(true, data);
+            var shares = await KakaoRequestClass.GetShares(false, data, null);
+            var ups = await KakaoRequestClass.GetShares(true, data, null);
+            var likes = await KakaoRequestClass.GetLikes(data, null);
             int index = 0;
             if (source.Equals(TB_LikeCount))
                 index = 0;
@@ -546,7 +547,7 @@ namespace KSP_WPF
                 index = 1;
             if (source.Equals(TB_UpCount))
                 index = 2;
-            PostInfoWindow piw = new PostInfoWindow(data.likes, shares, ups, index);
+            PostInfoWindow piw = new PostInfoWindow(likes, shares, ups, index);
             piw.Show();
             piw.Activate();
             e.Handled = true;
@@ -876,10 +877,9 @@ namespace KSP_WPF
 
             string requestURI = "https://up-api-kage-4story.kakao.com/web/webstory-img/";
 
-            string boundary = "----" + DateTime.Now.Ticks.ToString("x");
-
             HttpWebRequest request = WebRequest.CreateHttp(requestURI);
             request.Method = "POST";
+            string boundary = "----" + DateTime.Now.Ticks.ToString("x");
             request.ContentType = "multipart/form-data; boundary=" + boundary;
             request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
 

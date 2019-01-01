@@ -15,303 +15,66 @@ namespace KSP_WPF
     {
         private static DateTime? LastMessageTime = null;
         private const string OfflineStr = " (오프라인)";
-
         public static async Task<string> GetScrapData(string url)
         {
             string requestURI = "https://story.kakao.com/a/scraper?url=" + Uri.EscapeDataString(url);
-
-            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json; charset=utf-8";
-
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            webRequest.Headers["Cache-Control"] = "max-age=0";
-
-            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            webRequest.Headers["Accept-Language"] = "ko";
-
-            webRequest.Headers["DNT"] = "1";
-
-            webRequest.Headers["authority"] = "story.kakao.com";
-            webRequest.Referer = "https://story.kakao.com/";
-            webRequest.KeepAlive = true;
-            webRequest.UseDefaultCredentials = true;
-            webRequest.Host = "story.kakao.com";
-            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            webRequest.Accept = "application/json";
-
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            webRequest.Date = DateTime.Now;
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                return respResult;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                return null;
-            }
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            return await GetResponseFromRequest(webRequest);
         }
 
         public static async Task<ProfileData.ProfileObject> GetProfileFeed(string id, string from)
         {
             string requestURI = "https://story.kakao.com/a/profiles/" + id + "?with=activities";
             if (from != null)
-            {
                 requestURI += "&since=" + from;
-            }
-            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json; charset=utf-8";
-
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            webRequest.Headers["Cache-Control"] = "max-age=0";
-
-            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            webRequest.Headers["Accept-Language"] = "ko";
-
-            webRequest.Headers["DNT"] = "1";
-
-            webRequest.Headers["authority"] = "story.kakao.com";
-            webRequest.Referer = "https://story.kakao.com/";
-            webRequest.KeepAlive = true;
-            webRequest.UseDefaultCredentials = true;
-            webRequest.Host = "story.kakao.com";
-            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            webRequest.Accept = "application/json";
-
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            webRequest.Date = DateTime.Now;
-
-            var readStream = await webRequest.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-            readStream.Close();
-            ProfileData.ProfileObject obj = JsonConvert.DeserializeObject<ProfileData.ProfileObject>(respResult);
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            ProfileData.ProfileObject obj = JsonConvert.DeserializeObject<ProfileData.ProfileObject>(response);
             return obj;
         }
 
         public static async Task<ProfileRelationshipData.ProfileRelationship> GetProfileRelationship(string id)
         {
             string requestURI = "https://story.kakao.com/a/profiles/" + id + "?profile_only=true";
-            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json; charset=utf-8";
-
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            webRequest.Headers["Cache-Control"] = "max-age=0";
-
-            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            webRequest.Headers["Accept-Language"] = "ko";
-
-            webRequest.Headers["DNT"] = "1";
-
-            webRequest.Headers["authority"] = "story.kakao.com";
-            webRequest.Referer = "https://story.kakao.com/";
-            webRequest.KeepAlive = true;
-            webRequest.UseDefaultCredentials = true;
-            webRequest.Host = "story.kakao.com";
-            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            webRequest.Accept = "application/json";
-
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            webRequest.Date = DateTime.Now;
-
-            var readStream = await webRequest.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-            readStream.Close();
-            ProfileRelationshipData.ProfileRelationship obj = JsonConvert.DeserializeObject<ProfileRelationshipData.ProfileRelationship>(respResult);
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            ProfileRelationshipData.ProfileRelationship obj = JsonConvert.DeserializeObject<ProfileRelationshipData.ProfileRelationship>(response);
             return obj;
         }
 
         public static async Task<TimeLineData.TimeLine> GetFeed(string from)
         {
             string requestURI = "https://story.kakao.com/a/feeds";
-
             if (from != null)
-            {
                 requestURI += "?since=" + from;
-            }
-
-            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json; charset=utf-8";
-
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            webRequest.Headers["Cache-Control"] = "max-age=0";
-
-            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            webRequest.Headers["Accept-Language"] = "ko";
-
-            webRequest.Headers["DNT"] = "1";
-
-            webRequest.Headers["authority"] = "story.kakao.com";
-            webRequest.Referer = "https://story.kakao.com/";
-            webRequest.KeepAlive = true;
-            webRequest.UseDefaultCredentials = true;
-            webRequest.Host = "story.kakao.com";
-            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            webRequest.Accept = "application/json";
-
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            webRequest.Date = DateTime.Now;
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                TimeLineData.TimeLine obj = JsonConvert.DeserializeObject<TimeLineData.TimeLine>(respResult);
-                return obj;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return null;
-            }
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            return JsonConvert.DeserializeObject<TimeLineData.TimeLine>(response);
         }
 
         public static async Task<BookmarkData.Bookmarks> GetBookmark(string id, string from)
         {
             string requestURI = "https://story.kakao.com/a/profiles/" + id + "/sections/bookmark";
-
             if (from != null)
                 requestURI += $"?since={from}";
-            
-            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json; charset=utf-8";
-
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            webRequest.Headers["Cache-Control"] = "max-age=0";
-
-            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            webRequest.Headers["Accept-Language"] = "ko";
-
-            webRequest.Headers["DNT"] = "1";
-
-            webRequest.Headers["authority"] = "story.kakao.com";
-            webRequest.Referer = "https://story.kakao.com/";
-            webRequest.KeepAlive = true;
-            webRequest.UseDefaultCredentials = true;
-            webRequest.Host = "story.kakao.com";
-            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            webRequest.Accept = "application/json";
-
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            webRequest.Date = DateTime.Now;
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                BookmarkData.Bookmarks obj = JsonConvert.DeserializeObject<BookmarkData.Bookmarks>(respResult);
-                return obj;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return null;
-            }
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            return JsonConvert.DeserializeObject<BookmarkData.Bookmarks>(response);
         }
 
         public static async Task<string> GetFriendData()
         {
             string requestURI = "https://story.kakao.com/a/friends/";
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json; charset=utf-8";
-
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            webRequest.Headers["Cache-Control"] = "max-age=0";
-
-            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            webRequest.Headers["Accept-Language"] = "ko";
-
-            webRequest.Headers["DNT"] = "1";
-
-            webRequest.Headers["authority"] = "story.kakao.com";
-            webRequest.Referer = "https://story.kakao.com/";
-            webRequest.KeepAlive = true;
-            webRequest.UseDefaultCredentials = true;
-            webRequest.Host = "story.kakao.com";
-            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            webRequest.Accept = "application/json";
-
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            webRequest.Date = DateTime.Now;
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                return respResult;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return null;
-            }
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            return await GetResponseFromRequest(webRequest);
         }
 
-        private static HttpWebRequest GenerateDefaultProfile(string requestURI, string method)
+        private static HttpWebRequest GenerateDefaultProfile(string requestURI, string method = "GET")
         {
             HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
             webRequest.Method = method.ToUpper();
-            webRequest.ContentType = "application/json; charset=utf-8";
+            webRequest.ContentType = "application/x-www-form-urlencoded; charset=utf-8";
 
             webRequest.CookieContainer = new CookieContainer();
             webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
@@ -346,7 +109,7 @@ namespace KSP_WPF
             return src ? "true" : "false";
         }
 
-        public static async Task<bool> SetActivityProfile(string id, string permission, bool enable_share, bool comment_all_writable, bool is_must_read)
+        public static async Task SetActivityProfile(string id, string permission, bool enable_share, bool comment_all_writable, bool is_must_read)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + id;
 
@@ -357,25 +120,11 @@ namespace KSP_WPF
             Stream writeStream = await webRequest.GetRequestStreamAsync();
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
-
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                return true;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public static async Task<bool> MutePost(string id, bool mute)
+        public static async Task MutePost(string id, bool mute)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + id + "/mute_push";
 
@@ -387,194 +136,56 @@ namespace KSP_WPF
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
 
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                return true;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
+            await GetResponseFromRequest(webRequest);
+
+            return;
         }
 
         public static async Task<List<CommentData.Comment>> GetComment(string id, string since)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + id + "/comments?lpp=30&order=desc";
             if(since != null)
-            {
                 requestURI += "&since=" + since;
-            }
-            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "GET");
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                List<CommentData.Comment> returnVar = JsonConvert.DeserializeObject<List<CommentData.Comment>>(respResult);
-                return returnVar;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp, "DOGE");
-            }
-            return null;
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            return JsonConvert.DeserializeObject<List<CommentData.Comment>>(response);
         }
 
         public static async Task<string> GetProfileData()
         {
             string requestURI = "https://story.kakao.com/a/settings/profile";
 
-            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json; charset=utf-8";
-
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            webRequest.Headers["Cache-Control"] = "max-age=0";
-
-            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            webRequest.Headers["Accept-Language"] = "ko";
-
-            webRequest.Headers["DNT"] = "1";
-
-            webRequest.Headers["authority"] = "story.kakao.com";
-            webRequest.Referer = "https://story.kakao.com/";
-            webRequest.KeepAlive = true;
-            webRequest.UseDefaultCredentials = true;
-            webRequest.Host = "story.kakao.com";
-            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            webRequest.Accept = "application/json";
-
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            webRequest.Date = DateTime.Now;
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                return respResult;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return null;
-            }
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            return response;
         }
 
         public static async Task<List<Actor>> GetSpecificFriends(string id)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + id + "/specific_friends";
-            MessageBox.Show(requestURI);
-
-            HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-            webRequest.Method = "GET";
-            webRequest.ContentType = "application/json; charset=utf-8";
-
-            webRequest.CookieContainer = new CookieContainer();
-            webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            webRequest.Headers["Cache-Control"] = "max-age=0";
-
-            webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            webRequest.Headers["Accept-Language"] = "ko";
-
-            webRequest.Headers["DNT"] = "1";
-
-            webRequest.Headers["authority"] = "story.kakao.com";
-            webRequest.Referer = "https://story.kakao.com/";
-            webRequest.KeepAlive = true;
-            webRequest.UseDefaultCredentials = true;
-            webRequest.Host = "story.kakao.com";
-            webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            webRequest.Accept = "application/json";
-
-            webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            webRequest.Date = DateTime.Now;
-            try
-            {
-                var readStream = await webRequest.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                respReader.Close();
-                readStream.Close();
-                List<Actor> obj = JsonConvert.DeserializeObject<List<Actor>>(respResult);
-                return obj;
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return null;
-            }
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            return JsonConvert.DeserializeObject<List<Actor>>(response);
         }
 
-        public static async Task<bool> LikeComment(string FeedID, string commentID, bool isDelete)
+        public static async Task LikeComment(string FeedID, string commentID, bool isDelete)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/comments/" + commentID + "/likes";
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-
+            string method;
             if (isDelete == true)
-                request.Method = "DELETE";
+                method = "DELETE";
             else
-                request.Method = "POST";
-
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-            readStream.Close();
-            return true;
+                method = "POST";
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public static async Task<bool> FriendRequest(string id, bool isDelete)
+        public static async Task FriendRequest(string id, bool isDelete)
         {
             string requestURI;
             string key;
+
             if (isDelete == true)
             {
                 requestURI = "https://story.kakao.com/a/invitations/cancel";
@@ -586,113 +197,39 @@ namespace KSP_WPF
                 key = "friend_id";
             }
 
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "POST");
+
             string postData = $"{key}={id}&has_profile=true";
-
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "POST";
-
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            Stream writeStream = await request.GetRequestStreamAsync();
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public static async Task<bool> FriendAccept(string id, bool isDelete)
+        public static async Task FriendAccept(string id, bool isDelete)
         {
             string requestURI;
-            if (isDelete != true)
-                requestURI = "https://story.kakao.com/a/invitations/accept";
-            else
+            if (isDelete)
                 requestURI = "https://story.kakao.com/a/invitations/ignore";
+            else
+                requestURI = "https://story.kakao.com/a/invitations/accept";
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "POST");
 
             string postData = $"inviter_id={id}&has_profile=true";
-
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "POST";
-
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            Stream writeStream = await request.GetRequestStreamAsync();
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public static async Task<bool> FavoriteRequest(string id, bool isUnpin)
+        public static async Task FavoriteRequest(string id, bool isUnpin)
         {
             string requestURI = "https://story.kakao.com/a/friends/" + id + "/favorite";
             string method;
@@ -701,49 +238,13 @@ namespace KSP_WPF
             else
                 method = "DELETE";
 
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = method;
-
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
+            webRequest.Method = method;
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public static async Task<bool> PinPost(string id, bool isUnpin)
+        public static async Task PinPost(string id, bool isUnpin)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + id + "/bookmark";
             string method;
@@ -752,54 +253,19 @@ namespace KSP_WPF
             else
                 method = "DELETE";
 
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = method;
-
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public async static Task<bool> ShareFeed(string FeedID, string text, string permission, bool commentable, List<string> with_ids, List<string> trust_ids)
+        public async static Task ShareFeed(string FeedID, string text, string permission, bool commentable, List<string> with_ids, List<string> trust_ids)
         {
             text = text.Replace("\"", "\\\"");
             text = text.Replace("\r\n", "\\n");
             text = text.Replace("\n", "\\n");
             text = text.Replace("\r", "\\n");
+            string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/share";
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "POST");
 
             List<QuoteData> rawContent = GlobalHelper.GetQuoteDataFromString(text);
             string textContent = Uri.EscapeDataString(JsonConvert.SerializeObject(rawContent).Replace("\"id\":null,", ""));
@@ -815,100 +281,39 @@ namespace KSP_WPF
 
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-
-            string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/share";
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            Stream writeStream = await request.GetRequestStreamAsync();
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public async static Task<bool> UPFeed(string FeedID, bool isDelete)
+        public async static Task UPFeed(string FeedID, bool isDelete)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/sympathy";
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "POST";
+            string method;
             if (isDelete)
-                request.Method = "DELETE";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
+                method = "DELETE";
+            else
+                method = "POST";
 
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
         public async static Task<bool> LikeFeed(string FeedID, string emotion)
         {
+            string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/like";
+            string method;
+            if (emotion == null)
+                method = "DELETE";
+            else
+                method = "POST";
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
+
             string postData;
             if (emotion == null)
                 postData = "";
@@ -917,110 +322,28 @@ namespace KSP_WPF
 
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-            string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/like";
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            if (emotion == null)
-                request.Method = "DELETE";
-            else
-                request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            Stream writeStream = await request.GetRequestStreamAsync();
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+
+            return await GetResponseFromRequest(webRequest) != null;
         }
 
-        public static async Task<bool> DeleteFriend(string id)
+        public static async Task DeleteFriend(string id)
         {
             string requestURI = "https://story.kakao.com/a/friends/" + id;
-
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "DELETE";
-
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
+            await GetResponseFromRequest(webRequest);
+            return;
         }
-
-        public async static Task<bool> ReplyToFeed(string FeedID, string text, string id, string name)
-        {
-            return await ReplyToFeed(FeedID, text, id, name, null);
-        }
-        public async static Task<bool> ReplyToFeed(string FeedID, string text, string id, string name, UploadedImageProp img)
+        
+        public async static Task ReplyToFeed(string FeedID, string text, string id, string name, UploadedImageProp img = null)
         {
             text = text.Replace("\"", "\\\"");
             text = text.Replace("\r\n", "\\n");
             text = text.Replace("\n", "\\n");
             text = text.Replace("\r", "\\n");
+            string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/comments";
 
             if (id != null && name != null)
                 text = text.Insert(0, "{!{{" + "\"id\":\"" + id + "\", \"type\":\"profile\", \"text\":\"" + name + "\"}}!} ");
@@ -1047,49 +370,14 @@ namespace KSP_WPF
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
 
-            string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/comments";
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "POST");
 
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            Stream writeStream = await request.GetRequestStreamAsync();
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
-            try
-            {
-                var readStream = await request.GetResponseAsync();
-                var respReader = readStream.GetResponseStream();
-                respReader.Close();
-                readStream.Close();
-            }
-            catch (WebException e)
-            {
-                string resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd();
-                MessageBox.Show(resp);
-                return false;
-            }
-            return true;
+
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
         public async void GetNotification(object sender, EventArgs e1)
@@ -1104,45 +392,14 @@ namespace KSP_WPF
             {
                 string requestURI = "https://story.kakao.com/a/notifications";
 
-                HttpWebRequest webRequest = WebRequest.CreateHttp(requestURI);
-                webRequest.Method = "GET";
-                webRequest.ContentType = "application/json; charset=utf-8";
-
-                webRequest.CookieContainer = new CookieContainer();
-                webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
-
-                webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-                webRequest.Headers["X-Kakao-ApiLevel"] = "45";
-                webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-                webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-                webRequest.Headers["Cache-Control"] = "max-age=0";
-
-                webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-                webRequest.Headers["Accept-Language"] = "ko";
-
-                webRequest.Headers["DNT"] = "1";
-
-                webRequest.Headers["authority"] = "story.kakao.com";
-                webRequest.Referer = "https://story.kakao.com/";
-                webRequest.KeepAlive = true;
-                webRequest.UseDefaultCredentials = true;
-                webRequest.Host = "story.kakao.com";
-                webRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-                webRequest.Accept = "application/json";
+                HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
                 webRequest.Timeout = 2000;
 
-                webRequest.AutomaticDecompression = DecompressionMethods.GZip;
-                webRequest.Date = DateTime.Now;
                 DateTime? lastTime = null;
-
                 try
                 {
-                    var readStream = await webRequest.GetResponseAsync();
-                    var respReader = readStream.GetResponseStream();
-                    string respResult = await new StreamReader(respReader).ReadToEndAsync();
-                    respReader.Close();
-                    readStream.Close();
-                    List<CSNotification> obj = JsonConvert.DeserializeObject<List<CSNotification>>(respResult);
+                    string response = await GetResponseFromRequest(webRequest);
+                    List<CSNotification> obj = JsonConvert.DeserializeObject<List<CSNotification>>(response);
                     if (isReturn) return obj;
                     int countTemp = 0;
 
@@ -1237,81 +494,23 @@ namespace KSP_WPF
             return null;
         }
 
-        public static async void DeletePost(string id)
+        public static async Task DeletePost(string id)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + id;
-
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "DELETE";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-            readStream.Close();
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public static async Task<bool> DeleteComment(string commentID, PostData data)
+        public static async Task DeleteComment(string commentID, PostData data)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/comments/" + commentID;
-
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "DELETE";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
-
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-            readStream.Close();
-
-            return true;
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
+            await GetResponseFromRequest(webRequest);
+            return;
         }
 
-        public static async Task<bool> EditComment(Comment comment, string text, PostData data)
+        public static async Task EditComment(Comment comment, string text, PostData data)
         {
             string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/comments/" + comment.id + "/content";
 
@@ -1339,85 +538,63 @@ namespace KSP_WPF
 
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "PUT";
-            request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
-            request.CookieContainer = new CookieContainer();
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "PUT");
 
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko";
-
-            request.Headers["DNT"] = "1";
-
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "application/json";
-
-            Stream writeStream = await request.GetRequestStreamAsync();
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
 
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-            readStream.Close();
+            await GetResponseFromRequest(webRequest);
 
-            return true;
+            return;
         }
 
-        public static async Task<List<ShareData.Share>> GetShares(bool isUP, PostData data)
+        public static async Task<List<ShareData.Share>> GetShares(bool isUP, PostData data, string from)
         {
 
-            string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/shares";
+            string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/shares/";
             if (isUP)
-                requestURI = "https://story.kakao.com/a/activities/" + data.id + "/sympathies";
-            HttpWebRequest NotificationGetRequest = WebRequest.CreateHttp(requestURI);
-            NotificationGetRequest.Method = "GET";
-            NotificationGetRequest.ContentType = "application/json; charset=utf-8";
+                requestURI = "https://story.kakao.com/a/activities/" + data.id + "/sympathies/";
+            
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
+            string response = await GetResponseFromRequest(webRequest);
+            return JsonConvert.DeserializeObject<List<ShareData.Share>>(response);
+        }
+        public async static Task<string> GetResponseFromRequest(WebRequest webRequest, int count = 0)
+        {
+            try
+            {
+                var readStream = await webRequest.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
 
-            NotificationGetRequest.CookieContainer = new CookieContainer();
-            NotificationGetRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
+                string respResult = await new StreamReader(respReader).ReadToEndAsync();
 
-            NotificationGetRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            NotificationGetRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            NotificationGetRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            NotificationGetRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            NotificationGetRequest.Headers["Cache-Control"] = "max-age=0";
+                respReader.Close();
+                readStream.Close();
+                return respResult;
+            }
+            catch (WebException e)
+            {
+                MessageBox.Show(e.Message);
+                if (count < 5)
+                    return await GetResponseFromRequest(webRequest, ++count);
+                else
+                    return null;
+            }
+        }
 
-            NotificationGetRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            NotificationGetRequest.Headers["Accept-Language"] = "ko";
+        public static async Task<List<ShareData.Share>> GetLikes(PostData data, string from)
+        {
+            string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/likes/";
 
-            NotificationGetRequest.Headers["DNT"] = "1";
+            if(from != null)
+                requestURI += "?since=" + from;
 
-            NotificationGetRequest.Headers["authority"] = "story.kakao.com";
-            NotificationGetRequest.Referer = "https://story.kakao.com";
-            NotificationGetRequest.KeepAlive = true;
-            NotificationGetRequest.UseDefaultCredentials = true;
-            NotificationGetRequest.Host = "story.kakao.com";
-            NotificationGetRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            NotificationGetRequest.Accept = "application/json";
+            var webRequest = GenerateDefaultProfile(requestURI);
 
-            NotificationGetRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            NotificationGetRequest.Date = DateTime.Now;
+            string response = await GetResponseFromRequest(webRequest);
 
-            var readStream = await NotificationGetRequest.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
-            string respResult = await new StreamReader(respReader).ReadToEndAsync();
-            respReader.Close();
-            readStream.Close();
-            return JsonConvert.DeserializeObject<List<ShareData.Share>>(respResult);
+            return JsonConvert.DeserializeObject<List<ShareData.Share>>(response);
         }
     }
 }
