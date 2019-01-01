@@ -26,6 +26,7 @@
                     <TextBlock FontSize="18" Text="창 크기에 맞추기 : F5 또는 Ctrl+R"/>
                     <TextBlock FontSize="18" Text="이미지 크기에 맞추기 : Ctrl+F" Margin="0,5,0,0"/>
                     <TextBlock FontSize="18" Text="이미지 복사 : 이미지 우클릭 또는 Ctrl+C" Margin="0,5,0,0"/>
+                    <TextBlock FontSize="18" Text="이미지 저장 : Ctrl+S" Margin="0,5,0,0"/>
                     <TextBlock FontSize="18" Text="이전 이미지 : 방향키 왼쪽" Margin="0,5,0,0"/>
                     <TextBlock FontSize="18" Text="다음 이미지 : 방향키 오른쪽" Margin="0,5,0,0"/>
                     <TextBlock FontSize="18" Text="창 닫기 : Ctrl+W 또는 Alt+F4" Margin="0,5,0,0"/>

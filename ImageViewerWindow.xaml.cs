@@ -44,6 +44,11 @@ namespace KSP_WPF
                 ZB_Main.FitToBounds();
                 e.Handled = true;
             }
+            else if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                BT_Save_Click(BT_Save, null);
+                e.Handled = true;
+            }
             else if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 ZB_Main.FillToBounds();
