@@ -13,6 +13,7 @@ namespace KSP_WPF
 {
     class KakaoRequestClass
     {
+        private const int NotificationRefreshTime = 2000;
         private static DateTime? LastMessageTime = null;
         private const string OfflineStr = " (오프라인)";
         public static async Task<string> GetScrapData(string url)
@@ -402,7 +403,7 @@ namespace KSP_WPF
                 string requestURI = "https://story.kakao.com/a/notifications";
 
                 HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
-                webRequest.Timeout = 2000;
+                webRequest.Timeout = NotificationRefreshTime;
 
                 DateTime? lastTime = null;
                 try
@@ -497,7 +498,7 @@ namespace KSP_WPF
             }
             if (isReturn == false)
             {
-                await Task.Delay(2000);
+                await Task.Delay(NotificationRefreshTime);
                 await RequestNotification(isReturn);
             }
             return null;
