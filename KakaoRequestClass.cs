@@ -592,7 +592,6 @@ namespace KSP_WPF
                     return await GetResponseFromRequest(webRequest, ++count);
                 else
                 {
-                    MessageBox.Show(e.Message, "오류");
                     return null;
                 }
             }

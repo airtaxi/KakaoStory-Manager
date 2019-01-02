@@ -34,7 +34,6 @@ namespace KSP_WPF
         {
             int threshold = 48;
             ScrollViewer scrollViewer = (ScrollViewer)sender;
-            scrollViewer.CanContentScroll = false;
             double target = scrollViewer.VerticalOffset - Math.Min(Math.Max(e.Delta, -threshold), threshold);
             scrollViewer.ScrollToVerticalOffset(target);
             e.Handled = true;

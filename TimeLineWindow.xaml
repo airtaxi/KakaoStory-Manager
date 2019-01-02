@@ -50,7 +50,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <ScrollViewer x:Name="SV_Content" VerticalScrollBarVisibility="Hidden" ScrollChanged="SV_Content_ScrollChanged" PanningMode="VerticalOnly" PreviewMouseWheel="SV_Content_PreviewMouseWheel" IsDeferredScrollingEnabled="True">
+            <ScrollViewer x:Name="SV_Content" VerticalScrollBarVisibility="Hidden" ScrollChanged="SV_Content_ScrollChanged" PanningMode="VerticalOnly" PreviewMouseWheel="SV_Content_PreviewMouseWheel">
                 <StackPanel Orientation="Vertical" Margin="10,0,10,0">
                     <Grid Margin="0,5,0,0" Name="CD_Profile" Visibility="Collapsed">
                         <Rectangle Stroke="LightGray"/>

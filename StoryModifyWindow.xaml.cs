@@ -114,6 +114,7 @@ namespace KSP_WPF
         {
             StringBuilder extractedLink = new StringBuilder();
             TB_Progress.Text = "작업중...";
+            int failCount = 0;
             await Dispatcher.Invoke(async () =>
             {
                 for(int i = 0; i < posts.Count; i++)
@@ -133,7 +134,11 @@ namespace KSP_WPF
 
                     if (CB_Task.SelectedIndex == 0)
                     {
-                        await ChangePostRange(post);
+                        try
+                        {
+                            await ChangePostRange(post);
+                        }
+                        catch (Exception) { failCount++; }
                         await Task.Delay(100);
                     }
                     if (CB_Task.SelectedIndex == 1)
@@ -143,10 +148,13 @@ namespace KSP_WPF
                     }
                     if (CB_Task.SelectedIndex == 2)
                     {
-                        if(CB_Target.SelectedIndex == 5)
-                            await KakaoRequestClass.PinPost(post.id, true);
-                        else
-                            await KakaoRequestClass.PinPost(post.id, false);
+                        try
+                        {
+                            if(CB_Target.SelectedIndex == 5)
+                                await KakaoRequestClass.PinPost(post.id, true);
+                            else
+                                await KakaoRequestClass.PinPost(post.id, false);
+                        } catch(Exception) { failCount++; }
                         await Task.Delay(100);
                     }
                     TB_Progress.Text = $"작업중... ({i}/{posts.Count})";
@@ -164,7 +172,7 @@ namespace KSP_WPF
                         }
                         else
                         {
-                            MessageBox.Show("작업 완료", "안내");
+                            MessageBox.Show($"작업 완료.\n작업에 실패한 게시글 수 : {failCount.ToString()}\n(제한된 게시글과 같은 이유로 작업에 실패하는 경우가 있습니다)", "안내");
                         }
                         SP_Progress.Visibility = Visibility.Collapsed;
                         Close();

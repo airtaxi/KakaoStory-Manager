@@ -77,22 +77,35 @@ namespace KSP_WPF
         private async void BT_BackupFriends_Click(object sender, RoutedEventArgs e)
         {
             StringBuilder builder = new StringBuilder();
-            List<string> ids = new List<string>();
+            List<string[]> ids = new List<string[]>();
             var friends = JsonConvert.DeserializeObject<FriendData.Friends>(await KakaoRequestClass.GetFriendData());
-            foreach(var friend in friends.profiles)
+            ProgressShowWindow progressShowWindow = new ProgressShowWindow();
+            progressShowWindow.Show();
+            progressShowWindow.Topmost = true;
+            progressShowWindow.Title = "친구 목록 백업중";
+            int progressCount = 0;
+            foreach (var friend in friends.profiles)
             {
-                builder.Append(friend.display_name);
-                builder.Append(" : ");
-                builder.Append("https://story.kakao.com/");
-                builder.Append(friend.id);
-                builder.Append("\n");
-                ids.Add(friend.id);
+                try
+                {
+                    var profile = await KakaoRequestClass.GetProfileFeed(friend.id, null);
+                    builder.Append(profile.profile.display_name);
+                    builder.Append(" : ");
+                    builder.Append(profile.profile.permalink);
+                    builder.Append("\n");
+                    ids.Add(new string[] { profile.profile.permalink, profile.profile.id, profile.profile.display_name});
+                }
+                catch (Exception) { }
+                progressCount++;
+                progressShowWindow.PB_Main.Value = ((double)progressCount / friends.profiles.Count) * 100.0;
             }
             Clipboard.SetDataObject(builder.ToString());
+            progressShowWindow.isFinish = true;
+            progressShowWindow.Close();
             var sfd = new System.Windows.Forms.SaveFileDialog()
             {
-                FileName = DateTime.Now.ToShortDateString() + ".kfd",
-                Filter = "Kakao Friend Data|*.kfd",
+                FileName = DateTime.Now.ToShortDateString() + ".kfd2",
+                Filter = "Kakao Friend Data V2|*.kfd2",
                 Title = "친구 목록 저장"
             };
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -109,7 +122,7 @@ namespace KSP_WPF
         {
             var ofd = new System.Windows.Forms.OpenFileDialog()
             {
-                Filter = "Kakao Friend Data|*.kfd",
+                Filter = "Kakao Friend Data V2|*.kfd2",
                 Title = "친구 목록 불러오기"
             };
             if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -117,16 +130,34 @@ namespace KSP_WPF
                 var reader = new System.IO.StreamReader(ofd.FileName);
                 string str = reader.ReadToEnd();
                 reader.Close();
-                var loadedFriends = JsonConvert.DeserializeObject<List<string>>(str);
+                var loadedFriends = JsonConvert.DeserializeObject<List<string[]>>(str);
                 var friends = JsonConvert.DeserializeObject<FriendData.Friends>(await KakaoRequestClass.GetFriendData());
                 StringBuilder builder = new StringBuilder("삭제된 친구 목록 : \n");
+                List<string[]> ids = new List<string[]>();
                 int count = 0;
-                foreach (string id in loadedFriends)
+                int countExpire = 0;
+                ProgressShowWindow progressShowWindow = new ProgressShowWindow();
+                progressShowWindow.Show();
+                progressShowWindow.Topmost = true;
+                progressShowWindow.Title = "삭제된 친구 조회";
+                int progressCount = 0;
+                foreach (var friend in friends.profiles)
+                {
+                    try
+                    {
+                        var profile = await KakaoRequestClass.GetProfileFeed(friend.id, null);
+                        ids.Add(new string[] { profile.profile.permalink, profile.profile.id, profile.profile.display_name });
+                    }
+                    catch (Exception) { }
+                    progressCount++;
+                    progressShowWindow.PB_Main.Value = ((double)progressCount / friends.profiles.Count) * 100.0;
+                }
+                foreach (string[] friendData in loadedFriends)
                 {
                     bool exists = false;
-                    foreach (var friend in friends.profiles)
+                    foreach(var friend in ids)
                     {
-                        if (friend.id.Equals(id))
+                        if (friend[0].Equals(friendData[0]) || friend[1].Equals(friendData[1]))
                         {
                             exists = true;
                             break;
@@ -134,16 +165,24 @@ namespace KSP_WPF
                     }
                     if (!exists)
                     {
-                        var profile = await KakaoRequestClass.GetProfileFeed(id, null);
-                        builder.Append(profile.profile.display_name);
-                        builder.Append(" : ");
-                        builder.Append(profile.profile.permalink);
-                        builder.Append("\n");
-                        count++;
+                        try
+                        {
+                            var profile = await KakaoRequestClass.GetProfileFeed(friendData[1], null);
+                            builder.Append(profile.profile.display_name);
+                            builder.Append("(저장 당시 닉네임 : ");
+                            builder.Append(friendData[2]);
+                            builder.Append(") : ");
+                            builder.Append(profile.profile.permalink);
+                            builder.Append("\n");
+                            count++;
+                        }
+                        catch (Exception) { countExpire++; }
                     }
                 }
                 Clipboard.SetDataObject(builder.ToString());
-                MessageBox.Show($"삭제된 친구 목록이 클립보드에 복사되었습니다.\n삭제된 친구 수 : {count.ToString()}", "안내");
+                progressShowWindow.isFinish = true;
+                progressShowWindow.Close();
+                MessageBox.Show($"삭제된 친구 목록이 클립보드에 복사되었습니다.\n삭제된 친구 수 : {count.ToString()}\n탈퇴한 친구 수 : {countExpire.ToString()}", "안내");
             }
         }
     }
