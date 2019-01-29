@@ -259,6 +259,18 @@
     </Compile>
     <Compile Include="KakaoRequestClass.cs" />
     <Compile Include="KSPNotificationActivator.cs" />
+    <Compile Include="MailControl.xaml.cs">
+      <DependentUpon>MailControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MailWriteWindow.xaml.cs">
+      <DependentUpon>MailWriteWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MailReadWindow.xaml.cs">
+      <DependentUpon>MailReadWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MailWindow.xaml.cs">
+      <DependentUpon>MailWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NotificationControl.xaml.cs">
       <DependentUpon>NotificationControl.xaml</DependentUpon>
     </Compile>
@@ -342,6 +354,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ImageViewerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MailControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MailWriteWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MailReadWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MailWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
