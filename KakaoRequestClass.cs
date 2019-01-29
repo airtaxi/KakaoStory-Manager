@@ -346,7 +346,77 @@ namespace KSP_WPF
             await GetResponseFromRequest(webRequest);
             return;
         }
-        
+
+        public static async Task DeleteLike(string FeedID, string id)
+        {
+            string requestURI = "https://story.kakao.com/a/activities/" + FeedID + "/like";
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
+
+            string postData = $"id={id}";
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            await GetResponseFromRequest(webRequest);
+            return;
+        }
+
+        public static async Task SendMail(string content, string id, bool bomb, string imgURI = null)
+        {
+            string requestURI = "https://story.kakao.com/a/messages";
+            
+            string objectStr = $"&object=%7B%22background%22%3A%7B%22type%22%3A%22color%22%2C%22value%22%3A{new Random().Next(1000000,9999999).ToString()}%7D%7D";
+
+            if (imgURI != null)
+                objectStr = "";
+
+            string postData = $"content={Uri.EscapeDataString("[{\"type\":\"text\",\"text\":\""+content+"\"}]")}&bomb={bomb.ToString().ToLower()}" + objectStr + $"&receiver_id%5B%5D={id}&reference_id=";
+            MessageBox.Show(postData);
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "POST");
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            await GetResponseFromRequest(webRequest);
+            return;
+        }
+
+        public static async Task<List<MailData.Mail>> GetMails(string since = null)
+        {
+            string requestURI = "https://story.kakao.com/a/messages/";
+            if (since != null)
+                requestURI += $"?since={since}";
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "GET");
+
+            return JsonConvert.DeserializeObject<List<MailData.Mail>>(await GetResponseFromRequest(webRequest)); ;
+        }
+
+        public static async Task<MailData.MailDetail> GetMailDetail(string id)
+        {
+            string requestURI = "https://story.kakao.com/a/messages/" + id;
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "GET");
+
+            return JsonConvert.DeserializeObject<MailData.MailDetail>(await GetResponseFromRequest(webRequest)); ;
+        }
+        public static async Task DeleteMail(string id)
+        {
+            string requestURI = "https://story.kakao.com/a/messages/" + id;
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
+
+            await GetResponseFromRequest(webRequest);
+            return;
+        }
+
         public async static Task ReplyToFeed(string FeedID, string text, string id, string name, UploadedImageProp img = null)
         {
             text = text.Replace("\"", "\\\"");
@@ -592,6 +662,7 @@ namespace KSP_WPF
                     return await GetResponseFromRequest(webRequest, ++count);
                 else
                 {
+                    MessageBox.Show(new StreamReader(e.Response.GetResponseStream()).ReadToEnd(), e.Message);
                     return null;
                 }
             }

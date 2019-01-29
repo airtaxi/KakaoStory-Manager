@@ -181,6 +181,7 @@ namespace KSP_WPF
                     GlobalHelper.AssignImage(IMG_Profile, imgUri);
                     GlobalHelper.AssignImage(IMG_ProfileBG, profile.profile.bg_image_url);
                     IMG_Profile.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
+                    IMG_ProfileBG.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
 
                     TB_Name.Text = profile.profile.display_name;
 

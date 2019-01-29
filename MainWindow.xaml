@@ -60,24 +60,28 @@
                 </Grid>
             </Grid>
         </Grid>
-        <Grid Margin="0,285,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+        <StackPanel Orientation="Horizontal" Margin="0,285,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
             <Grid Name="GD_Write" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Write_MouseLeftButtonDown">
                 <iconPacks:PackIconModern Kind="PageAdd" Width="80" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
                 <TextBlock FontWeight="Bold" Text="글 작성" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" />
             </Grid>
-            <Grid Name="GD_Timeline" Margin="130,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Timeline_MouseLeftButtonDown">
-                <iconPacks:PackIconMaterial Kind="ChartTimeline" Width="80" Height="80" Margin="0,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+            <Grid Name="GD_Timeline" Margin="35,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Timeline_MouseLeftButtonDown">
+                <iconPacks:PackIconMaterial Kind="ChartTimeline" Width="80" Height="80" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
                 <TextBlock FontWeight="Bold" Text="타임라인" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" />
             </Grid>
-            <Grid Name="GD_Notifications" Margin="260,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Notifications_MouseLeftButtonDown">
-                <materialDesign:PackIcon Kind="NotificationsNone" Width="80" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+            <Grid Name="GD_Mail" Margin="35,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Mail_MouseLeftButtonDown">
+                <materialDesign:PackIcon Kind="EmailOpenOutline" Width="80" Height="90" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
+                <TextBlock FontWeight="Bold" Text="쪽지" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center"/>
+            </Grid>
+            <Grid Name="GD_Notifications" Margin="35,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Notifications_MouseLeftButtonDown">
+                <materialDesign:PackIcon Kind="NotificationsNone" Width="80" Height="90" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
                 <TextBlock FontWeight="Bold" Text="최근 알림" FontSize="16" Margin="0,92,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" TextAlignment="Center" />
             </Grid>
-            <Grid Name="GD_Settings" Margin="390,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Settings_MouseLeftButtonDown">
+            <Grid Name="GD_Settings" Margin="35,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" MouseLeftButtonDown="GD_Settings_MouseLeftButtonDown">
                 <materialDesign:PackIcon Kind="SettingsOutline" Width="80" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" IsHitTestVisible="True" Background="Transparent"/>
                 <TextBlock FontWeight="Bold" Text="환경 설정" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Bottom" TextAlignment="Center" Margin="0,92,0,0" />
             </Grid>
-        </Grid>
+        </StackPanel>
         <Rectangle Fill="#008080" Width="150" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="535,140,0,0" />
         <TextBlock Name="TB_Login" Text="로그인" FontWeight="Bold" Foreground="White" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="24" Margin="555,152,0,0" Visibility="Visible" />
         <TextBlock Name="TB_LoginProgress" Text="…" FontWeight="Bold" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="White" FontSize="24" Margin="600,152,0,0" Visibility="Collapsed" />

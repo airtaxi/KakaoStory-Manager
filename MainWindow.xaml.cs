@@ -34,6 +34,8 @@ namespace KSP_WPF
         public static SettingsWindow settingsWindow = null;
         public static FriendSelectWindow friendListWindow = null;
         public static Dictionary<string, PostWindow> posts = new Dictionary<string, PostWindow>();
+        public static MailWindow mailWindow = null;
+
         public static FriendData.Friends userFriends { get; private set; }
         public static UserProfile.ProfileData userProfile { get; private set; }
 
@@ -169,6 +171,7 @@ namespace KSP_WPF
             SetClickObject(GD_Write);
             SetClickObject(GD_Timeline);
             SetClickObject(GD_Notifications);
+            SetClickObject(GD_Mail);
             SetClickObject(GD_Settings);
             SetClickObject(GD_Friends);
             SetClickObject(BT_Login);
@@ -547,6 +550,21 @@ namespace KSP_WPF
                 Owner=this
             };
             window.ShowDialog();
+        }
+
+        private void GD_Mail_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if(mailWindow == null)
+            {
+                mailWindow = new MailWindow();
+                mailWindow.Show();
+                mailWindow.Activate();
+            }
+            else
+            {
+                mailWindow.Show();
+                mailWindow.Activate();
+            }
         }
     }
 }

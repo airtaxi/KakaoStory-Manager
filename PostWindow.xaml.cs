@@ -255,8 +255,6 @@ namespace KSP_WPF
                 {
                     PostWindow postWindow = new PostWindow(data, feedID);
                     postWindow.Show();
-                    postWindow.Activate();
-                    postWindow.Focus();
                     postWindow.Topmost = true;
                     postWindow.Topmost = false;
                     postWindow.SV_Comment.ScrollToEnd();
@@ -673,9 +671,9 @@ namespace KSP_WPF
             }
 
             if (data.push_mute)
-                BT_Mute.Content = "알림 다시 받기";
+                BT_Mute.Content = "이 게시글 알림 받기";
             else
-                BT_Mute.Content = "알림 받지 않기";
+                BT_Mute.Content = "이 게시글 알림 음소거";
             return true;
         }
 

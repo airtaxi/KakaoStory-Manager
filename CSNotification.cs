@@ -768,6 +768,100 @@ namespace KSP_WPF
             public bool is_feed_blocked { get; set; }
         }
     }
+
+    public class MailData
+    {
+        public class Relation
+        {
+            public bool feed_blocked { get; set; }
+            public string friend { get; set; }
+            public bool self { get; set; }
+            public string follow { get; set; }
+            public bool favorite { get; set; }
+            public string ban { get; set; }
+        }
+        public class Sender
+        {
+            public string birthday { get; set; }
+            public string bg_image_url2 { get; set; }
+            public string profile_video_url_hq { get; set; }
+            public bool is_favorite { get; set; }
+            public int birthday_left { get; set; }
+            public string gender { get; set; }
+            public bool birth_leap_type { get; set; }
+            public string birth_type { get; set; }
+            public string profile_image_url2 { get; set; }
+            public string type { get; set; }
+            public int follower_count { get; set; }
+            public Relation relation { get; set; }
+            public string profile_video_url_square_small { get; set; }
+            public bool is_celebratable { get; set; }
+            public int default_bg_id { get; set; }
+            public int activity_count { get; set; }
+            public bool is_valid_user { get; set; }
+            public string id { get; set; }
+            public string relationship { get; set; }
+            public bool vip { get; set; }
+            public int friend_count { get; set; }
+            public string profile_video_url_lq { get; set; }
+            public bool is_birthday { get; set; }
+            public bool message_rejectee { get; set; }
+            public string bg_image_url { get; set; }
+            public string profile_video_url_square { get; set; }
+            public bool allow_following { get; set; }
+            public string profile_thumbnail_url { get; set; }
+            public string profile_video_url_square_micro_small { get; set; }
+            public bool message_sendable { get; set; }
+            public string profile_image_url { get; set; }
+            public string display_name { get; set; }
+            public string permalink { get; set; }
+            public bool is_default_profile_image { get; set; }
+            public bool is_feed_blocked { get; set; }
+            public bool? need_verify { get; set; }
+            public string gender_permission { get; set; }
+            public long? message_receiver_priority { get; set; }
+            public bool? message_received_bomb { get; set; }
+        }
+        public class Mail
+        {
+            public string summary { get; set; }
+            public string thread_id { get; set; }
+            public Sender sender { get; set; }
+            public bool has_background_image { get; set; }
+            public DateTime created_at { get; set; }
+            public bool has_emoticon { get; set; }
+            public string id { get; set; }
+            public string type { get; set; }
+            public bool bomb { get; set; }
+            public List<Actor> receivers { get; set; }
+            public DateTime? read_at { get; set; }
+        }
+        
+        public class Background
+        {
+            public string type { get; set; }
+            public string value { get; set; }
+        }
+
+        public class Object
+        {
+            public Background background { get; set; }
+        }
+
+        public class MailDetail
+        {
+            public string content_id { get; set; }
+            public Sender sender { get; set; }
+            public DateTime read_at { get; set; }
+            public DateTime created_at { get; set; }
+            public string id { get; set; }
+            public string type { get; set; }
+            public bool bomb { get; set; }
+            public string content { get; set; }
+            public Object @object { get; set; }
+        }
+    }
+
     public class ShareData
     {
         public class Relation
@@ -1005,7 +1099,7 @@ namespace KSP_WPF
             public string object_type { get; set; }
             public string message { get; set; }
         }
-
+        
         public class Writer2
         {
             public string birthday { get; set; }
@@ -1160,6 +1254,7 @@ namespace KSP_WPF
             public Relation relation { get; set; }
         }
 
+        
         public class PostData
         {
             public List<string> allowed_profile_ids { get; set; }

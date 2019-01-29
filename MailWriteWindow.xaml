@@ -1,0 +1,33 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.MailWriteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        Title="쪽지 작성" Height="180" Width="320" Icon="icon2.png" ShowIconOnTitleBar="False" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="90"/>
+            </Grid.ColumnDefinitions>
+            <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
+                <StackPanel Name="SP_Friends" Orientation="Horizontal"/>
+            </ScrollViewer>
+            <Button Name="BT_Friends" Grid.Column="1" Content="친구 선택" Click="BT_Friends_Click"/>
+            <Rectangle VerticalAlignment="Bottom" Stroke="Gray" Grid.ColumnSpan="2"/>
+        </Grid>
+        <Rectangle VerticalAlignment="Bottom" Grid.Row="1" Stroke="Gray"/>
+        <Button Name="BT_Send" Grid.Row="2" Content="전송" Click="BT_Send_Click"/>
+        <TextBox TextAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Name="TBX_Main" Grid.Row="1" KeyDown="TBX_Main_KeyDown" controls:TextBoxHelper.Watermark="쪽지를 작성하세요." Background="#CC8888"/>
+    </Grid>
+</controls:MetroWindow>

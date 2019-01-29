@@ -1,0 +1,50 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.MailReadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        Title="쪽지 확인" Height="400" Width="320" Icon="icon2.png" ShowIconOnTitleBar="False" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Name="IMG_Profile" Width="80" Height="80"/>
+            <Rectangle Stroke="LightGray"/>
+            <TextBlock Name="TB_Name" Text="(이름)님으로부터" Grid.Column="1" FontSize="20" FontWeight="Bold" Width="220" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+        <Rectangle Name="RA_Main" Grid.Row="1" Fill="#FF2222"/>
+        <Image Name="IMG_Main" Stretch="UniformToFill" Grid.Row="1"/>
+        <Rectangle Name="RA_Mask" Grid.Row="1" Fill="Black" Opacity="0.5"/>
+        <TextBlock Name="TB_Main" Text="내용" FontSize="30" Foreground="White" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Width="300" TextWrapping="Wrap"/>
+        <Rectangle Grid.Row="1" Stroke="Gray"/>
+    </Grid>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <StackPanel Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Send" Click="BT_Send_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Reply"/>
+                        <TextBlock Text="답장"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_Delete" Click="BT_Delete_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Delete"/>
+                        <TextBlock Text="삭제"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+</controls:MetroWindow>

@@ -21,7 +21,7 @@ namespace KSP_WPF
     /// </summary>
     public partial class PostInfoWindow : MetroWindow
     {
-        public static void AssignProfile(FriendSelectControl fsc, ShareData.Actor actor)
+        public static void AssignProfile(FriendSelectControl fsc, ShareData.Actor actor, PostInfoWindow instance, string likeID = null)
         {
             fsc.MouseEnter += (s, e) =>
             {
@@ -58,6 +58,16 @@ namespace KSP_WPF
                 fsc.IC_Friend.Visibility = Visibility.Visible;
                 fsc.IC_Friend.Kind = MaterialDesignThemes.Wpf.PackIconKind.PersonAdd;
                 fsc.IC_Friend.Foreground = Brushes.OrangeRed;
+            }
+            if(likeID != null && instance.data.actor.id.Equals(MainWindow.userProfile.id))
+            {
+                fsc.IC_Delete.Visibility = Visibility.Visible;
+                fsc.IC_Delete.PreviewMouseLeftButtonDown += async (s, e) =>
+                {
+                    e.Handled = true;
+                    await KakaoRequestClass.DeleteLike(instance.data.id, likeID);
+                    instance.SP_Emotions.Children.Remove(fsc);
+                };
             }
         }
 
@@ -97,7 +107,7 @@ namespace KSP_WPF
             foreach (var share in shares)
             {
                 FriendSelectControl fsc = new FriendSelectControl();
-                AssignProfile(fsc, share.actor);
+                AssignProfile(fsc, share.actor, this);
                 fsc.Grid.MouseLeftButtonDown += async (s, e) =>
                 {
                     try
@@ -131,7 +141,7 @@ namespace KSP_WPF
                     fsc.EM_Sad.Visibility = Visibility.Visible;
                 else if (like.emotion.Equals("cheerup"))
                     fsc.EM_Cheer.Visibility = Visibility.Visible;
-                AssignProfile(fsc, like.actor);
+                AssignProfile(fsc, like.actor, this, like.id);
                 MainWindow.SetClickObject(fsc.Grid);
                 fsc.Grid.MouseLeftButtonDown += (s, e) =>
                 {
@@ -149,7 +159,7 @@ namespace KSP_WPF
             foreach (var up in ups)
             {
                 FriendSelectControl fsc = new FriendSelectControl();
-                AssignProfile(fsc, up.actor);
+                AssignProfile(fsc, up.actor, this);
                 fsc.Grid.MouseLeftButtonDown += (s, e) =>
                 {
                     TimeLineWindow tlw = new TimeLineWindow(up.actor.id);

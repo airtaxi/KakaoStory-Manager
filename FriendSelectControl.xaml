@@ -7,14 +7,14 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="300">
-    <Grid Name="Grid" Height="50" IsHitTestVisible="True" Background="Transparent">
+             d:DesignHeight="40" d:DesignWidth="300">
+    <Grid Name="Grid" Height="40" IsHitTestVisible="True" Background="Transparent">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="40"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <Border Name="RA_Main" Grid.ColumnSpan="3" IsHitTestVisible="True" Background="Transparent"/>
-        <Image Name="IMG_Profile" Width="50" Height="50" Stretch="UniformToFill" Margin="0,0,0,0"/>
+        <Image Name="IMG_Profile" Width="40" Height="40" Stretch="UniformToFill" Margin="0,0,0,0"/>
         <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Name="GD_Emotion" Visibility="Collapsed">
             <Ellipse Width="13" Height="13" Margin="1,1,0,0" Fill="White"/>
             <materialDesign:PackIcon Name="EM_Cheer" Kind="LightningBoltCircle" Foreground="Purple" Visibility="Collapsed"/>
@@ -27,6 +27,9 @@
             </Grid>
         </Grid>
         <TextBlock Name="TB_Name" Text="이름" Grid.Column="1" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="18" FontWeight="Bold"/>
-        <materialDesign:PackIcon Name="IC_Friend" Kind="PersonAdd" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Width="30" Height="30" Foreground="Gray" Background="Transparent" IsHitTestVisible="True" Visibility="Collapsed" />
+        <StackPanel Orientation="Horizontal" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <materialDesign:PackIcon Name="IC_Delete" Kind="DeleteForever" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0" Width="30" Height="30" Foreground="#EA0000" Background="Transparent" IsHitTestVisible="True" Visibility="Collapsed" />
+            <materialDesign:PackIcon Name="IC_Friend" Kind="PersonAdd" Width="30" Height="30" Margin="0,0,2.5,0" Foreground="Gray" Background="Transparent" IsHitTestVisible="True" Visibility="Collapsed" />
+        </StackPanel>
     </Grid>
 </UserControl>

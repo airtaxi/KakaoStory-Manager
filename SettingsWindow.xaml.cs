@@ -38,6 +38,7 @@ namespace KSP_WPF
             InitializeComponent();
             if (Environment.OSVersion.Version.Major == 10)
             {
+                BT_StartUp.Visibility = Visibility.Collapsed;
                 BT_Homepage.Visibility = Visibility.Collapsed;
                 TB_Version.Visibility = Visibility.Collapsed;
                 InitStartOption();
@@ -196,6 +197,21 @@ namespace KSP_WPF
                 Owner = this
             };
             window.ShowDialog();
+        }
+
+        private void BT_StartUp_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.RegistryKey registryKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            if(registryKey.GetValue("KSP-WPF") == null)
+            {
+                registryKey.SetValue("KSP-WPF", System.Windows.Forms.Application.ExecutablePath);
+                MessageBox.Show("자동 시작 프로그램에 등록됐습니다.", "정보");
+            }
+            else
+            {
+                registryKey.DeleteValue("KSP-WPF");
+                MessageBox.Show("프로그램이 자동 시작 프로그램에서 삭제됐습니다.", "정보");
+            }
         }
     }
 

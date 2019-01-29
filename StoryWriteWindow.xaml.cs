@@ -290,8 +290,8 @@ namespace KSP_WPF
                         if (!AddImage(path))
                             break;
                     }
-                    ValidatePanelHeight();
                 }
+                ValidatePanelHeight();
             }
             else
                 ShowImageAlert();
@@ -938,8 +938,8 @@ namespace KSP_WPF
                 if (ofd.FileName != null)
                 {
                     videoPath = ofd.FileName;
-                    ValidatePanelHeight();
                 }
+                ValidatePanelHeight();
             }
             else if(videoPath != null)
             {

@@ -1,0 +1,36 @@
+﻿<controls:MetroWindow x:Class="KSP_WPF.MailWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:KSP_WPF"
+        mc:Ignorable="d"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
+        Closed="MetroWindow_Closed"
+        Title="쪽지 목록" Height="450" Width="320" Icon="icon2.png" ShowIconOnTitleBar="False" ResizeMode="NoResize">
+    <Grid>
+        <ScrollViewer Name="SV_Main" PreviewMouseWheel="SV_Main_PreviewMouseWheel" VerticalScrollBarVisibility="Hidden">
+            <StackPanel Name="SP_Main"/>
+        </ScrollViewer>
+    </Grid>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <StackPanel Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+                <Button Name="BT_Send" Click="BT_Send_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Send"/>
+                        <TextBlock Text="쪽지 작성하기"/>
+                    </StackPanel>
+                </Button>
+                <Button Name="BT_Refresh" Click="BT_Refresh_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Refresh"/>
+                        <TextBlock Text="새로고침"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+</controls:MetroWindow>
