@@ -40,6 +40,7 @@
                         <TextBlock FontSize="18" Text="빠른 전송 : Ctrl+Enter" Margin="0,5,0,0"/>
                         <TextBlock FontSize="18" Text="느낌 : Ctrl+L" Margin="0,5,0,0"/>
                         <TextBlock FontSize="18" Text="공유 : Ctrl+S" Margin="0,5,0,0"/>
+                        <TextBlock FontSize="18" Text="수정 : Ctrl+E" Margin="0,5,0,0"/>
                         <TextBlock FontSize="18" Text="UP : Ctrl+U" Margin="0,5,0,0"/>
                         <TextBlock FontSize="18" Text="알림 설정 변경 : Ctrl+N" Margin="0,5,0,0"/>
                         <TextBlock FontSize="18" Text="브라우저로 열기 : Ctrl+B" Margin="0,5,0,0"/>

@@ -169,7 +169,7 @@ namespace KSP_WPF.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseGIF {
             get {
                 return ((bool)(this["UseGIF"]));
@@ -308,6 +308,18 @@ namespace KSP_WPF.Properties {
             }
             set {
                 this["GIFProfile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PostNoGIF {
+            get {
+                return ((bool)(this["PostNoGIF"]));
+            }
+            set {
+                this["PostNoGIF"] = value;
             }
         }
     }

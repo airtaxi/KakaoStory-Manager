@@ -64,8 +64,8 @@ namespace KSP_WPF
                 MainWindow.SetClickObject(BT_Write);
                 MainWindow.SetClickObject(IC_Friend);
                 await RefreshTimeline(null, true);
-                Show();
-                Activate();
+                //Show();
+                //Activate();
             });
         }
 
@@ -115,7 +115,7 @@ namespace KSP_WPF
                     {
                         isClose = true;
                         MainWindow.profileTimeLineWindow.Show();
-                        MainWindow.profileTimeLineWindow.Activate();
+                        //MainWindow.profileTimeLineWindow.Activate();
                         await MainWindow.profileTimeLineWindow.RefreshTimeline(null, true);
                         return;
                     }
@@ -421,7 +421,7 @@ namespace KSP_WPF
                 if (uri.Contains(".gif") && !Properties.Settings.Default.UseGIF)
                 {
                     overrideGif = true;
-                    uri = media.jpg_url;
+                    uri = "gif.png";
                 }
 
                 if (uri != null)
@@ -661,12 +661,12 @@ namespace KSP_WPF
             {
                 MainWindow.storyWriteWindow = new StoryWriteWindow();
                 MainWindow.storyWriteWindow.Show();
-                MainWindow.storyWriteWindow.Activate();
+                //MainWindow.storyWriteWindow.Activate();
             }
             else
             {
                 MainWindow.storyWriteWindow.Show();
-                MainWindow.storyWriteWindow.Activate();
+                //MainWindow.storyWriteWindow.Activate();
             }
         }
 

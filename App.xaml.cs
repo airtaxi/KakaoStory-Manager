@@ -40,6 +40,10 @@ namespace KSP_WPF
                     KSP_WPF.Properties.Settings.Default.Upgrade();
                     KSP_WPF.Properties.Settings.Default.Upgraded = true;
                     KSP_WPF.Properties.Settings.Default.Save();
+                    if(MessageBox.Show("프로그램이 업데이트되었습니다.\n변경 내역을 확인하시겠습니까?", "안내", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start("https://kagamine-rin.com/?p=186");
+                    }
                 }
             }
             if (!createdNew)

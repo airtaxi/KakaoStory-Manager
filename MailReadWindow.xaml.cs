@@ -34,8 +34,23 @@ namespace KSP_WPF
                 if (Properties.Settings.Default.GIFProfile && mail.sender.profile_video_url_square_small != null)
                     imgUri = mail.sender.profile_video_url_square_small;
                 GlobalHelper.AssignImage(IMG_Profile, imgUri);
+                MainWindow.SetClickObject(IMG_Profile);
+                IMG_Profile.PreviewMouseLeftButtonDown += (s, e) =>
+                {
+                    e.Handled = true;
+                    try
+                    {
+                        TimeLineWindow tlw = new TimeLineWindow(mail.sender.id);
+                        tlw.Show();
+                        tlw.Activate();
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("접근이 불가능한 스토리입니다.");
+                    }
+                };
 
-                if(mail.@object?.background != null && mail.@object.background.type.Equals("image"))
+                if (mail.@object?.background != null && mail.@object.background.type.Equals("image"))
                 {
                     GlobalHelper.AssignImage(IMG_Main, mail.@object.background.value);
                 }

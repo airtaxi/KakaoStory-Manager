@@ -91,7 +91,7 @@ namespace KSP_WPF
                     {
                         TimeLineWindow tlw = new TimeLineWindow(notification.actor.id);
                         tlw.Show();
-                        tlw.Focus();
+                        tlw.Activate();
                     }
                     catch (Exception)
                     {
@@ -131,7 +131,7 @@ namespace KSP_WPF
                             string id = notification.scheme.Replace("kakaostory://profiles/", "");
                             TimeLineWindow tlw = new TimeLineWindow(id);
                             tlw.Show();
-                            tlw.Focus();
+                            tlw.Activate();
                         }
                         catch (Exception)
                         {

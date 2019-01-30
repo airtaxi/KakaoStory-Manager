@@ -42,28 +42,8 @@ namespace KSP_WPF
         {
             CommentControl comment = new CommentControl();
             comment.TB_Name.Text = commentProf.writer.display_name;
-            comment.TB_Content.Tag = commentProf.text;
-            foreach (var decorator in commentProf.decorators)
-            {
-                if (decorator.type.Equals("profile"))
-                {
-                    Bold content = new Bold(new Run(decorator.text));
-                    MainWindow.SetClickObject(content);
-                    content.MouseLeftButtonDown += (s, e) =>
-                    {
-                        TimeLineWindow tlw = new TimeLineWindow(decorator.id);
-                        tlw.Show();
-                        tlw.Activate();
-                        e.Handled = true;
-                    };
-                    comment.TB_Content.Inlines.Add(content);
-                }
-                if (decorator.type.Equals("text") || decorator.type.Equals("emoticon"))
-                {
-                    comment.TB_Content.Inlines.Add(new Run(decorator.text.Replace("\\n", "\n")));
-                }
-            }
-
+            //comment.TB_Content.Tag = commentProf.text;
+            GlobalHelper.RefreshContent(commentProf.decorators, commentProf.text, comment.TB_Content);
 
             if (commentProf.updated_at.Year > 1)
             {
@@ -73,7 +53,7 @@ namespace KSP_WPF
 
             comment.TB_Content.MouseRightButtonDown += (s, e) =>
             {
-                Clipboard.SetDataObject((string)comment.TB_Content.Tag);
+                Clipboard.SetDataObject((string)((object[]) comment.TB_Content.Tag)[1]);
                 MessageBox.Show("클립보드에 댓글 내용이 복사됐습니다.");
                 e.Handled = true;
             };
@@ -81,9 +61,9 @@ namespace KSP_WPF
                 comment.TB_Like.Text = $"좋아요 {commentProf.like_count.ToString()}개";
 
             comment.TB_MetaData.Text = GetTimeString(commentProf.created_at);
-            string imgUri = commentProf.writer.profile_video_url_square_micro_small ?? commentProf.writer.profile_thumbnail_url;
-            //if (Properties.Settings.Default.GIFProfile && commentProf.writer.profile_video_url_square_small != null)
-            //    imgUri = commentProf.writer.profile_video_url_square_micro_small;
+            string imgUri = commentProf.writer.profile_thumbnail_url;
+            if (!Properties.Settings.Default.PostNoGIF && commentProf.writer.profile_video_url_square_small != null)
+                imgUri = commentProf.writer.profile_video_url_square_micro_small;
             GlobalHelper.AssignImage(comment.IMG_Profile, imgUri);
 
             MainWindow.SetClickObject(comment.IMG_Profile);
@@ -244,8 +224,9 @@ namespace KSP_WPF
             {
                 PostWindow postWindow = MainWindow.posts[feedID];
                 postWindow.Refresh();
-                postWindow.Topmost = true;
-                postWindow.Topmost = false;
+                postWindow.Show();
+                postWindow.Activate();
+                postWindow.Focus();
                 postWindow.SV_Comment.ScrollToEnd();
                 postWindow.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => postWindow.TB_Comment.Focus()));
             }
@@ -255,8 +236,8 @@ namespace KSP_WPF
                 {
                     PostWindow postWindow = new PostWindow(data, feedID);
                     postWindow.Show();
-                    postWindow.Topmost = true;
-                    postWindow.Topmost = false;
+                    postWindow.Activate();
+                    postWindow.Focus();
                     postWindow.SV_Comment.ScrollToEnd();
                     if (Properties.Settings.Default.PositionPostToTop)
                         postWindow.Top = 0;
@@ -321,9 +302,9 @@ namespace KSP_WPF
                 if (!data.actor.id.Equals(MainWindow.userProfile.id))
                     BT_Edit.IsEnabled = false;
 
-                string imgUri = data.actor.profile_video_url_square_small ?? data.actor.profile_thumbnail_url;
-                if (Properties.Settings.Default.GIFProfile && data.actor.profile_video_url_square_small != null)
-                    imgUri = data.actor.profile_video_url_square_small;
+                string imgUri = data.actor.profile_thumbnail_url;
+                if (!Properties.Settings.Default.PostNoGIF && data.actor.profile_video_url_square_small != null)
+                    imgUri = data.actor.profile_video_url_square_micro_small;
                 GlobalHelper.AssignImage(IMG_Profile, imgUri);
 
                 MainWindow.SetClickObject(IMG_Profile);
@@ -375,10 +356,9 @@ namespace KSP_WPF
                             }
                         };
 
-                        string imgUri2 = data.@object.actor.profile_video_url_square_small ?? data.@object.actor.profile_thumbnail_url;
-                        if (Properties.Settings.Default.GIFProfile && data.@object.actor.profile_video_url_square_small != null)
+                        string imgUri2 = data.@object.actor.profile_thumbnail_url;
+                        if (!Properties.Settings.Default.PostNoGIF && data.@object.actor.profile_video_url_square_small != null)
                             imgUri2 = data.@object.actor.profile_video_url_square_small;
-
                         GlobalHelper.AssignImage(IMG_ProfileShare, imgUri2);
 
                         MainWindow.SetClickObject(IMG_ProfileShare);
@@ -464,13 +444,26 @@ namespace KSP_WPF
             foreach (var media in medias)
             {
                 string uri = media.origin_url;
+                bool overrideGif = false;
+                if (uri.Contains(".gif") && Properties.Settings.Default.PostNoGIF)
+                {
+                    overrideGif = true;
+                    uri = "gif.png";
+                }
                 if (uri != null)
                 {
                     Image image = new Image();
-                    image.Tag = new Image[2] { lastImage, null };
-                    if (lastImage != null && lastImage.Tag is Image[])
+                    if (overrideGif != true)
                     {
-                        ((Image[])lastImage.Tag)[1] = image;
+                        image.Tag = new Image[2] { lastImage, null };
+                        if (lastImage != null && lastImage.Tag is Image[])
+                        {
+                            ((Image[])lastImage.Tag)[1] = image;
+                        }
+                    }
+                    else
+                    {
+                        image.Tag = media.origin_url;
                     }
                     GlobalHelper.AssignImage(image, uri);
                     image.Stretch = Stretch.UniformToFill;
@@ -556,7 +549,7 @@ namespace KSP_WPF
                 index = 2;
             PostInfoWindow piw = new PostInfoWindow(likes, shares, ups, data, index);
             piw.Show();
-            piw.Activate();
+            //piw.Activate();
             e.Handled = true;
         }
 
@@ -776,11 +769,6 @@ namespace KSP_WPF
 
         private async void BT_Share_Click(object sender, RoutedEventArgs e)
         {
-            string feedIDNow = feedID;
-            if (data.verb.Equals("share"))
-            {
-                feedIDNow = data.@object.id;
-            }
             StoryWriteWindow shareWindow = new StoryWriteWindow(feedID, isAllRead)
             {
                 Owner = this
@@ -1019,8 +1007,10 @@ namespace KSP_WPF
         {
             string content = GlobalHelper.GetStringFromQuoteData(data.content_decorators, true);
 
-            StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null, isVideo);
-            sww.Owner = this;
+            StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null, isVideo)
+            {
+                Owner = this
+            };
             if (data.allowed_profile_ids != null)
                 sww.trust_ids = data.allowed_profile_ids;
             if (data.closest_with_tags != null)
@@ -1038,9 +1028,9 @@ namespace KSP_WPF
             Refresh();
         }
 
-        private void BT_Delte_Click(object sender, RoutedEventArgs e)
+        private async void BT_Delte_Click(object sender, RoutedEventArgs e)
         {
-            KakaoRequestClass.DeletePost(data.id);
+            await KakaoRequestClass.DeletePost(data.id);
             MessageBox.Show("포스트가 삭제됐습니다.");
             Close();
         }
@@ -1175,6 +1165,12 @@ namespace KSP_WPF
                 e.Handled = true;
                 if (BT_Share.IsEnabled)
                     BT_Share_Click(BT_Share, null);
+            }
+            else if (e.Key == Key.E && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                if (BT_Edit.IsEnabled)
+                    BT_Edit_Click(BT_Share, null);
             }
             else if (e.Key == Key.U && Keyboard.Modifiers == ModifierKeys.Control)
             {

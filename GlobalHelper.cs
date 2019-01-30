@@ -18,6 +18,7 @@ using System.Windows.Documents;
 using Newtonsoft.Json;
 using System.Windows.Input;
 using WPFMediaKit.DirectShow.Controls;
+using System.Text.RegularExpressions;
 
 namespace KSP_WPF
 {
@@ -469,6 +470,17 @@ namespace KSP_WPF
             };
         }
 
+        private static string[] SplitWithDelimiters(string input, List<string> delimiters)
+        {
+            if (delimiters.Count > 0)
+            {
+                string pattern = pattern = "\\b(" + string.Join("|", delimiters.Select(d => Regex.Escape(d))) + ")\\b";
+                string[] result = Regex.Split(input, pattern);
+                return result;
+            }
+            return null;
+        }
+
         public static void RefreshContent(List<QuoteData> content_decorators, string content, TextBlock TB_Content)
         {
             TB_Content.Tag = new object[] { content_decorators, content };
@@ -495,7 +507,53 @@ namespace KSP_WPF
                 }
                 else if (decorator.type.Equals("text") || decorator.type.Equals("emoticon"))
                 {
-                    TB_Content.Inlines.Add(new Run(decorator.text.Replace("\\n", "\n")));
+                    string text = decorator.text.Replace("\\n", "\n");
+                    if(text.Contains("http://") || text.Contains("https://"))
+                    {
+                        int count = 0;
+                        string[] splitted = SplitWithDelimiters(text, new List<string> { "http://", "https://" });
+                        string lastDelimiter = null;
+                        foreach(string splittedText in splitted)
+                        {
+                            count++;
+                            if (splittedText.Equals("https://") || splittedText.Equals("http://"))
+                                lastDelimiter = splittedText;
+                            else if(lastDelimiter != null && splittedText.Length > 0)
+                            {
+                                int endPos = Math.Min(splittedText.LastIndexOf(" ") - 1, splittedText.LastIndexOf("\\n") - 1);
+                                if(endPos < 0)
+                                {
+                                    endPos = splittedText.Length - 1;
+                                    if (count == splitted.Length)
+                                        endPos++;
+                                }
+                                string uriText = lastDelimiter + splittedText.Substring(0, endPos);
+                                lastDelimiter = null;
+                                var uriSpan = new Bold(new Underline(new Run(uriText)))
+                                {
+                                    Foreground = Brushes.Blue
+                                };
+                                MainWindow.SetClickObject(uriSpan);
+                                uriSpan.PreviewMouseLeftButtonDown += (s, e) =>
+                                {
+                                    e.Handled = true;
+                                    System.Diagnostics.Process.Start(uriText);
+                                };
+                                TB_Content.Inlines.Add(uriSpan);
+                                TB_Content.Inlines.Add(new Run(splittedText.Substring(endPos)));
+                            }
+                            else
+                            {
+                                TB_Content.Inlines.Add(new Run(splittedText));
+                            }
+                        }
+                    }
+
+                    else
+                    {
+                        TB_Content.Inlines.Add(new Run(text));
+                    }
+
                 }
                 else if (decorator.type.Equals("hashtag"))
                 {

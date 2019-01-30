@@ -19,7 +19,7 @@
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Name="IMG_Profile" Width="80" Height="80"/>
+            <Image Name="IMG_Profile" Width="80" Height="80" Stretch="UniformToFill"/>
             <Rectangle Stroke="LightGray"/>
             <TextBlock Name="TB_Name" Text="(이름)님으로부터" Grid.Column="1" FontSize="20" FontWeight="Bold" Width="220" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </Grid>

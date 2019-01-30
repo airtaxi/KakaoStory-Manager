@@ -504,6 +504,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon2.ico" />
+    <EmbeddedResource Include="gif.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="icon2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

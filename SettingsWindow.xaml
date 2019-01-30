@@ -28,6 +28,7 @@
             <CheckBox Name="CB_TimelineScroll" Margin="0,5,0,0" Content="타임라인 내용이 길면 스크롤바 생성" Click="CB_Click"/>
             <CheckBox Name="CB_HideScrollBar" Margin="0,5,0,0" Content="스크롤바 숨기기" Click="CB_Click"/>
             <CheckBox Name="CB_NoGIF" Margin="0,5,0,0" Content="타임라인에서 GIF 이미지 사용안함 (권장)" Click="CB_Click"/>
+            <CheckBox Name="CB_PostNoGIF" Margin="0,5,0,0" Content="포스트에서 GIF 이미지 사용안함 (권장)" Click="CB_Click"/>
             <CheckBox Name="CB_GIFProfile" Margin="0,5,0,0" Content="타임라인에서 움직이는 프로필 사용 (권장 안함)" Click="CB_Click"/>
             <CheckBox Name="CB_DefaultFriendOnly" Margin="0,5,0,0" Content="기본 공개범위를 친구공개로 설정" Click="CB_Click"/>
             <CheckBox Name="CB_ShowComment" Margin="0,5,0,0" Content="포스트 창의 댓글창 자동으로 펼치기" Click="CB_Click"/>

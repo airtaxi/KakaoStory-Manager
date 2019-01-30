@@ -16,7 +16,7 @@
             <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
         <Rectangle Name="RA_BG"/>
-        <Image Name="IMG_Profile" Width="50" Height="50"/>
+        <Image Name="IMG_Profile" Width="50" Height="50" Stretch="UniformToFill"/>
         <Rectangle Width="50" Height="50" Stroke="LightGray"/>
         <StackPanel Orientation="Vertical" Grid.Column="1">
             <TextBlock Name="TB_Name" FontWeight="Bold" Text="이름" Margin="5,4,5,0"/>

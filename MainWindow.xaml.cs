@@ -83,7 +83,7 @@ namespace KSP_WPF
                 else
                 {
                     Show();
-                    Activate();
+                    //Activate();
                 }
             };
 
@@ -313,7 +313,7 @@ namespace KSP_WPF
                 {
                     storyWriteWindow = new StoryWriteWindow();
                     storyWriteWindow.Show();
-                    storyWriteWindow.Activate();
+                    //storyWriteWindow.Activate();
                 }
                 else
                 {
@@ -334,7 +334,7 @@ namespace KSP_WPF
                         fromMainMenu = true
                     };
                     timeLineWindow.Show();
-                    timeLineWindow.Activate();
+                    //timeLineWindow.Activate();
                 }
                 else
                 {
@@ -355,7 +355,7 @@ namespace KSP_WPF
                 {
                     notificationsWindow = new NotificationsWindow();
                     notificationsWindow.Show();
-                    notificationsWindow.Activate();
+                    //notificationsWindow.Activate();
                 }
                 else
                 {
@@ -376,7 +376,7 @@ namespace KSP_WPF
                 {
                     profileTimeLineWindow = new TimeLineWindow(userProfile.id);
                     profileTimeLineWindow.Show();
-                    profileTimeLineWindow.Activate();
+                    //profileTimeLineWindow.Activate();
                 }
                 else
                 {
@@ -395,7 +395,7 @@ namespace KSP_WPF
             {
                 settingsWindow = new SettingsWindow();
                 settingsWindow.Show();
-                settingsWindow.Activate();
+                //settingsWindow.Activate();
             }
             else
             {
@@ -420,7 +420,7 @@ namespace KSP_WPF
                     friendListWindow.BT_Submit.Visibility = Visibility.Collapsed;
                     friendListWindow.RD_Submit.Height = new GridLength(0);
                     friendListWindow.Show();
-                    friendListWindow.Activate();
+                    //friendListWindow.Activate();
                 }
                 else
                 {
@@ -558,7 +558,7 @@ namespace KSP_WPF
             {
                 mailWindow = new MailWindow();
                 mailWindow.Show();
-                mailWindow.Activate();
+                //mailWindow.Activate();
             }
             else
             {

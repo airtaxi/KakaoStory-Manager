@@ -298,5 +298,17 @@ namespace KSP_WPF {
                 this["IsAutoLogin"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PostNoGIF {
+            get {
+                return ((bool)(this["PostNoGIF"]));
+            }
+            set {
+                this["PostNoGIF"] = value;
+            }
+        }
     }
 }

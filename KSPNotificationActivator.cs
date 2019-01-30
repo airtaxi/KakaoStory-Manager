@@ -100,7 +100,10 @@ namespace KSP_WPF
                                 PostData data = await GetPost(activityID);
                                 if (data != null)
                                 {
-                                    PostWindow.ShowPostWindow(data, activityID);
+                                    await MainWindow.instance.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
+                                    {
+                                        PostWindow.ShowPostWindow(data, activityID);
+                                    }));
                                 }
                             }
                             catch (Exception)

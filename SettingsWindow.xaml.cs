@@ -63,6 +63,7 @@ namespace KSP_WPF
             CB_PositionTimelineToTop.IsChecked = Properties.Settings.Default.PositionTimelineToTop;
             CB_DefaultMinimize.IsChecked = Properties.Settings.Default.DefaultMinimize;
             CB_AutoMinimize.IsChecked = Properties.Settings.Default.AutoMinimize;
+            CB_PostNoGIF.IsChecked = Properties.Settings.Default.PostNoGIF;
             if (Properties.Settings.Default.HideScrollBar)
                 SV_Main.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
         }
@@ -108,6 +109,8 @@ namespace KSP_WPF
                 Properties.Settings.Default.DefaultMinimize = check;
             else if (sender.Equals(CB_AutoMinimize))
                 Properties.Settings.Default.AutoMinimize = check;
+            else if (sender.Equals(CB_PostNoGIF))
+                Properties.Settings.Default.PostNoGIF = check;
 
             Properties.Settings.Default.Save();
         }
