@@ -43,14 +43,20 @@ namespace KSP_WPF
             InitializeComponent();
             InitRefreshTImer();
             MainWindow.SetClickObject(BT_Refresh);
-            Dispatcher.InvokeAsync(() =>
+            RA_Loading.Visibility = Visibility.Visible;
+            PR_Loading.Visibility = Visibility.Visible;
+            Dispatcher.InvokeAsync(async() =>
             {
-                Refresh();
+                await Refresh();
+                RA_Loading.Visibility = Visibility.Collapsed;
             });
+            if (Properties.Settings.Default.HideScrollBar)
+                SV_Content.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
         }
 
-        public async void Refresh()
+        public async Task Refresh()
         {
+            PR_Loading.IsActive = true;
             BT_Refresh.IsEnabled = false;
             TB_RefreshBT.Text = "갱신중..";
             IC_Refresh.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
@@ -147,6 +153,8 @@ namespace KSP_WPF
             IC_Refresh.Kind = MaterialDesignThemes.Wpf.PackIconKind.Refresh;
 
             SV_Content.ScrollToTop();
+            RA_Loading.Visibility = Visibility.Collapsed;
+            PR_Loading.IsActive = false;
         }
 
         private void Window_Deactivated(object sender, EventArgs e)

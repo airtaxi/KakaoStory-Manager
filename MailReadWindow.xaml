@@ -28,6 +28,8 @@
         <Rectangle Name="RA_Mask" Grid.Row="1" Fill="Black" Opacity="0.5"/>
         <TextBlock Name="TB_Main" Text="내용" FontSize="30" Foreground="White" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" Width="300" TextWrapping="Wrap"/>
         <Rectangle Grid.Row="1" Stroke="Gray"/>
+        <Rectangle Name="RA_Loading" Fill="White" Grid.RowSpan="2" Visibility="Collapsed"/>
+        <controls:ProgressRing Name="PR_Loading" IsActive="True" Grid.RowSpan="2" Visibility="Collapsed"/>
     </Grid>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>

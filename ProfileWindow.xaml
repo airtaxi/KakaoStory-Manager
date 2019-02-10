@@ -8,6 +8,7 @@
         xmlns:local="clr-namespace:KSP_WPF"
         mc:Ignorable="d"
         Closed="MetroWindow_Closed"
+        PreviewKeyDown="MetroWindow_PreviewKeyDown"
         Title="프로필 설정" Height="390" Width="360" Icon="icon2.png" ShowIconOnTitleBar="False" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>

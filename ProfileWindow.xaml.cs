@@ -412,5 +412,14 @@ namespace KSP_WPF
         {
             ValidateProfileChange();
         }
+
+        private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                Close();
+                e.Handled = true;
+            }
+        }
     }
 }

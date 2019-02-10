@@ -26,6 +26,9 @@ namespace KSP_WPF
             InitializeComponent();
             this.id = id;
 
+            RA_Loading.Visibility = Visibility.Visible;
+            PR_Loading.Visibility = Visibility.Visible;
+            
             Dispatcher.InvokeAsync(async () =>
             {
                 var mail = await KakaoRequestClass.GetMailDetail(id);
@@ -57,6 +60,9 @@ namespace KSP_WPF
 
                 TB_Main.Text = mail.content;
                 TB_Name.Text = mail.sender.display_name + "님으로부터";
+
+                RA_Loading.Visibility = Visibility.Collapsed;
+                PR_Loading.IsActive = false;
             });
         }
 

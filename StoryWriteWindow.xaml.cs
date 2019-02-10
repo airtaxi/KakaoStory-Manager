@@ -88,6 +88,8 @@ namespace KSP_WPF
             instance = this;
             BT_Pic.IsEnabled = false;
             BT_Pic.Foreground = Brushes.LightGray;
+            BT_Video.IsEnabled = false;
+            BT_Video.Foreground = Brushes.LightGray;
             BT_LinkShow.IsEnabled = false;
             BT_LinkShow.Foreground = Brushes.LightGray;
             BT_Link.IsEnabled = false;
@@ -150,6 +152,8 @@ namespace KSP_WPF
             {
                 BT_Pic.IsEnabled = false;
                 BT_Pic.Foreground = Brushes.LightGray;
+                BT_Video.IsEnabled = false;
+                BT_Video.Foreground = Brushes.LightGray;
             }
 
             MainWindow.SetClickObject(BT_Link);
@@ -262,8 +266,8 @@ namespace KSP_WPF
                 BT_Link.IsEnabled = true;
                 BT_Link.Foreground = Brushes.Gray;
                 BT_LinkShow.Foreground = Brushes.Gray;
-                BT_Video.IsEnabled = false;
-                BT_Video.Foreground = Brushes.LightGray;
+                BT_Video.IsEnabled = true;
+                BT_Video.Foreground = Brushes.Gray;
             }
         }
 
@@ -282,13 +286,15 @@ namespace KSP_WPF
                     DefaultExt = "jpg",
                     Multiselect = true
                 };
-                ofd.ShowDialog();
-                if (ofd.FileNames.Length > 0)
+                if(ofd.ShowDialog() == true)
                 {
-                    foreach (string path in ofd.FileNames)
+                    if (ofd.FileNames.Length > 0)
                     {
-                        if (!AddImage(path))
-                            break;
+                        foreach (string path in ofd.FileNames)
+                        {
+                            if (!AddImage(path))
+                                break;
+                        }
                     }
                 }
                 ValidatePanelHeight();
@@ -837,6 +843,8 @@ namespace KSP_WPF
                     BT_Link.Kind = MaterialDesignThemes.Wpf.PackIconKind.Delete;
                     BT_Pic.IsEnabled = false;
                     BT_Pic.Foreground = Brushes.LightGray;
+                    BT_Video.IsEnabled = false;
+                    BT_Video.Foreground = Brushes.LightGray;
                 }
                 else
                 {
@@ -851,6 +859,8 @@ namespace KSP_WPF
                 BT_Link.Kind = MaterialDesignThemes.Wpf.PackIconKind.Add;
                 BT_Pic.IsEnabled = true;
                 BT_Pic.Foreground = Brushes.Gray;
+                BT_Video.IsEnabled = true;
+                BT_Video.Foreground = Brushes.Gray;
             }
         }
 
@@ -934,12 +944,14 @@ namespace KSP_WPF
                     Filter = "Video File (*.mp4)|*.mp4",
                     DefaultExt = "mp4",
                 };
-                ofd.ShowDialog();
-                if (ofd.FileName != null)
+                if (ofd.ShowDialog() == true)
                 {
-                    videoPath = ofd.FileName;
+                    if (ofd.FileName != null)
+                    {
+                        videoPath = ofd.FileName;
+                    }
+                    ValidatePanelHeight();
                 }
-                ValidatePanelHeight();
             }
             else if(videoPath != null)
             {

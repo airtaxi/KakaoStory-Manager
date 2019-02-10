@@ -25,11 +25,21 @@ namespace KSP_WPF
             InitializeComponent();
             if (!Properties.Settings.Default.HideScrollBar)
                 SV_Main.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            Refresh();
+            RA_Loading.Visibility = Visibility.Visible;
+            PR_Loading.Visibility = Visibility.Visible;
+            Dispatcher.InvokeAsync(async () =>
+            {
+                await Refresh();
+                RA_Loading.Visibility = Visibility.Collapsed;
+            });
         }
 
-        public async void Refresh()
+        public async Task Refresh()
         {
+            BT_Refresh.IsEnabled = false;
+            PR_Loading.IsActive = true;
+            TB_RefreshBT.Text = "갱신중..";
+            IC_Refresh.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
             var mails = await KakaoRequestClass.GetMails();
             SP_Main.Children.Clear();
             foreach (var mail in mails)
@@ -68,7 +78,14 @@ namespace KSP_WPF
                     mc.RA_BG.Fill = Brushes.Transparent;
                     var window = new MailReadWindow(mail.id);
                     window.Show();
-                    //window.Activate();
+                };
+
+                mc.IC_Reply.PreviewMouseLeftButtonDown += (s, e) =>
+                {
+                    e.Handled = true;
+                    mc.RA_BG.Fill = Brushes.Transparent;
+                    var window = new MailWriteWindow(mail.sender.id, mail.sender.display_name);
+                    window.Show();
                 };
 
                 MainWindow.SetClickObject(mc.Grid);
@@ -76,23 +93,32 @@ namespace KSP_WPF
                 SP_Main.Children.Add(mc);
                 var sep = new Separator
                 {
-                    Foreground = Brushes.Gray
+                    Foreground = new SolidColorBrush(Color.FromRgb(221, 221, 221))
                 };
                 SP_Main.Children.Add(sep);
             }
+            PR_Loading.IsActive = false;
+            BT_Refresh.IsEnabled = true;
+            TB_RefreshBT.Text = "새로고침";
+            IC_Refresh.Kind = MaterialDesignThemes.Wpf.PackIconKind.Refresh;
         }
 
-        private void BT_Refresh_Click(object sender, RoutedEventArgs e)
+        private async void BT_Refresh_Click(object sender, RoutedEventArgs e)
         {
-            Refresh();
+            await Refresh();
         }
 
-        private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)
             {
-                Close();
                 e.Handled = true;
+                Close();
+            }
+            else if (e.Key == Key.R && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                e.Handled = true;
+                await Refresh();
             }
         }
         private void MetroWindow_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)

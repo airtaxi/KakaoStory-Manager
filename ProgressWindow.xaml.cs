@@ -48,9 +48,9 @@ namespace KSP_WPF
                     await Dispatcher.Invoke(async() =>
                     {
                         await MainWindow.UpdateProfile();
+                        Close();
                         MessageBox.Show("제한된 사용자의 삭제가 완료됐습니다.");
                     });
-                    Close();
                 }
                 catch (OperationCanceledException)
                 {

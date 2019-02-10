@@ -13,14 +13,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Image Name="IMG_Thumbnail" Width="60" Height="60" VerticalAlignment="Center" HorizontalAlignment="Left" Stretch="UniformToFill"/>
-            <Rectangle Stroke="Gray" HorizontalAlignment="Right"/>
+            <Rectangle Stroke="#DDDDDD" HorizontalAlignment="Right"/>
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="5,0,0,0">
                 <TextBlock Name="TB_Content" Text="제목" TextTrimming="CharacterEllipsis" FontWeight="ExtraBold" Margin="0,0,0,0" Width="Auto" VerticalAlignment="Top"/>
                 <TextBlock Name="TB_Message" Text="내용" FontWeight="Medium" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" Width="Auto"/>
                 <TextBlock Name="TB_Date" Text="날짜" FontWeight="UltraLight" FontSize="9" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" Width="Auto"/>
             </StackPanel>
         </Grid>
-        <Rectangle Stroke="Gray" StrokeThickness="1" VerticalAlignment="Bottom"/>
+        <Rectangle Stroke="#DDDDDD" StrokeThickness="1" VerticalAlignment="Bottom"/>
         <Rectangle Name="RA_Notify" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Fill="LightBlue" Width="5" Height="50"/>
     </Grid>
 </UserControl>

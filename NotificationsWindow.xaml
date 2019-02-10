@@ -35,6 +35,8 @@
         <ScrollViewer Name="SV_Content" VerticalScrollBarVisibility="Auto" Grid.Row="0" PanningMode="VerticalOnly" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
             <StackPanel Name="SP_Content" Orientation="Vertical"/>
         </ScrollViewer>
+        <Rectangle Name="RA_Loading" Fill="White" Visibility="Collapsed"/>
+        <controls:ProgressRing Name="PR_Loading" IsActive="True" Visibility="Collapsed"/>
         <controls:Flyout Name="FL_Menu" Position="Right" IsOpen="False" Theme="Accent" Width="210" Header="알림 메뉴">
             <StackPanel Margin="5,5,5,5" Orientation="Vertical">
                 <CheckBox Name="CB_Topmost" Content="항상 위" Foreground="White"/>
