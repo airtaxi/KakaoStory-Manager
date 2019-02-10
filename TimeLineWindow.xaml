@@ -93,6 +93,6 @@
                 <TextBox Name="TB_Refresh" Width="160" Text="15" controls:TextBoxHelper.Watermark="자동 새로고침 주기 (초)" controls:TextBoxHelper.UseFloatingWatermark="True" LostKeyboardFocus="TB_Refresh_LostKeyboardFocus" controls:TextBoxHelper.SelectAllOnFocus="True" Margin="5,5,5,5" Visibility="{Binding IsChecked,ElementName=CB_AutoRefresh,Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
         </controls:Flyout>
-        <TextBlock Name="TB_Loading" Text="불러오는중..." Foreground="Gray" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <controls:ProgressRing Name="PR_Loading" VerticalAlignment="Center" HorizontalAlignment="Center"/>
     </Grid>
 </controls:MetroWindow>

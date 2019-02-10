@@ -20,24 +20,25 @@ namespace KSP_WPF
     public partial class MainWindow : MetroWindow
     {
         public static bool IsLoggedIn = false;
-        public static MainWindow instance;
+        public static MainWindow Instance;
         public static string APP_ID = "kck4156.KSP.WPF";
 
-        public bool isClose = false;
-        public static bool notificationRequested = true;
-        public static bool isOffline = false;
-        public readonly NotifyIcon _notifyIcon = null;
-        public static StoryWriteWindow storyWriteWindow = null;
-        public static TimeLineWindow timeLineWindow = null;
-        public static TimeLineWindow profileTimeLineWindow = null;
-        public static NotificationsWindow notificationsWindow = null;
-        public static SettingsWindow settingsWindow = null;
-        public static FriendSelectWindow friendListWindow = null;
-        public static Dictionary<string, PostWindow> posts = new Dictionary<string, PostWindow>();
-        public static MailWindow mailWindow = null;
+        public bool IsClose = false;
+        public static bool NotificationRequested = true;
+        public static bool IsOffline = false;
+        public readonly NotifyIcon TrayNotifyIcon = null;
+        public static StoryWriteWindow StoryWriteWindow = null;
+        public static TimeLineWindow TimeLineWindow = null;
+        public static TimeLineWindow ProfileTimeLineWindow = null;
+        public static NotificationsWindow NotificationsWindow = null;
+        public static SettingsWindow SettingsWindow = null;
+        public static FriendSelectWindow FriendListWindow = null;
+        public static Dictionary<string, PostWindow> Posts = new Dictionary<string, PostWindow>();
+        public static MailWindow MailWindow = null;
+        public static ProfileWindow ProfileWindow = null;
 
-        public static FriendData.Friends userFriends { get; private set; }
-        public static UserProfile.ProfileData userProfile { get; private set; }
+        public static FriendData.Friends UserFriends { get; set; }
+        public static UserProfile.ProfileData UserProfile { get; set; }
 
         public MainWindow()
         {
@@ -59,12 +60,12 @@ namespace KSP_WPF
             CB_AutoLogin.IsChecked = Properties.Settings.Default.AutoLogin;
 
             Environment.CurrentDirectory = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
-            _notifyIcon = new NotifyIcon
+            TrayNotifyIcon = new NotifyIcon
             {
                 Icon = new Icon("icon.ico"),
                 Visible = true
             };
-            _notifyIcon.MouseDoubleClick += (s, e) =>
+            TrayNotifyIcon.MouseDoubleClick += (s, e) =>
             {
                 if (Properties.Settings.Default.DefaultMinimize)
                     WindowState = WindowState.Normal;
@@ -73,12 +74,12 @@ namespace KSP_WPF
                 
                 Activate();
             };
-            _notifyIcon.BalloonTipClicked += (s, e) =>
+            TrayNotifyIcon.BalloonTipClicked += (s, e) =>
             {
-                if(_notifyIcon.Tag != null)
+                if(TrayNotifyIcon.Tag != null)
                 {
-                    KSPNotificationActivator.ActivateHandler((string) _notifyIcon.Tag, null);
-                    _notifyIcon.Tag = null;
+                    KSPNotificationActivator.ActivateHandler((string) TrayNotifyIcon.Tag, null);
+                    TrayNotifyIcon.Tag = null;
                 }
                 else
                 {
@@ -150,13 +151,14 @@ namespace KSP_WPF
             };
             exit.Click += (s, a) =>
             {
-                isClose = true;
+                Hide();
+                IsClose = true;
                 Environment.Exit(0);
             };
             menu.MenuItems.Add(exit);
 
-            _notifyIcon.ContextMenu = menu;
-
+            TrayNotifyIcon.ContextMenu = menu;
+            
             if (Properties.Settings.Default.AutoLogin)
             {
                 TBX_Email.Text = Properties.Settings.Default.AutoEmail;
@@ -174,6 +176,7 @@ namespace KSP_WPF
             SetClickObject(GD_Mail);
             SetClickObject(GD_Settings);
             SetClickObject(GD_Friends);
+            SetClickObject(GD_ProfileSettings);
             SetClickObject(BT_Login);
             SetClickObject(EL_Profile);
             SetClickObject(TB_MyProfile);
@@ -201,11 +204,16 @@ namespace KSP_WPF
             element.MouseMove += ClickEventMouseMove;
             element.MouseLeave += ClickEventMouseLeave;
         }
+        public static void UnSetClickObject(IInputElement element)
+        {
+            element.MouseMove -= ClickEventMouseMove;
+            element.MouseLeave -= ClickEventMouseLeave;
+        }
 
         
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!isClose)
+            if (!IsClose)
             {
                 e.Cancel = true;
                 if (Properties.Settings.Default.DefaultMinimize)
@@ -221,8 +229,8 @@ namespace KSP_WPF
         {
             string friendRawData = await KakaoRequestClass.GetFriendData();
             string profileRawData = await KakaoRequestClass.GetProfileData();
-            userFriends = JsonConvert.DeserializeObject<FriendData.Friends>(friendRawData);
-            userProfile = JsonConvert.DeserializeObject<UserProfile.ProfileData>(profileRawData);
+            UserFriends = JsonConvert.DeserializeObject<FriendData.Friends>(friendRawData);
+            UserProfile = JsonConvert.DeserializeObject<UserProfile.ProfileData>(profileRawData);
             return true;
         }
 
@@ -232,15 +240,16 @@ namespace KSP_WPF
             {
                 IsLoggedIn = true;
                 await UpdateProfile();
+                PR_Login.Visibility = Visibility.Collapsed;
                 GD_Login.Visibility = Visibility.Collapsed;
                 GD_Profile.Visibility = Visibility.Visible;
-                TB_Name.Text = userProfile.display_name;
+                TB_Name.Text = UserProfile.display_name;
                 TB_Email.Text = TBX_Email.Text;
                 TB_Login.Visibility = Visibility.Collapsed;
                 TB_LoginProgress.Visibility = Visibility.Collapsed;
                 TB_Logout.Visibility = Visibility.Visible;
                 IMG_Login.Visibility = Visibility.Collapsed;
-                EL_Profile.Fill = new ImageBrush(new BitmapImage(new Uri(userProfile.profile_image_url)));
+                EL_Profile.Fill = new ImageBrush(new BitmapImage(new Uri(UserProfile.profile_image_url)));
                 BT_Login.IsEnabled = true;
                 if(Properties.Settings.Default.AutoMinimize)
                 {
@@ -275,12 +284,13 @@ namespace KSP_WPF
         {
             if (BT_Login.IsEnabled)
             {
+                PR_Login.Visibility = Visibility.Visible;
                 TB_Login.Visibility = Visibility.Collapsed;
                 TB_LoginProgress.Visibility = Visibility.Visible;
                 TB_Logout.Visibility = Visibility.Collapsed;
                 IMG_Login.Visibility = Visibility.Collapsed;
                 BT_Login.IsEnabled = false;
-                instance = this;
+                Instance = this;
                 if (Properties.Settings.Default.AutoLogin)
                 {
                     Properties.Settings.Default.AutoEmail = TBX_Email.Text;
@@ -305,42 +315,42 @@ namespace KSP_WPF
 
         private void BT_Write_Click(object sender, RoutedEventArgs e)
         {
-            if (!IsLoggedIn && !isOffline)
+            if (!IsLoggedIn && !IsOffline)
                 GlobalHelper.ShowOfflineMessage();
             else
             {
-                if (storyWriteWindow == null)
+                if (StoryWriteWindow == null)
                 {
-                    storyWriteWindow = new StoryWriteWindow();
-                    storyWriteWindow.Show();
+                    StoryWriteWindow = new StoryWriteWindow();
+                    StoryWriteWindow.Show();
                     //storyWriteWindow.Activate();
                 }
                 else
                 {
-                    storyWriteWindow.Show();
-                    storyWriteWindow.Activate();
+                    StoryWriteWindow.Show();
+                    StoryWriteWindow.Activate();
                 }
             }
         }
 
         private async void BT_TimeLine_Click(object sender, RoutedEventArgs e)
         {
-            if (IsLoggedIn && !isOffline)
+            if (IsLoggedIn && !IsOffline)
             {
-                if (timeLineWindow == null)
+                if (TimeLineWindow == null)
                 {
-                    timeLineWindow = new TimeLineWindow
+                    TimeLineWindow = new TimeLineWindow
                     {
                         fromMainMenu = true
                     };
-                    timeLineWindow.Show();
+                    TimeLineWindow.Show();
                     //timeLineWindow.Activate();
                 }
                 else
                 {
-                    await timeLineWindow.RefreshTimeline(null, true);
-                    timeLineWindow.Show();
-                    timeLineWindow.Activate();
+                    await TimeLineWindow.RefreshTimeline(null, true);
+                    TimeLineWindow.Show();
+                    TimeLineWindow.Activate();
                 }
             }
             else
@@ -349,19 +359,19 @@ namespace KSP_WPF
 
         public void BT_Notifiations_Click(object sender, RoutedEventArgs e)
         {
-            if (IsLoggedIn && !isOffline)
+            if (IsLoggedIn && !IsOffline)
             {
-                if (notificationsWindow == null)
+                if (NotificationsWindow == null)
                 {
-                    notificationsWindow = new NotificationsWindow();
-                    notificationsWindow.Show();
+                    NotificationsWindow = new NotificationsWindow();
+                    NotificationsWindow.Show();
                     //notificationsWindow.Activate();
                 }
                 else
                 {
-                    notificationsWindow.Refresh();
-                    notificationsWindow.Show();
-                    notificationsWindow.Activate();
+                    NotificationsWindow.Refresh();
+                    NotificationsWindow.Show();
+                    NotificationsWindow.Activate();
                 }
             }
             else
@@ -370,19 +380,19 @@ namespace KSP_WPF
         
         private async void BT_MyProfile_Click(object sender, RoutedEventArgs e)
         {
-            if (IsLoggedIn && !isOffline)
+            if (IsLoggedIn && !IsOffline)
             {
-                if(profileTimeLineWindow == null)
+                if(ProfileTimeLineWindow == null)
                 {
-                    profileTimeLineWindow = new TimeLineWindow(userProfile.id);
-                    profileTimeLineWindow.Show();
+                    ProfileTimeLineWindow = new TimeLineWindow(UserProfile.id);
+                    ProfileTimeLineWindow.Show();
                     //profileTimeLineWindow.Activate();
                 }
                 else
                 {
-                    await profileTimeLineWindow.RefreshTimeline(null, true);
-                    profileTimeLineWindow.Show();
-                    profileTimeLineWindow.Activate();
+                    await ProfileTimeLineWindow.RefreshTimeline(null, true);
+                    ProfileTimeLineWindow.Show();
+                    ProfileTimeLineWindow.Activate();
                 }
             }
             else
@@ -391,16 +401,16 @@ namespace KSP_WPF
 
         private void BT_Settings_Click(object sender, RoutedEventArgs e)
         {
-            if (settingsWindow == null)
+            if (SettingsWindow == null)
             {
-                settingsWindow = new SettingsWindow();
-                settingsWindow.Show();
+                SettingsWindow = new SettingsWindow();
+                SettingsWindow.Show();
                 //settingsWindow.Activate();
             }
             else
             {
-                settingsWindow.Show();
-                settingsWindow.Activate();
+                SettingsWindow.Show();
+                SettingsWindow.Activate();
             }
         }
 
@@ -412,20 +422,20 @@ namespace KSP_WPF
 
         private void BT_Friends_Click(object sender, RoutedEventArgs e)
         {
-            if (IsLoggedIn && !isOffline)
+            if (IsLoggedIn && !IsOffline)
             {
-                if (friendListWindow == null)
+                if (FriendListWindow == null)
                 {
-                    friendListWindow = new FriendSelectWindow(null, true);
-                    friendListWindow.BT_Submit.Visibility = Visibility.Collapsed;
-                    friendListWindow.RD_Submit.Height = new GridLength(0);
-                    friendListWindow.Show();
+                    FriendListWindow = new FriendSelectWindow(null, true);
+                    FriendListWindow.BT_Submit.Visibility = Visibility.Collapsed;
+                    FriendListWindow.RD_Submit.Height = new GridLength(0);
+                    FriendListWindow.Show();
                     //friendListWindow.Activate();
                 }
                 else
                 {
-                    friendListWindow.Show();
-                    friendListWindow.Activate();
+                    FriendListWindow.Show();
+                    FriendListWindow.Activate();
                 }
             }
             else
@@ -442,7 +452,8 @@ namespace KSP_WPF
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            isClose = true;
+            Hide();
+            IsClose = true;
             Environment.Exit(0);
         }
 
@@ -532,12 +543,12 @@ namespace KSP_WPF
 
         private void BT_Favorite_Click(object sender, RoutedEventArgs e)
         {
-            if (!IsLoggedIn && !isOffline)
+            if (!IsLoggedIn && !IsOffline)
                 GlobalHelper.ShowOfflineMessage();
             else
             {
                 TimeLineWindow.showBookmarkedGlobal = true;
-                TimeLineWindow timeLineWindow = new TimeLineWindow(userProfile.id);
+                TimeLineWindow timeLineWindow = new TimeLineWindow(UserProfile.id);
                 timeLineWindow.Show();
                 timeLineWindow.Activate();
             }
@@ -554,16 +565,30 @@ namespace KSP_WPF
 
         private void GD_Mail_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(mailWindow == null)
+            if(MailWindow == null)
             {
-                mailWindow = new MailWindow();
-                mailWindow.Show();
+                MailWindow = new MailWindow();
+                MailWindow.Show();
                 //mailWindow.Activate();
             }
             else
             {
-                mailWindow.Show();
-                mailWindow.Activate();
+                MailWindow.Show();
+                MailWindow.Activate();
+            }
+        }
+
+        private void GD_ProfileSettings_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (ProfileWindow == null)
+            {
+                ProfileWindow = new ProfileWindow();
+                ProfileWindow.Show();
+            }
+            else
+            {
+                ProfileWindow.Show();
+                ProfileWindow.Activate();
             }
         }
     }

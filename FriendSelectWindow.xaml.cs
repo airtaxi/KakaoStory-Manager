@@ -93,7 +93,7 @@ namespace KSP_WPF
             SP_Content.Children.Clear();
             controls.Clear();
 
-            foreach (var friend in MainWindow.userFriends.profiles)
+            foreach (var friend in MainWindow.UserFriends.profiles)
             {
                 if (friend.blocked != true && friend.display_name.ToLower().Contains(filter.ToLower()))
                 {
@@ -153,7 +153,7 @@ namespace KSP_WPF
                 control.Background = Brushes.Transparent;
             }
             if (isFriendList)
-                MainWindow.friendListWindow = null;
+                MainWindow.FriendListWindow = null;
         }
 
         private void TB_Search_TextChanged(object sender, TextChangedEventArgs e)

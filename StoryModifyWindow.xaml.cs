@@ -73,7 +73,7 @@ namespace KSP_WPF
                 {
                     if((CB_Task.SelectedIndex == 1 || CB_Task.SelectedIndex == 2) && CB_Target.SelectedIndex  == 5)
                     {
-                        var bookmarkMain = await KakaoRequestClass.GetBookmark(MainWindow.userProfile.id, null);
+                        var bookmarkMain = await KakaoRequestClass.GetBookmark(MainWindow.UserProfile.id, null);
                         while (!isClosed)
                         {
                             foreach (var bookmark in bookmarkMain.bookmarks)
@@ -81,19 +81,19 @@ namespace KSP_WPF
                                 posts.Add(bookmark.activity);
                             }
                             TB_Progress.Text = $"게시글 조회 ({posts.Count})";
-                            bookmarkMain = await KakaoRequestClass.GetBookmark(MainWindow.userProfile.id, bookmarkMain.bookmarks.Last().id);
+                            bookmarkMain = await KakaoRequestClass.GetBookmark(MainWindow.UserProfile.id, bookmarkMain.bookmarks.Last().id);
                             if (bookmarkMain.bookmarks.Count == 0)
                                 break;
                         }
                     }
                     else
                     {
-                        var feeds = await KakaoRequestClass.GetProfileFeed(MainWindow.userProfile.id, null);
+                        var feeds = await KakaoRequestClass.GetProfileFeed(MainWindow.UserProfile.id, null);
                         while (!isClosed)
                         {
                             posts.AddRange(feeds.activities);
                             TB_Progress.Text = $"게시글 조회 ({posts.Count})";
-                            feeds = await KakaoRequestClass.GetProfileFeed(MainWindow.userProfile.id, feeds.activities[feeds.activities.Count - 1].id);
+                            feeds = await KakaoRequestClass.GetProfileFeed(MainWindow.UserProfile.id, feeds.activities[feeds.activities.Count - 1].id);
                             if (feeds.activities.Count == 0)
                                 break;
                         }

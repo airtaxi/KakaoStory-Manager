@@ -83,8 +83,8 @@ namespace KSP_WPF
         private async void BT_Delete_Click(object sender, RoutedEventArgs e)
         {
             await KakaoRequestClass.DeleteMail(id);
-            if(MainWindow.mailWindow != null)
-                MainWindow.mailWindow.Refresh();
+            if(MainWindow.MailWindow != null)
+                MainWindow.MailWindow.Refresh();
 
             MessageBox.Show("쪽지 삭제가 완료되었습니다.");
             Close();

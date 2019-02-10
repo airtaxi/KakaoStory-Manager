@@ -606,10 +606,10 @@ namespace KSP_WPF
                             await WriteText(TB_Main.Text, permission, (bool)CB_Comment.IsChecked, (bool)CB_Share.IsChecked);
                         else
                             await KakaoRequestClass.ShareFeed(shareFeedID, TB_Main.Text, permission, (bool)CB_Comment.IsChecked, with_ids, trust_ids);
-                        if (MainWindow.profileTimeLineWindow != null)
-                            await MainWindow.profileTimeLineWindow.RefreshTimeline(null, true);
-                        if (MainWindow.timeLineWindow != null)
-                            await MainWindow.timeLineWindow.RefreshTimeline(null, true);
+                        if (MainWindow.ProfileTimeLineWindow != null)
+                            await MainWindow.ProfileTimeLineWindow.RefreshTimeline(null, true);
+                        if (MainWindow.TimeLineWindow != null)
+                            await MainWindow.TimeLineWindow.RefreshTimeline(null, true);
                         Close();
                     }
                     catch (Exception ex)
@@ -734,7 +734,7 @@ namespace KSP_WPF
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            MainWindow.storyWriteWindow = null;
+            MainWindow.StoryWriteWindow = null;
         }
 
         private void TB_Main_PreviewDragOver(object sender, DragEventArgs e)

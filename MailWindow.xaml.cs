@@ -108,12 +108,14 @@ namespace KSP_WPF
 
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
-            MainWindow.mailWindow = null;
+            MainWindow.MailWindow = null;
         }
 
         private void BT_Send_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("현재 쪽지 보내기 기능은 준비중입니다", "안내");
+            MessageBox.Show("쪽지 보내기 기능은 현재 베타입니다.\n정상적 작동을 보장하지 않습니다.", "경고");
+            MailWriteWindow mrw = new MailWriteWindow();
+            mrw.Show();
         }
     }
 }

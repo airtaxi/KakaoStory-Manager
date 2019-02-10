@@ -97,7 +97,7 @@ namespace KSP_WPF
             {
                 cookieContainer = GetUriCookieContainerForOnce(new Uri("https://story.kakao.com/"));
                 isLoginSuccess = true;
-                MainWindow.instance.StartTimer();
+                MainWindow.Instance.StartTimer();
                 Dispose();
                 Close();
             }
@@ -105,8 +105,8 @@ namespace KSP_WPF
             {
                 try
                 {
-                    (WebBrwoserView.Document as mshtml.HTMLDocument).getElementById("loginEmail").setAttribute("value", MainWindow.instance.TBX_Email.Text);
-                    (WebBrwoserView.Document as mshtml.HTMLDocument).getElementById("loginPw").setAttribute("value", MainWindow.instance.TBX_Password.Password);
+                    (WebBrwoserView.Document as mshtml.HTMLDocument).getElementById("loginEmail").setAttribute("value", MainWindow.Instance.TBX_Email.Text);
+                    (WebBrwoserView.Document as mshtml.HTMLDocument).getElementById("loginPw").setAttribute("value", MainWindow.Instance.TBX_Password.Password);
                     (WebBrwoserView.Document as mshtml.HTMLDocument).getElementById("staySignedIn").setAttribute("value", "true");
                     mshtml.IHTMLElementCollection buttons = (WebBrwoserView.Document as mshtml.IHTMLDocument3).getElementsByTagName("button");
                     foreach (mshtml.IHTMLElement button in buttons)
@@ -131,7 +131,7 @@ namespace KSP_WPF
 
         private void RevertLogin()
         {
-            MainWindow.instance.BT_Login.IsEnabled = true;
+            MainWindow.Instance.BT_Login.IsEnabled = true;
         }
 
         public void Dispose()

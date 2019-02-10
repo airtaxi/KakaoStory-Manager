@@ -109,20 +109,20 @@ namespace KSP_WPF
                 MainWindow.SetClickObject(BT_Write);
                 MainWindow.SetClickObject(IC_Friend);
                 SP_Content.Margin = new Thickness(0, 10, 0, 0);
-                if (id.Equals(MainWindow.userProfile.id) && showBookmarked != true)
+                if (id.Equals(MainWindow.UserProfile.id) && showBookmarked != true)
                 {
-                    if (MainWindow.profileTimeLineWindow != null)
+                    if (MainWindow.ProfileTimeLineWindow != null)
                     {
                         isClose = true;
-                        MainWindow.profileTimeLineWindow.Show();
+                        MainWindow.ProfileTimeLineWindow.Show();
                         //MainWindow.profileTimeLineWindow.Activate();
-                        await MainWindow.profileTimeLineWindow.RefreshTimeline(null, true);
+                        await MainWindow.ProfileTimeLineWindow.RefreshTimeline(null, true);
                         return;
                     }
                     else
                     {
                         fromMainMenu = true;
-                        MainWindow.profileTimeLineWindow = this;
+                        MainWindow.ProfileTimeLineWindow = this;
                     }
                 }
                 else if(showBookmarked != true)
@@ -156,9 +156,10 @@ namespace KSP_WPF
         public async Task<bool> RefreshTimeline(string from, bool isClear)
         {
             BT_Refresh.IsEnabled = false;
+            PR_Loading.IsActive = true;
             TB_RefreshBT.Text = "갱신중...";
             IC_Refresh.Kind = MaterialDesignThemes.Wpf.PackIconKind.ProgressClock;
-
+            
             List<CommentData.PostData> feeds;
             if (!isProfile)
             {
@@ -242,7 +243,7 @@ namespace KSP_WPF
                     nextRequest = profile.activities.Last().id;
                 }
 
-                if (MainWindow.userProfile.id.Equals(profileID) && showBookmarked != true)
+                if (MainWindow.UserProfile.id.Equals(profileID) && showBookmarked != true)
                 {
                     Title = "내 프로필";
                     TB_Desc2.Text = profile.profile.activity_count.ToString() + "개의 스토리";
@@ -407,7 +408,7 @@ namespace KSP_WPF
             TB_RefreshBT.Text = "새로고침";
             IC_Refresh.Kind = MaterialDesignThemes.Wpf.PackIconKind.Refresh;
 
-            TB_Loading.Visibility = Visibility.Collapsed;
+            PR_Loading.IsActive = false;
             return true;
         }
         
@@ -561,13 +562,13 @@ namespace KSP_WPF
             if (fromMainMenu)
             {
                 if (!isProfile)
-                    MainWindow.timeLineWindow = null;
+                    MainWindow.TimeLineWindow = null;
                 else
-                    MainWindow.profileTimeLineWindow = null;
+                    MainWindow.ProfileTimeLineWindow = null;
             }
             else if (isProfile)
             {
-                if (profileID != null && !profileID.Equals(MainWindow.userProfile.id))
+                if (profileID != null && !profileID.Equals(MainWindow.UserProfile.id))
                 {
                     profiles.Remove(profileID);
                 }
@@ -657,15 +658,15 @@ namespace KSP_WPF
 
         private void BT_Write_Click(object sender, RoutedEventArgs e)
         {
-            if (MainWindow.storyWriteWindow == null)
+            if (MainWindow.StoryWriteWindow == null)
             {
-                MainWindow.storyWriteWindow = new StoryWriteWindow();
-                MainWindow.storyWriteWindow.Show();
+                MainWindow.StoryWriteWindow = new StoryWriteWindow();
+                MainWindow.StoryWriteWindow.Show();
                 //MainWindow.storyWriteWindow.Activate();
             }
             else
             {
-                MainWindow.storyWriteWindow.Show();
+                MainWindow.StoryWriteWindow.Show();
                 //MainWindow.storyWriteWindow.Activate();
             }
         }
@@ -694,7 +695,7 @@ namespace KSP_WPF
 
         private void BT_Notification_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.instance.BT_Notifiations_Click(null, null);
+            MainWindow.Instance.BT_Notifiations_Click(null, null);
         }
 
         private void BT_Menu_Click(object sender, RoutedEventArgs e)

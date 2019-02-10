@@ -161,7 +161,7 @@ namespace KSP_WPF
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            MainWindow.notificationsWindow = null;
+            MainWindow.NotificationsWindow = null;
         }
 
         private void BT_Refresh_Click(object sender, RoutedEventArgs e)

@@ -70,7 +70,7 @@ namespace KSP_WPF
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            MainWindow.settingsWindow = null;
+            MainWindow.SettingsWindow = null;
         }
         private void CB_Click(object sender, RoutedEventArgs e)
         {
@@ -153,10 +153,7 @@ namespace KSP_WPF
 
         private void BT_DeletePosts_Click(object sender, RoutedEventArgs e)
         {
-            new StoryDeleteWindow()
-            {
-                Owner = this
-            }.ShowDialog();
+            new StoryDeleteWindow().Show();
         }
 
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -186,20 +183,14 @@ namespace KSP_WPF
 
         private void BT_BatchEditPosts_Click(object sender, RoutedEventArgs e)
         {
-            StoryModifyWindow window = new StoryModifyWindow()
-            {
-                Owner = this
-            };
-            window.ShowDialog();
+            StoryModifyWindow window = new StoryModifyWindow();
+            window.Show();
         }
 
         private void BT_FriendMenu_Click(object sender, RoutedEventArgs e)
         {
-            FriendManageWindow window = new FriendManageWindow()
-            {
-                Owner = this
-            };
-            window.ShowDialog();
+            FriendManageWindow window = new FriendManageWindow();
+            window.Show();
         }
 
         private void BT_StartUp_Click(object sender, RoutedEventArgs e)

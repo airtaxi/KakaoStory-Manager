@@ -262,6 +262,9 @@
     <Compile Include="MailControl.xaml.cs">
       <DependentUpon>MailControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProfileWindow.xaml.cs">
+      <DependentUpon>ProfileWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MailWriteWindow.xaml.cs">
       <DependentUpon>MailWriteWindow.xaml</DependentUpon>
     </Compile>
@@ -360,6 +363,10 @@
     <Page Include="MailControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ProfileWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MailWriteWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -64,8 +64,8 @@ namespace KSP_WPF
             }
             else
             {
-                MainWindow.instance._notifyIcon.ShowBalloonTip(5, title, message, System.Windows.Forms.ToolTipIcon.Info);
-                MainWindow.instance._notifyIcon.Tag = URL;
+                MainWindow.Instance.TrayNotifyIcon.ShowBalloonTip(5, title, message, System.Windows.Forms.ToolTipIcon.Info);
+                MainWindow.Instance.TrayNotifyIcon.Tag = URL;
             }
         }
 
@@ -507,21 +507,27 @@ namespace KSP_WPF
                 }
                 else if (decorator.type.Equals("text") || decorator.type.Equals("emoticon"))
                 {
-                    string text = decorator.text.Replace("\\n", "\n");
+                    string text = decorator.text.Replace("\r\n", "\n");
+                    text = decorator.text.Replace("\\n", "\n");
                     if(text.Contains("http://") || text.Contains("https://"))
                     {
                         int count = 0;
                         string[] splitted = SplitWithDelimiters(text, new List<string> { "http://", "https://" });
                         string lastDelimiter = null;
-                        foreach(string splittedText in splitted)
+                        foreach (string splittedText in splitted)
                         {
                             count++;
                             if (splittedText.Equals("https://") || splittedText.Equals("http://"))
                                 lastDelimiter = splittedText;
                             else if(lastDelimiter != null && splittedText.Length > 0)
                             {
-                                int endPos = Math.Min(splittedText.LastIndexOf(" ") - 1, splittedText.LastIndexOf("\\n") - 1);
-                                if(endPos < 0)
+                                int endPos = splittedText.IndexOf(" ");
+                                if (endPos < 0)
+                                    endPos = splittedText.IndexOf("\n");
+                                else if (splittedText.IndexOf("\n") > 0 && splittedText.IndexOf("\n") < endPos)
+                                    endPos = splittedText.IndexOf("\n");
+
+                                if (endPos < 0)
                                 {
                                     endPos = splittedText.Length - 1;
                                     if (count == splitted.Length)

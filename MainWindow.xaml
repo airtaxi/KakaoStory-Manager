@@ -45,6 +45,7 @@
             <PasswordBox Name="TBX_Password" FontSize="17" Password="" FontWeight="Bold" BorderThickness="0" VerticalContentAlignment="Center" Margin="40,130,0,0" Width="460" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top" controls:TextBoxHelper.Watermark="패스워드" KeyDown="TBX_Password_KeyDown"/>
             <CheckBox Name="CB_AutoLogin" Content="로그인 유지" FontWeight="Bold" FontSize="17.5" VerticalContentAlignment="Center" Margin="40,170,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Click="CB_AutoLogin_Click" KeyDown="TBX_Password_KeyDown"/>
         </Grid>
+            <controls:MetroProgressBar Visibility="Collapsed" Name="PR_Login" Width="457.5" IsIndeterminate="True" Margin="-185,-110,0,0"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
             <CheckBox Content="야간 모드" Name="TSW_DarkMode" Click="TSW_DarkMode_Click"/>
         </StackPanel>
@@ -56,7 +57,11 @@
                 <TextBlock Name="TB_MyProfile" FontWeight="Bold" Text="내 프로필 |" FontSize="16" Margin="0,72.5,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" MouseLeftButtonDown="TB_MyProfile_MouseLeftButtonDown" />
                 <Grid Name="GD_Friends" MouseLeftButtonDown="GD_Friends_MouseLeftButtonDown">
                     <materialDesign:PackIcon Name="IMG_Friends" Kind="People" Width="20" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="82.5,0,0,0"/>
-                    <TextBlock Name="TB_Friends" FontWeight="Bold" Text="친구 목록" FontSize="16" Margin="105,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" TextAlignment="Center" />
+                    <TextBlock Name="TB_Friends" FontWeight="Bold" Text="친구 목록 |" FontSize="16" Margin="105,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" TextAlignment="Center" />
+                </Grid>
+                <Grid Name="GD_ProfileSettings" MouseLeftButtonDown="GD_ProfileSettings_MouseLeftButtonDown">
+                    <materialDesign:PackIcon Kind="Gear" Width="20" Height="20" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="187.5,0,0,0"/>
+                    <TextBlock FontWeight="Bold" Text="프로필 관리" FontSize="16" Margin="209,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Bottom" TextAlignment="Center" />
                 </Grid>
             </Grid>
         </Grid>

@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:KSP_WPF"
         mc:Ignorable="d"
         PreviewKeyDown="MetroWindow_PreviewKeyDown"
-        Title="쪽지 확인" Height="400" Width="320" Icon="icon2.png" ShowIconOnTitleBar="False" ResizeMode="NoResize">
+        Title="쪽지 확인" Height="400" Width="320" Icon="icon2.png" ShowIconOnTitleBar="False">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80"/>

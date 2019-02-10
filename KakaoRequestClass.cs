@@ -15,6 +15,7 @@ namespace KSP_WPF
     {
         private const int NotificationRefreshTime = 2000;
         private static DateTime? LastMessageTime = null;
+        public static bool notShowError = false;
         private const string OfflineStr = " (오프라인)";
         public static async Task<string> GetScrapData(string url)
         {
@@ -23,9 +24,9 @@ namespace KSP_WPF
             return await GetResponseFromRequest(webRequest);
         }
 
-        public static async Task<ProfileData.ProfileObject> GetProfileFeed(string id, string from)
+        public static async Task<ProfileData.ProfileObject> GetProfileFeed(string id, string from, bool noActivity = false)
         {
-            string requestURI = "https://story.kakao.com/a/profiles/" + id + "?with=activities";
+            string requestURI = "https://story.kakao.com/a/profiles/" + id + (!noActivity ? "?with=activities" : "");
             if (from != null)
                 requestURI += "&since=" + from;
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI);
@@ -92,7 +93,7 @@ namespace KSP_WPF
             webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
             webRequest.Headers["X-Kakao-ApiLevel"] = "45";
             webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            webRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
+            webRequest.Headers["X-Kakao-VC"] = Guid.NewGuid().ToString().ToLower().Substring(0,20);
             webRequest.Headers["Cache-Control"] = "max-age=0";
 
             webRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
@@ -100,7 +101,7 @@ namespace KSP_WPF
 
             webRequest.Headers["DNT"] = "1";
 
-            webRequest.Headers["authority"] = "story.kakao.com";
+            //webRequest.Headers["authority"] = "story.kakao.com";
             webRequest.Referer = "https://story.kakao.com/";
             webRequest.KeepAlive = true;
             webRequest.UseDefaultCredentials = true;
@@ -131,7 +132,6 @@ namespace KSP_WPF
             writeStream.Write(byteArray, 0, byteArray.Length);
             writeStream.Close();
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public static async Task MutePost(string id, bool mute)
@@ -147,8 +147,6 @@ namespace KSP_WPF
             writeStream.Close();
 
             await GetResponseFromRequest(webRequest);
-
-            return;
         }
 
         public static async Task<List<CommentData.Comment>> GetComment(string id, string since)
@@ -188,7 +186,6 @@ namespace KSP_WPF
                 method = "POST";
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public static async Task FriendRequest(string id, bool isDelete)
@@ -216,7 +213,6 @@ namespace KSP_WPF
             writeStream.Close();
 
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public static async Task FriendAccept(string id, bool isDelete)
@@ -236,7 +232,6 @@ namespace KSP_WPF
             writeStream.Close();
 
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public static async Task FavoriteRequest(string id, bool isUnpin)
@@ -251,7 +246,6 @@ namespace KSP_WPF
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
             webRequest.Method = method;
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public static async Task PinPost(string id, bool isUnpin)
@@ -265,7 +259,6 @@ namespace KSP_WPF
 
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public async static Task ShareFeed(string FeedID, string text, string permission, bool commentable, List<string> with_ids, List<string> trust_ids)
@@ -296,7 +289,6 @@ namespace KSP_WPF
             writeStream.Close();
 
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public async static Task UPFeed(string FeedID, bool isDelete)
@@ -310,7 +302,6 @@ namespace KSP_WPF
 
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, method);
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public async static Task<bool> LikeFeed(string FeedID, string emotion)
@@ -344,7 +335,6 @@ namespace KSP_WPF
             string requestURI = "https://story.kakao.com/a/friends/" + id;
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public static async Task DeleteLike(string FeedID, string id)
@@ -362,21 +352,18 @@ namespace KSP_WPF
             writeStream.Close();
 
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
-        public static async Task SendMail(string content, string id, bool bomb, string imgURI = null)
+        public static async Task DeleteBirthday()
         {
-            string requestURI = "https://story.kakao.com/a/messages";
-            
-            string objectStr = $"&object=%7B%22background%22%3A%7B%22type%22%3A%22color%22%2C%22value%22%3A{new Random().Next(1000000,9999999).ToString()}%7D%7D";
-
-            if (imgURI != null)
-                objectStr = "";
-
-            string postData = $"content={Uri.EscapeDataString("[{\"type\":\"text\",\"text\":\""+content+"\"}]")}&bomb={bomb.ToString().ToLower()}" + objectStr + $"&receiver_id%5B%5D={id}&reference_id=";
-            MessageBox.Show(postData);
-
+            string requestURI = "https://story.kakao.com/a/agreement/birth";
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
+            await GetResponseFromRequest(webRequest);
+        }
+        public static async Task SetProfileName(string name)
+        {
+            string requestURI = "https://story.kakao.com/a/settings/profile/name";
+            string postData = $"name={Uri.EscapeDataString(name)}";
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "POST");
 
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
@@ -385,7 +372,80 @@ namespace KSP_WPF
             writeStream.Close();
 
             await GetResponseFromRequest(webRequest);
-            return;
+        }
+        public static async Task SetBirthday(DateTime date, bool isLunar, bool isLeapType)
+        {
+            string requestURI = "https://story.kakao.com/a/settings/profile/birthday";
+            string postData = $"birth={Uri.EscapeDataString(date.ToString("yyyyMMdd"))}&birth_type={Uri.EscapeDataString(isLeapType == true ? "-" : "+")}&birth_leap_type={isLeapType.ToString().ToLower()}";
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "PUT");
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            await GetResponseFromRequest(webRequest);
+        }
+        public static async Task SetGender(string gender, string permission)
+        {
+            string requestURI = "https://story.kakao.com/a/settings/profile/gender";
+            string postData = $"gender={gender}&permission={permission}";
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "PUT");
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            await GetResponseFromRequest(webRequest);
+        }
+        public static async Task DeleteGender()
+        {
+            string requestURI = "https://story.kakao.com/a/settings/profile/gender";
+            string postData = $"gender=&permission=";
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "PUT");
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            await GetResponseFromRequest(webRequest);
+        }
+        public static async Task SetStatusMessage(string message)
+        {
+            string requestURI = "https://story.kakao.com/a/settings/profile/status_message";
+            string postData = $"status_message={Uri.EscapeDataString(message)}";
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "PUT");
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            await GetResponseFromRequest(webRequest);
+        }
+        public static async Task SendMail(string content, string id, bool bomb, string imgURI = null)
+        {
+            string requestURI = "https://story.kakao.com/a/messages?_="+((long) DateTime.Now.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds - 32400).ToString()+ "11149";
+            string objectStr = $"&object=%7B%22background%22%3A%7B%22type%22%3A%22color%22%2C%22value%22%3A{new Random().Next(10983816, 10983816).ToString()}%7D%7D";
+
+            if (imgURI != null)
+                objectStr = "";
+
+            string postData = $"content={Uri.EscapeDataString("[{\"type\":\"text\",\"text\":\""+content+"\"}]")}&bomb={bomb.ToString().ToLower()}" + objectStr + $"&receiver_id%5B%5D={id}&reference_id=";
+
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "POST");
+            webRequest.Headers["Origin"] = "https://story.kakao.com";
+            webRequest.Headers["Cache-Control"] = "no-cache";
+            webRequest.Referer = "https://story.kakao.com/";
+
+            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            Stream writeStream = await webRequest.GetRequestStreamAsync();
+            writeStream.Write(byteArray, 0, byteArray.Length);
+            writeStream.Close();
+
+            await GetResponseFromRequest(webRequest);
         }
 
         public static async Task<List<MailData.Mail>> GetMails(string since = null)
@@ -414,7 +474,6 @@ namespace KSP_WPF
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
 
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public async static Task ReplyToFeed(string FeedID, string text, string id, string name, UploadedImageProp img = null)
@@ -457,13 +516,11 @@ namespace KSP_WPF
             writeStream.Close();
 
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public async void GetNotification(object sender, EventArgs e1)
         {
             await RequestNotification(false);
-            return;
         }
 
         public static async Task<List<CSNotification>> RequestNotification(bool isReturn)
@@ -528,10 +585,10 @@ namespace KSP_WPF
                             try
                             {
                                 string activityID = Uri.Split(new string[] { "activities/" }, StringSplitOptions.None)[1];
-                                if (MainWindow.posts.ContainsKey(activityID))
+                                if (MainWindow.Posts.ContainsKey(activityID))
                                 {
-                                    MainWindow.posts[activityID].Refresh();
-                                    MainWindow.posts[activityID].SV_Comment.ScrollToEnd();
+                                    MainWindow.Posts[activityID].Refresh();
+                                    MainWindow.Posts[activityID].SV_Comment.ScrollToEnd();
                                 }
                             }
                             catch (Exception) {}
@@ -541,20 +598,20 @@ namespace KSP_WPF
                             break;
                         }
                     }
-                    if (MainWindow.isOffline)
+                    if (MainWindow.IsOffline)
                     {
                         if (!Properties.Settings.Default.Disable_Message)
                             GlobalHelper.ShowNotification("안내", "인터넷 연결이 복구됐습니다.", null);
-                        MainWindow.instance.Title = MainWindow.instance.Title.Replace(OfflineStr, "");
-                        MainWindow.isOffline = false;
+                        MainWindow.Instance.Title = MainWindow.Instance.Title.Replace(OfflineStr, "");
+                        MainWindow.IsOffline = false;
                     }
                 }
                 catch (Exception)
                 {
-                    if (!MainWindow.isOffline && Environment.OSVersion.Version.Major == 10)
+                    if (!MainWindow.IsOffline && Environment.OSVersion.Version.Major == 10)
                     {
-                        MainWindow.instance.Title = MainWindow.instance.Title.Replace(OfflineStr, "") + OfflineStr;
-                        MainWindow.isOffline = true;
+                        MainWindow.Instance.Title = MainWindow.Instance.Title.Replace(OfflineStr, "") + OfflineStr;
+                        MainWindow.IsOffline = true;
                         if (!Properties.Settings.Default.Disable_Message)
                             GlobalHelper.ShowNotification("일반 오류", "인터넷 연결에 문제가 발생했습니다. 자동으로 복구를 시도합니다.", null);
                     }
@@ -579,7 +636,6 @@ namespace KSP_WPF
             string requestURI = "https://story.kakao.com/a/activities/" + id;
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public static async Task DeleteComment(string commentID, PostData data)
@@ -587,7 +643,6 @@ namespace KSP_WPF
             string requestURI = "https://story.kakao.com/a/activities/" + data.id + "/comments/" + commentID;
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "DELETE");
             await GetResponseFromRequest(webRequest);
-            return;
         }
 
         public static async Task EditComment(Comment comment, string text, PostData data)
@@ -625,8 +680,6 @@ namespace KSP_WPF
             writeStream.Close();
 
             await GetResponseFromRequest(webRequest);
-
-            return;
         }
 
         public static async Task<List<ShareData.Share>> GetShares(bool isUP, PostData data, string from)
@@ -662,7 +715,8 @@ namespace KSP_WPF
                     return await GetResponseFromRequest(webRequest, ++count);
                 else
                 {
-                    MessageBox.Show(new StreamReader(e.Response.GetResponseStream()).ReadToEnd(), e.Message);
+                    if(!notShowError)
+                        MessageBox.Show(new StreamReader(e.Response.GetResponseStream()).ReadToEnd(), e.Message);
                     return null;
                 }
             }

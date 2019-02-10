@@ -59,7 +59,7 @@ namespace KSP_WPF
                 fsc.IC_Friend.Kind = MaterialDesignThemes.Wpf.PackIconKind.PersonAdd;
                 fsc.IC_Friend.Foreground = Brushes.OrangeRed;
             }
-            if(likeID != null && instance.data.actor.id.Equals(MainWindow.userProfile.id))
+            if(likeID != null && instance.data.actor.id.Equals(MainWindow.UserProfile.id))
             {
                 fsc.IC_Delete.Visibility = Visibility.Visible;
                 fsc.IC_Delete.PreviewMouseLeftButtonDown += async (s, e) =>

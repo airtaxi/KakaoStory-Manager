@@ -53,11 +53,11 @@ namespace KSP_WPF
         private async void BT_Confirm_Click(object sender, RoutedEventArgs e)
         {
             BT_Confirm.IsEnabled = false;
-            if (MainWindow.IsLoggedIn && !MainWindow.isOffline)
+            if (MainWindow.IsLoggedIn && !MainWindow.IsOffline)
             {
                 int deleted = 0;
                 int counted = 0;
-                var feed = await KakaoRequestClass.GetProfileFeed(MainWindow.userProfile.id, null);
+                var feed = await KakaoRequestClass.GetProfileFeed(MainWindow.UserProfile.id, null);
                 if(feed.activities.Count == 0)
                 {
                     MessageBox.Show("삭제할 게시글이 존재하지 않습니다.");
@@ -116,7 +116,7 @@ namespace KSP_WPF
                                     await MainWindow.UpdateProfile();
                                     return;
                                 }
-                                feed = await KakaoRequestClass.GetProfileFeed(MainWindow.userProfile.id, feed.activities[feed.activities.Count - 1].id);
+                                feed = await KakaoRequestClass.GetProfileFeed(MainWindow.UserProfile.id, feed.activities[feed.activities.Count - 1].id);
                                 if (feed != null && (feed.activities?.Count ?? 0) > 0)
                                     Delete();
                                 else

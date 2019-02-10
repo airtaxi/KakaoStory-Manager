@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         PreviewKeyDown="MetroWindow_PreviewKeyDown"
         Closed="MetroWindow_Closed"
-        Title="쪽지 목록" Height="450" Width="320" Icon="icon2.png" ShowIconOnTitleBar="False" ResizeMode="NoResize">
+        Title="쪽지 목록" Height="320" Width="400" Icon="icon2.png" ShowIconOnTitleBar="False">
     <Grid>
         <ScrollViewer Name="SV_Main" PreviewMouseWheel="SV_Main_PreviewMouseWheel" VerticalScrollBarVisibility="Hidden">
             <StackPanel Name="SP_Main"/>

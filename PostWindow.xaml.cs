@@ -83,18 +83,31 @@ namespace KSP_WPF
             };
 
             string imageUri = null;
+            bool overrideGif = false;
             foreach (var decorator in commentProf.decorators)
             {
                 if (decorator.type.Equals("image"))
                 {
                     imageUri = decorator.media?.origin_url;
+                    if (imageUri.Contains(".gif") && Properties.Settings.Default.PostNoGIF)
+                    {
+                        overrideGif = true;
+                    }
                 }
             }
 
             if (imageUri != null)
             {
                 comment.IMG_Comment.Visibility = Visibility.Visible;
-                GlobalHelper.AssignImage(comment.IMG_Comment, imageUri);
+                if(overrideGif)
+                {
+                    GlobalHelper.AssignImage(comment.IMG_Comment, "gif.png");
+                    comment.IMG_Comment.Tag = imageUri;
+                }
+                else
+                {
+                    GlobalHelper.AssignImage(comment.IMG_Comment, imageUri);
+                }
                 comment.IMG_Comment.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
                 comment.IMG_Comment.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
             }
@@ -104,8 +117,8 @@ namespace KSP_WPF
             if (commentProf.liked)
                 comment.IC_Like.Foreground = Brushes.Red;
 
-            bool deletable = commentProf.writer.id.Equals(MainWindow.userProfile.id) || data.actor.id.Equals(MainWindow.userProfile.id);
-            bool editable = commentProf.writer.id.Equals(MainWindow.userProfile.id);
+            bool deletable = commentProf.writer.id.Equals(MainWindow.UserProfile.id) || data.actor.id.Equals(MainWindow.UserProfile.id);
+            bool editable = commentProf.writer.id.Equals(MainWindow.UserProfile.id);
 
             if (!deletable)
                 comment.BT_Delete.IsEnabled = false;
@@ -220,9 +233,9 @@ namespace KSP_WPF
 
         public static void ShowPostWindow(PostData data, string feedID)
         {
-            if (MainWindow.posts.ContainsKey(feedID))
+            if (MainWindow.Posts.ContainsKey(feedID))
             {
-                PostWindow postWindow = MainWindow.posts[feedID];
+                PostWindow postWindow = MainWindow.Posts[feedID];
                 postWindow.Refresh();
                 postWindow.Show();
                 postWindow.Activate();
@@ -232,7 +245,7 @@ namespace KSP_WPF
             }
             else
             {
-                MainWindow.instance.Dispatcher.BeginInvoke(new Action(delegate
+                MainWindow.Instance.Dispatcher.BeginInvoke(new Action(delegate
                 {
                     PostWindow postWindow = new PostWindow(data, feedID);
                     postWindow.Show();
@@ -262,7 +275,7 @@ namespace KSP_WPF
                 MainWindow.SetClickObject(BT_Quote);
                 MainWindow.SetClickObject(BT_SubmitComment);
                 MainWindow.SetClickObject(IC_CommentShow);
-                MainWindow.posts.Add(feedID, this);
+                MainWindow.Posts.Add(feedID, this);
                 this.data = data;
                 this.feedID = feedID;
                 ht.Add("like", "좋아요");
@@ -297,9 +310,9 @@ namespace KSP_WPF
                     TB_Content.Visibility = Visibility.Collapsed;
                 }
 
-                if (!data.actor.id.Equals(MainWindow.userProfile.id))
+                if (!data.actor.id.Equals(MainWindow.UserProfile.id))
                     BT_Delte.IsEnabled = false;
-                if (!data.actor.id.Equals(MainWindow.userProfile.id))
+                if (!data.actor.id.Equals(MainWindow.UserProfile.id))
                     BT_Edit.IsEnabled = false;
 
                 string imgUri = data.actor.profile_thumbnail_url;
@@ -1083,8 +1096,8 @@ namespace KSP_WPF
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            if (MainWindow.posts != null && feedID != null)
-                MainWindow.posts.Remove(feedID);
+            if (MainWindow.Posts != null && feedID != null)
+                MainWindow.Posts.Remove(feedID);
         }
 
         private void BT_Upload_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
