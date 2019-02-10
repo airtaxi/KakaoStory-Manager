@@ -58,14 +58,18 @@ namespace KSP_WPF
         
         public static void ShowNotification(string title, string message, string URL)
         {
-            if (Environment.OSVersion.Version.Major == 10)
+            if (MainWindow.IsDND != true)
             {
-                ShowNotification(title, message, URL, null, null, null, null, null, null);
-            }
-            else
-            {
-                MainWindow.Instance.TrayNotifyIcon.ShowBalloonTip(5, title, message, System.Windows.Forms.ToolTipIcon.Info);
-                MainWindow.Instance.TrayNotifyIcon.Tag = URL;
+                if (Environment.OSVersion.Version.Major == 10)
+                {
+                    ShowNotification(title, message, URL, null, null, null, null, null, null);
+                }
+                else
+                {
+
+                    MainWindow.Instance.TrayNotifyIcon.ShowBalloonTip(5, title, message, System.Windows.Forms.ToolTipIcon.Info);
+                    MainWindow.Instance.TrayNotifyIcon.Tag = URL;
+                }
             }
         }
 
@@ -174,15 +178,17 @@ namespace KSP_WPF
 
         public static void ShowNotification(string title, string message, string URL, string commentID, string id, string name, string writer, string identity, string thumbnailURL)
         {
-            if(Environment.OSVersion.Version.Major == 10)
+            if (MainWindow.IsDND != true)
             {
-                try
+                if (Environment.OSVersion.Version.Major == 10)
                 {
-                    var Visual = new Microsoft.Toolkit.Uwp.Notifications.ToastVisual()
+                    try
                     {
-                        BindingGeneric = new Microsoft.Toolkit.Uwp.Notifications.ToastBindingGeneric()
+                        var Visual = new Microsoft.Toolkit.Uwp.Notifications.ToastVisual()
                         {
-                            Children = {
+                            BindingGeneric = new Microsoft.Toolkit.Uwp.Notifications.ToastBindingGeneric()
+                            {
+                                Children = {
                                 new Microsoft.Toolkit.Uwp.Notifications.AdaptiveText()
                                 {
                                     Text = title
@@ -193,33 +199,33 @@ namespace KSP_WPF
                                     Text = message
                                 }
                             }
-                        }
-                    };
-                    if (thumbnailURL != null)
-                    {
-                        Visual.BindingGeneric.HeroImage = new Microsoft.Toolkit.Uwp.Notifications.ToastGenericHeroImage()
-                        {
-                            Source = thumbnailURL,
+                            }
                         };
-                    }
-                    Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom Action;
-                    if (URL == null)
-                    {
-                        Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom();
-                    }
-                    else
-                    {
-                        if (commentID != null)
+                        if (thumbnailURL != null)
                         {
-                            Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
+                            Visual.BindingGeneric.HeroImage = new Microsoft.Toolkit.Uwp.Notifications.ToastGenericHeroImage()
                             {
-                                Inputs = {
+                                Source = thumbnailURL,
+                            };
+                        }
+                        Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom Action;
+                        if (URL == null)
+                        {
+                            Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom();
+                        }
+                        else
+                        {
+                            if (commentID != null)
+                            {
+                                Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
+                                {
+                                    Inputs = {
                                     new Microsoft.Toolkit.Uwp.Notifications.ToastTextBox("tbReply")
                                     {
                                         PlaceholderContent = "답장 작성하기",
                                     },
                                 },
-                                Buttons =
+                                    Buttons =
                                 {
                                     new Microsoft.Toolkit.Uwp.Notifications.ToastButton("보내기", URL + "REPLY!@#$%" + "R!@=!!" + id + "R!@=!!" + name + "R!@=!!" + writer + "R!@=!!" + identity)
                                     {
@@ -229,30 +235,31 @@ namespace KSP_WPF
                                     new Microsoft.Toolkit.Uwp.Notifications.ToastButton("좋아요", URL + "LIKE!@#$%" + commentID),
                                     new Microsoft.Toolkit.Uwp.Notifications.ToastButton("열기", URL)
                                 },
-                            };
-                        }
-                        else
-                        {
-                            Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
+                                };
+                            }
+                            else
                             {
-                                Buttons =
+                                Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
+                                {
+                                    Buttons =
                                 {
                                     new Microsoft.Toolkit.Uwp.Notifications.ToastButton("열기", URL)
                                 },
-                            };
+                                };
+                            }
                         }
+                        var toastContent = new Microsoft.Toolkit.Uwp.Notifications.ToastContent()
+                        {
+                            Visual = Visual,
+                            Actions = Action,
+                        };
+                        var toastXml = new Windows.Data.Xml.Dom.XmlDocument();
+                        toastXml.LoadXml(toastContent.GetContent());
+                        var toast = new Windows.UI.Notifications.ToastNotification(toastXml);
+                        DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
                     }
-                    var toastContent = new Microsoft.Toolkit.Uwp.Notifications.ToastContent()
-                    {
-                        Visual = Visual,
-                        Actions = Action,
-                    };
-                    var toastXml = new Windows.Data.Xml.Dom.XmlDocument();
-                    toastXml.LoadXml(toastContent.GetContent());
-                    var toast = new Windows.UI.Notifications.ToastNotification(toastXml);
-                    DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
+                    catch (Exception) { }
                 }
-                catch (Exception) { }
             }
         }
 

@@ -75,7 +75,7 @@ namespace KSP_WPF
                 content.TB_Message.ToolTip = content.TB_Message.Text;
                 if(!notification.is_new)
                 {
-                    content.GD_Main.Background = Brushes.Transparent;
+                    content.RA_Notify.Fill = Brushes.Transparent;
                 }
                 if(content.TB_Message.Text.Trim().Length == 0)
                 {
@@ -113,7 +113,7 @@ namespace KSP_WPF
                         {
                             var post = await KSPNotificationActivator.GetPost(feedID);
                             PostWindow.ShowPostWindow(post, feedID);
-                            content.GD_Main.Background = Brushes.Transparent;
+                            content.RA_Notify.Fill = Brushes.Transparent;
                         }
                         catch (Exception)
                         {

@@ -26,6 +26,7 @@ namespace KSP_WPF
         public bool IsClose = false;
         public static bool NotificationRequested = true;
         public static bool IsOffline = false;
+        public static bool IsDND = false;
         public readonly NotifyIcon TrayNotifyIcon = null;
         public static StoryWriteWindow StoryWriteWindow = null;
         public static TimeLineWindow TimeLineWindow = null;
@@ -590,6 +591,11 @@ namespace KSP_WPF
                 ProfileWindow.Show();
                 ProfileWindow.Activate();
             }
+        }
+
+        private void TSW_DND_Click(object sender, RoutedEventArgs e)
+        {
+            IsDND = TSW_DND.IsChecked == true;
         }
     }
 }

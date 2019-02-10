@@ -47,7 +47,8 @@
         </Grid>
             <controls:MetroProgressBar Visibility="Collapsed" Name="PR_Login" Width="457.5" IsIndeterminate="True" Margin="-185,-110,0,0"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="5,0,0,5">
-            <CheckBox Content="야간 모드" Name="TSW_DarkMode" Click="TSW_DarkMode_Click"/>
+            <CheckBox Content="전체 알림 끄기" Name="TSW_DND" Click="TSW_DND_Click"/>
+            <CheckBox Content="야간 모드" Name="TSW_DarkMode" Click="TSW_DarkMode_Click" Margin="10,0,0,0"/>
         </StackPanel>
         <Grid Name="GD_Profile" Margin="0,75,0,0" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Ellipse Name="EL_Profile" Width="170" Height="170" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="35,0,0,0" MouseLeftButtonDown="TB_MyProfile_MouseLeftButtonDown" Stretch="UniformToFill"/>
