@@ -91,7 +91,7 @@ namespace KSP_WPF
             webRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
 
             webRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            webRequest.Headers["X-Kakao-ApiLevel"] = "45";
+            webRequest.Headers["X-Kakao-ApiLevel"] = "46";
             webRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
             webRequest.Headers["X-Kakao-VC"] = Guid.NewGuid().ToString().ToLower().Substring(0,20);
             webRequest.Headers["Cache-Control"] = "max-age=0";
@@ -328,6 +328,15 @@ namespace KSP_WPF
             writeStream.Close();
 
             return await GetResponseFromRequest(webRequest) != null;
+        }
+
+        public async static Task<PostData> GetPost(string activityID)
+        {
+            string requestURI = "https://story.kakao.com/a/activities/" + activityID;
+            HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "GET");
+            string respResult = await GetResponseFromRequest(webRequest);
+            PostData obj = JsonConvert.DeserializeObject<PostData>(respResult);
+            return obj;
         }
 
         public static async Task DeleteFriend(string id)

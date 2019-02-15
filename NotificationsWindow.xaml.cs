@@ -117,7 +117,7 @@ namespace KSP_WPF
                         string target = uri.Split(new string[] { "!" }, StringSplitOptions.None)[0];
                         try
                         {
-                            var post = await KSPNotificationActivator.GetPost(feedID);
+                            var post = await KakaoRequestClass.GetPost(feedID);
                             PostWindow.ShowPostWindow(post, feedID);
                             content.RA_Notify.Fill = Brushes.Transparent;
                         }

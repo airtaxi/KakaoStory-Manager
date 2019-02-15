@@ -79,7 +79,7 @@ namespace KSP_WPF
             string id = (string)((FrameworkElement)s).Tag;
             try
             {
-                CommentData.PostData data = await KSPNotificationActivator.GetPost(id);
+                CommentData.PostData data = await KakaoRequestClass.GetPost(id);
                 PostWindow.ShowPostWindow(data, id);
             }
             catch (Exception)
@@ -295,18 +295,6 @@ namespace KSP_WPF
                     {
                         GlobalHelper.RefreshScrap(feed.scrap, tlp.Scrap_Main);
                     }
-                    if (feed.media?.Count > 0 && feed.media?[0]?.url_hq != null)
-                    {
-                        TextBlock videoText = new TextBlock();
-                        videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
-                        MainWindow.SetClickObject(videoText);
-                        videoText.MouseLeftButtonDown += (s, e) =>
-                        {
-                            System.Diagnostics.Process.Start(feed.media?[0]?.url_hq);
-                            e.Handled = true;
-                        };
-                        tlp.SP_Content.Children.Add(videoText);
-                    }
 
                     SP_Content.Children.Add(tlp);
 
@@ -363,26 +351,14 @@ namespace KSP_WPF
                                 e.Handled = true;
                             };
 
-                            if (feed.@object.media_type != null && feed.@object.media_type.Equals("image"))
+                            if (feed.@object.media_type != null && feed.@object.media != null)
                             {
                                 RefreshImageContent(feed.@object.media, tlp.SP_ShareContent);
                             }
+
                             if (feed.@object.scrap != null)
                             {
                                 GlobalHelper.RefreshScrap(feed.@object.scrap, tlp.Scrap_Share);
-                            }
-
-                            if (feed.@object.media?.Count > 0 && feed.@object.media?[0]?.url_hq != null)
-                            {
-                                TextBlock videoText = new TextBlock();
-                                videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
-                                MainWindow.SetClickObject(videoText);
-                                videoText.MouseLeftButtonDown += (s, e) =>
-                                {
-                                    System.Diagnostics.Process.Start(feed.@object.media?[0]?.url_hq);
-                                    e.Handled = true;
-                                };
-                                tlp.SP_ShareContent.Children.Add(videoText);
                             }
                         }
                     }
@@ -417,36 +393,51 @@ namespace KSP_WPF
             Image lastImage = null;
             foreach (var media in medias)
             {
-                string uri = media.origin_url;
-                bool overrideGif = false;
-                if (uri.Contains(".gif") && !Properties.Settings.Default.UseGIF)
+                if (media.url_hq != null)
                 {
-                    overrideGif = true;
-                    uri = "gif.png";
+                    TextBlock videoText = new TextBlock();
+                    videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
+                    MainWindow.SetClickObject(videoText);
+                    videoText.MouseLeftButtonDown += (s, e) =>
+                    {
+                        System.Diagnostics.Process.Start(media.url_hq);
+                        e.Handled = true;
+                    };
+                    panel.Children.Add(videoText);
                 }
-
-                if (uri != null)
+                else
                 {
-                    Image image = new Image();
-                    if (overrideGif != true)
+                    string uri = media.origin_url;
+                    bool overrideGif = false;
+                    if (uri.Contains(".gif") && !Properties.Settings.Default.UseGIF)
                     {
-                        image.Tag = new Image[2] { lastImage, null };
-                        if (lastImage != null && lastImage.Tag is Image[])
+                        overrideGif = true;
+                        uri = "gif.png";
+                    }
+
+                    if (uri != null)
+                    {
+                        Image image = new Image();
+                        if (overrideGif != true)
                         {
-                            ((Image[])lastImage.Tag)[1] = image;
+                            image.Tag = new Image[2] { lastImage, null };
+                            if (lastImage != null && lastImage.Tag is Image[])
+                            {
+                                ((Image[])lastImage.Tag)[1] = image;
+                            }
                         }
+                        else
+                        {
+                            image.Tag = media.origin_url;
+                        }
+                        GlobalHelper.AssignImage(image, uri);
+                        image.Stretch = Stretch.UniformToFill;
+                        image.Margin = new Thickness(0, 0, 0, 10);
+                        image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                        image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
+                        lastImage = image;
+                        panel.Children.Add(image);
                     }
-                    else
-                    {
-                        image.Tag = media.origin_url;
-                    }
-                    GlobalHelper.AssignImage(image, uri);
-                    image.Stretch = Stretch.UniformToFill;
-                    image.Margin = new Thickness(0, 0, 0, 10);
-                    image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
-                    image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
-                    lastImage = image;
-                    panel.Children.Add(image);
                 }
             }
         }
@@ -467,11 +458,10 @@ namespace KSP_WPF
             tlp.TB_Name.Text = feed.actor.display_name;
             tlp.TB_Date.Text = PostWindow.GetTimeString(feed.created_at);
             GlobalHelper.RefreshContent(feed.content_decorators, feed.content, tlp.TB_Content);
-            if (feed.media_type != null && feed.media_type.Equals("image"))
+            if (feed.media_type != null && feed.media != null)
             {
                 RefreshImageContent(feed.media, tlp.SP_Content);
             }
-
 
             if (feed.closest_with_tags != null && feed.closest_with_tags.Count > 0)
             {

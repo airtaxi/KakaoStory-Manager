@@ -25,33 +25,42 @@ namespace KSP_WPF
 {
     public partial class StoryWriteWindow : MetroWindow
     {
-        private struct ImageData
+        private class MediaData
         {
-            public Image Image;
+            public class MediaObject
+            {
+                public string media_type;
+                public string media_path;
+                public List<string> caption;
+            }
+            public class RootObject
+            {
+                public string media_type;
+                public List<MediaObject> media = new List<MediaObject>();
+            }
+        }
+        private struct AssetData
+        {
+            public string Type;
             public string Path;
-            public string EditKey;
-            public void SetKey(string key)
-            {
-                EditKey = key;
-            }
-            public string GetKey()
-            {
-                return EditKey;
-            }
+            public string Key;
+            public string Caption;
+            public Image Image;
+
             public void Remove(object arg0, dynamic arg1)
             {
-                instance.imgs.Remove(this);
+                instance.assets.Remove(this);
                 instance.SP_Pictures.Children.Remove(Image);
                 Image = null;
                 instance.ValidatePanelHeight();
             }
-        };
-        private readonly List<ImageData> imgs = new List<ImageData>();
+        }
+        private readonly MediaData.RootObject StoryMediaData = new MediaData.RootObject();
         private static StoryWriteWindow instance;
+        private readonly List<AssetData> assets = new List<AssetData>();
         public List<string> with_ids = new List<string>();
         public List<string> trust_ids = new List<string>();
         private readonly bool isEdit;
-        private readonly bool isVideo = false;
         private readonly bool isShare = false;
         private readonly string editFeedID;
         private readonly List<string> editOldMediaPath = new List<string>();
@@ -59,9 +68,9 @@ namespace KSP_WPF
         private readonly bool isShared = false;
         private string linkData;
         private string videoPath = null;
-        private VideoData.Video videoData = null;
         private string videoMediaPath = null;
         private bool isInit = false;
+        private string mediaText = null;
 
         public StoryWriteWindow()
         {
@@ -88,8 +97,6 @@ namespace KSP_WPF
             instance = this;
             BT_Pic.IsEnabled = false;
             BT_Pic.Foreground = Brushes.LightGray;
-            BT_Video.IsEnabled = false;
-            BT_Video.Foreground = Brushes.LightGray;
             BT_LinkShow.IsEnabled = false;
             BT_LinkShow.Foreground = Brushes.LightGray;
             BT_Link.IsEnabled = false;
@@ -121,7 +128,7 @@ namespace KSP_WPF
             isInit = true;
         }
 
-        public StoryWriteWindow(string feedID, string text, string permission, List<CommentData.Medium> medias, bool isShared, bool isVideo)
+        public StoryWriteWindow(string feedID, string text, string permission, List<CommentData.Medium> medias, bool isShared)
         {
             InitializeComponent();
             instance = this;
@@ -130,20 +137,20 @@ namespace KSP_WPF
             BT_LinkShow.Foreground = Brushes.LightGray;
             BT_Link.IsEnabled = false;
             isEdit = true;
-            this.isVideo = isVideo;
             editFeedID = feedID;
             if(medias != null)
             {
                 foreach(var media in medias)
                 {
-                    if(!isVideo)
+                    string path = "video2.png";
+                    if (media.url_hq == null)
                     {
-                        editOldMediaPath.Add(media.media_path);
-                        string path = System.IO.Path.GetTempFileName();
+                        path = System.IO.Path.GetTempFileName();
                         WebClient client = new WebClient();
                         client.DownloadFile(media.origin_url, path);
-                        AddImage(path, media.media_path);
                     }
+                    editOldMediaPath.Add(media.media_path);
+                    AddAsset(path, media.media_path);
                 }
                 ValidatePanelHeight();
             }
@@ -152,8 +159,6 @@ namespace KSP_WPF
             {
                 BT_Pic.IsEnabled = false;
                 BT_Pic.Foreground = Brushes.LightGray;
-                BT_Video.IsEnabled = false;
-                BT_Video.Foreground = Brushes.LightGray;
             }
 
             MainWindow.SetClickObject(BT_Link);
@@ -184,37 +189,47 @@ namespace KSP_WPF
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 foreach (string path in files)
                 {
-                    if (System.IO.Path.GetExtension(path).ToLower().Equals(".mp4"))
-                    {
-                        videoPath = path;
-                        break;
-                    }
-                    else if (!AddImage(path)) break;
+                    AddAsset(path);
                 }
                 ValidatePanelHeight();
                 e.Handled = true;
             }
         }
 
-        private bool AddImage(string path)
+        private bool AddAsset(string path)
         {
-            return AddImage(path, null);
+            return AddAsset(path, null);
         }
-        private bool AddImage(string path, string editKey)
+        private bool AddAsset(string path, string editKey)
         {
             try
             {
-                if (imgs.Count < 20)
+                if (assets.Count < 20)
                 {
                     Image image = new Image();
                     GlobalHelper.AssignImage(image, path);
+
+                    if (path.EndsWith(".mp4"))
+                        GlobalHelper.AssignImage(image, "video2.png");
+
                     image.Margin = new Thickness(5, 5, 5, 5);
                     image.Width = 80;
                     image.Height = image.Width;
                     image.Stretch = Stretch.Uniform;
-                    ImageData imgData = new ImageData() { Image = image, Path = path, EditKey=editKey };
-                    image.MouseLeftButtonDown += imgData.Remove;
-                    imgs.Add(imgData);
+                    AssetData assetData = new AssetData()
+                    {
+                        Image = image,
+                        Key = editKey,
+                        Path = path,
+                        Type = path.ToLower().EndsWith(".gif") ? "gif" : "image",
+                        Caption = ""
+                    };
+                    if(path.ToLower().Equals("video2.png") || path.ToLower().EndsWith(".mp4"))
+                    {
+                        assetData.Type = "video";
+                    }
+                    image.MouseLeftButtonDown += assetData.Remove;
+                    assets.Add(assetData);
                     SP_Pictures.Children.Add(image);
                     videoPath = null;
                     return true;
@@ -233,32 +248,15 @@ namespace KSP_WPF
 
         private void ValidatePanelHeight()
         {
-            if (imgs.Count > 0)
+            if (assets.Count > 0)
             {
                 SP_Pictures.Visibility = Visibility.Visible;
                 GD_Link.Visibility = Visibility.Collapsed;
                 BT_Link.IsEnabled = false;
                 BT_Link.Foreground = Brushes.LightGray;
                 BT_LinkShow.Foreground = Brushes.LightGray;
-                BT_Video.IsEnabled = false;
-                BT_Video.Foreground = Brushes.LightGray;
-            }
-            else if(videoPath != null || isVideo) {
-                SP_Pictures.Visibility = Visibility.Collapsed;
-                BT_Link.IsEnabled = false;
-                BT_Link.Foreground = Brushes.LightGray;
-                BT_LinkShow.Foreground = Brushes.LightGray;
                 BT_Pic.IsEnabled = false;
                 BT_Pic.Foreground = Brushes.LightGray;
-                if (!isVideo)
-                {
-                    BT_Video.Kind = MaterialDesignThemes.Wpf.PackIconKind.Delete;
-                }
-                else
-                {
-                    BT_Video.IsEnabled = false;
-                    BT_Video.Foreground = Brushes.LightGray;
-                }
             }
             else
             {
@@ -266,23 +264,23 @@ namespace KSP_WPF
                 BT_Link.IsEnabled = true;
                 BT_Link.Foreground = Brushes.Gray;
                 BT_LinkShow.Foreground = Brushes.Gray;
-                BT_Video.IsEnabled = true;
-                BT_Video.Foreground = Brushes.Gray;
+                BT_Pic.IsEnabled = true;
+                BT_Pic.Foreground = Brushes.Gray;
             }
         }
 
         private void ShowImageAlert()
         {
-            MessageBox.Show("사진의 최대 갯수는 20장입니다.");
+            MessageBox.Show("미디어의 최대 갯수는 20장입니다.");
         }
 
         private void BT_Pic_Click(object sender, RoutedEventArgs e)
         {
-            if (imgs.Count < 20)
+            if (assets.Count < 20)
             {
                 OpenFileDialog ofd = new OpenFileDialog
                 {
-                    Filter = "Image Files (*.jpg;*.jpeg; *.png;*.bmp;*.gif)|*.jpg;*.jpeg;*.png;*.bmp;*.gif|GIF Image File (*.gif)|*.gif",
+                    Filter = "Media Files (*.jpg;*.jpeg; *.png;*.bmp;*.gif;*.mp4)|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
                     DefaultExt = "jpg",
                     Multiselect = true
                 };
@@ -292,7 +290,7 @@ namespace KSP_WPF
                     {
                         foreach (string path in ofd.FileNames)
                         {
-                            if (!AddImage(path))
+                            if (!AddAsset(path))
                                 break;
                         }
                     }
@@ -322,38 +320,14 @@ namespace KSP_WPF
             postDataBuilder.Append("permission=" + permission + "&comment_all_writable=" + commentable + "&is_must_read=false&enable_share=" + sharable);
             postDataBuilder.Append("&content=" + textContent);
 
-            List<string> keys = new List<string>();
-            foreach (ImageData img in imgs)
-            {
-                string key;
-                if (img.EditKey == null)
-                    key = await UploadImage(img);
-                else
-                    key = img.EditKey;
-
-                keys.Add(key);
-            }
-
             if (with_ids.Count > 0)
                 postDataBuilder.Append("&with_tags=" + Uri.EscapeDataString(JsonConvert.SerializeObject(with_ids)));
             if (trust_ids.Count > 0)
                 postDataBuilder.Append("&allowed_profile_ids=" + Uri.EscapeDataString(JsonConvert.SerializeObject(trust_ids)));
-
-            if (imgs.Count > 0)
-                postDataBuilder.Append("&media_type=image");
-            else if (videoData != null)
+            
+            if(mediaText != null)
             {
-                postDataBuilder.Append("&media_type=video");
-                postDataBuilder.Append("&" + Uri.EscapeDataString("media_path[]") + "=" + Uri.EscapeDataString(videoData.access_key));
-            }
-
-            for (int i = 0; i < imgs.Count; i++)
-            {
-                postDataBuilder.Append("&" + Uri.EscapeDataString("caption[]") + "=");
-            }
-            foreach (string key in keys)
-            {
-                postDataBuilder.Append("&" + Uri.EscapeDataString("media_path[]") + "=" + Uri.EscapeDataString(key));
+                postDataBuilder.Append("&" + Uri.EscapeDataString("media") + "=" + Uri.EscapeDataString(mediaText));
             }
             foreach (string mediaPath in editOldMediaPath)
             {
@@ -365,7 +339,7 @@ namespace KSP_WPF
                 postDataBuilder.Append("&scrap_content=" + Uri.EscapeDataString(linkData));
             }
 
-            imgs.Clear();
+            assets.Clear();
 
             string postData = postDataBuilder.ToString();
 
@@ -383,7 +357,7 @@ namespace KSP_WPF
 
             request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
             request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
+            request.Headers["X-Kakao-ApiLevel"] = "46";
             request.Headers["X-Requested-With"] = "XMLHttpRequest";
             request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
             request.Headers["Cache-Control"] = "max-age=0";
@@ -406,16 +380,16 @@ namespace KSP_WPF
 
             var readStream = await request.GetResponseAsync();
             var respReader = readStream.GetResponseStream();
-            string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
+            await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
             respReader.Close();
 
             return true;
         }
 
 
-        private async Task<bool> UploadVideo(string filepath)
+        private async Task<string> UploadVideo(AssetData asset)
         {
-            StreamReader fileStream = new StreamReader(filepath);
+            StreamReader fileStream = new StreamReader(asset.Path);
 
             string requestURI = "https://up-api-kage-4story-video.kakao.com/web/webstory-video/";
 
@@ -427,7 +401,7 @@ namespace KSP_WPF
             request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
 
             request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
+            request.Headers["X-Kakao-ApiLevel"] = "46";
             request.Headers["X-Requested-With"] = "XMLHttpRequest";
             request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
             request.Headers["Cache-Control"] = "max-age=0";
@@ -446,7 +420,7 @@ namespace KSP_WPF
 
             Stream writeStream = await request.GetRequestStreamAsync();
 
-            WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(filepath), System.Web.MimeMapping.GetMimeMapping(filepath), fileStream.BaseStream);
+            WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(asset.Path), System.Web.MimeMapping.GetMimeMapping(asset.Path), fileStream.BaseStream);
             fileStream.Close();
 
             var readStream = await request.GetResponseAsync();
@@ -454,14 +428,14 @@ namespace KSP_WPF
 
             string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
             respReader.Close();
-
-            videoData = JsonConvert.DeserializeObject<VideoData.Video>(respResult);
-            return true;
+            
+            var videoData = JsonConvert.DeserializeObject<VideoData.Video>(respResult);
+            return videoData.access_key;
         }
 
-        private async Task<string> UploadImage(ImageData img)
+        private async Task<string> UploadImage(AssetData asset)
         {
-            StreamReader fileStream = new StreamReader(img.Path);
+            StreamReader fileStream = new StreamReader(asset.Path);
 
             string requestURI = "https://up-api-kage-4story.kakao.com/web/webstory-img/";
 
@@ -473,7 +447,7 @@ namespace KSP_WPF
             request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
 
             request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
+            request.Headers["X-Kakao-ApiLevel"] = "46";
             request.Headers["X-Requested-With"] = "XMLHttpRequest";
             request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
             request.Headers["Cache-Control"] = "max-age=0";
@@ -492,7 +466,7 @@ namespace KSP_WPF
 
             Stream writeStream = await request.GetRequestStreamAsync();
 
-            WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(img.Path), System.Web.MimeMapping.GetMimeMapping(img.Path), fileStream.BaseStream);
+            WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(asset.Path), System.Web.MimeMapping.GetMimeMapping(asset.Path), fileStream.BaseStream);
             fileStream.Close();
 
             var readStream = await request.GetResponseAsync();
@@ -502,6 +476,7 @@ namespace KSP_WPF
             respReader.Close();
 
             UploadedImageProp result = JsonConvert.DeserializeObject<UploadedImageProp>(respResult);
+            
             return result.access_key + "/" + result.info.original.filename + "?width=" + result.info.original.width + "&height=" + result.info.original.height + "&avg=" + result.info.original.avg;
         }
         /// <summary>
@@ -577,12 +552,48 @@ namespace KSP_WPF
                 BT_Submit.IsEnabled = false;
                 string baseStr = "게시중...";
                 BT_Submit.Content = baseStr;
-                if(videoPath != null)
+                bool isImageExists = false;
+                bool isVideoExists = false;
+                if(assets.Count > 0)
                 {
-                    await UploadVideo(videoPath);
-                    await GetPercentVideo(videoData.access_key);
-                    await GetMetaVideo(videoData.access_key);
+                    foreach(var asset in assets)
+                    {
+                        var assetData = new MediaData.MediaObject();
+                        if (asset.Type.Equals("video"))
+                        {
+                            if(asset.Key == null)
+                            {
+                                assetData.media_path = await UploadVideo(asset);
+                                await GetPercentVideo(assetData.media_path);
+                                await GetMetaVideo(assetData.media_path);
+                            }
+                            else
+                                assetData.media_path = asset.Key;
+                            isVideoExists = true;
+                        }
+                        else
+                        {
+                            if (asset.Key == null)
+                                assetData.media_path = await UploadImage(asset);
+                            else
+                                assetData.media_path = asset.Key;
+                            isImageExists = true;
+                        }
+                        assetData.media_type = asset.Type;
+                        assetData.caption = new List<string>();
+                        StoryMediaData.media.Add(assetData);
+                    }
+
+                    if(isImageExists && isVideoExists)
+                        StoryMediaData.media_type = "mixed";
+                    else if(isImageExists)
+                        StoryMediaData.media_type = "image";
+                    else if(isVideoExists)
+                        StoryMediaData.media_type = "video";
+
+                    mediaText = JsonConvert.SerializeObject(StoryMediaData);
                 }
+
                 string permission = "F";
 
                 switch (ComboRange.SelectedIndex)
@@ -639,7 +650,7 @@ namespace KSP_WPF
             request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
 
             request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
+            request.Headers["X-Kakao-ApiLevel"] = "46";
             request.Headers["X-Requested-With"] = "XMLHttpRequest";
             request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
 
@@ -686,7 +697,7 @@ namespace KSP_WPF
             request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com/"));
 
             request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
+            request.Headers["X-Kakao-ApiLevel"] = "46";
             request.Headers["X-Requested-With"] = "XMLHttpRequest";
             request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
             request.Headers["Cache-Control"] = "max-age=0";
@@ -706,7 +717,7 @@ namespace KSP_WPF
 
             var readStream = await request.GetResponseAsync();
             var respReader = readStream.GetResponseStream();
-            string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
+            await new StreamReader(respReader, Encoding.UTF8).ReadToEndAsync();
             respReader.Close();
             return true;
         }
@@ -733,7 +744,7 @@ namespace KSP_WPF
                 string tempFile = System.IO.Path.GetTempFileName();
                 image.Save(tempFile, ImageFormat.Jpeg);
                 image.Dispose();
-                AddImage(tempFile);
+                AddAsset(tempFile);
                 ValidatePanelHeight();
             }
         }
@@ -843,8 +854,6 @@ namespace KSP_WPF
                     BT_Link.Kind = MaterialDesignThemes.Wpf.PackIconKind.Delete;
                     BT_Pic.IsEnabled = false;
                     BT_Pic.Foreground = Brushes.LightGray;
-                    BT_Video.IsEnabled = false;
-                    BT_Video.Foreground = Brushes.LightGray;
                 }
                 else
                 {
@@ -859,8 +868,6 @@ namespace KSP_WPF
                 BT_Link.Kind = MaterialDesignThemes.Wpf.PackIconKind.Add;
                 BT_Pic.IsEnabled = true;
                 BT_Pic.Foreground = Brushes.Gray;
-                BT_Video.IsEnabled = true;
-                BT_Video.Foreground = Brushes.Gray;
             }
         }
 
@@ -933,39 +940,6 @@ namespace KSP_WPF
         {
             if(!(e.Source is System.Windows.Controls.TextBox) && !(e.Source is System.Windows.Controls.ComboBox) && !(e.Source is System.Windows.Controls.ComboBoxItem))
                 e.Handled = true;
-        }
-
-        private void BT_Video_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if(BT_Video.IsEnabled && videoPath == null && videoMediaPath == null)
-            {
-                OpenFileDialog ofd = new OpenFileDialog
-                {
-                    Filter = "Video File (*.mp4)|*.mp4",
-                    DefaultExt = "mp4",
-                };
-                if (ofd.ShowDialog() == true)
-                {
-                    if (ofd.FileName != null)
-                    {
-                        videoPath = ofd.FileName;
-                    }
-                    ValidatePanelHeight();
-                }
-            }
-            else if(videoPath != null)
-            {
-                videoPath = null;
-                SP_Pictures.Visibility = Visibility.Collapsed;
-                BT_Link.IsEnabled = true;
-                BT_Link.Foreground = Brushes.Gray;
-                BT_LinkShow.Foreground = Brushes.Gray;
-                BT_Pic.IsEnabled = true;
-                BT_Pic.Foreground = Brushes.Gray;
-                BT_Video.Foreground = Brushes.Gray;
-                BT_Video.Kind = MaterialDesignThemes.Wpf.PackIconKind.Camcorder;
-            }
-            e.Handled = true;
         }
     }
 }

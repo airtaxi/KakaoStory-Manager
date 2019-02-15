@@ -17,46 +17,6 @@ namespace KSP_WPF
     [Guid("0c6af8c8-51d6-4e07-9c45-C173E6ADF0C3"), ComVisible(true)]
     public class KSPNotificationActivator : NotificationActivator
     {
-        public async static Task<PostData> GetPost(string activityID)
-        {
-            string RequestURI = "https://story.kakao.com/a/activities/" + activityID;
-
-            HttpWebRequest NotificationGetRequest = WebRequest.CreateHttp(RequestURI);
-            NotificationGetRequest.Method = "GET";
-            NotificationGetRequest.ContentType = "application/json; charset=utf-8";
-
-            NotificationGetRequest.CookieContainer = new CookieContainer();
-            NotificationGetRequest.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
-
-            NotificationGetRequest.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            NotificationGetRequest.Headers["X-Kakao-ApiLevel"] = "45";
-            NotificationGetRequest.Headers["X-Requested-With"] = "XMLHttpRequest";
-            NotificationGetRequest.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            NotificationGetRequest.Headers["Cache-Control"] = "max-age=0";
-
-            NotificationGetRequest.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            NotificationGetRequest.Headers["Accept-Language"] = "ko";
-
-            NotificationGetRequest.Headers["DNT"] = "1";
-
-            NotificationGetRequest.Headers["authority"] = "story.kakao.com";
-            NotificationGetRequest.Referer = "https://story.kakao.com";
-            NotificationGetRequest.KeepAlive = true;
-            NotificationGetRequest.UseDefaultCredentials = true;
-            NotificationGetRequest.Host = "story.kakao.com";
-            NotificationGetRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            NotificationGetRequest.Accept = "application/json";
-
-            NotificationGetRequest.AutomaticDecompression = DecompressionMethods.GZip;
-            NotificationGetRequest.Date = DateTime.Now;
-
-            var ReadStream = await NotificationGetRequest.GetResponseAsync();
-            var RespReader = ReadStream.GetResponseStream();
-            string RespResult = await new StreamReader(RespReader).ReadToEndAsync();
-            RespReader.Close();
-            PostData obj = JsonConvert.DeserializeObject<PostData>(RespResult);
-            return obj;
-        }
         public override void OnActivated(string invokedArgs, NotificationUserInput userInput, string appUserModelId)
         {
             ActivateHandler(invokedArgs, userInput);
@@ -97,7 +57,7 @@ namespace KSP_WPF
                             string url = invokedArgs.Split(new string[] { "!" }, StringSplitOptions.None)[0];
                             try
                             {
-                                PostData data = await GetPost(activityID);
+                                PostData data = await KakaoRequestClass.GetPost(activityID);
                                 if (data != null)
                                 {
                                     await MainWindow.Instance.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>

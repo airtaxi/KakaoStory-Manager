@@ -112,7 +112,7 @@ namespace KSP_WPF
                 {
                     try
                     {
-                        PostData pd = await KSPNotificationActivator.GetPost(share.activity_id);
+                        PostData pd = await KakaoRequestClass.GetPost(share.activity_id);
                         PostWindow.ShowPostWindow(pd, share.activity_id);
                     }
                     catch (Exception)

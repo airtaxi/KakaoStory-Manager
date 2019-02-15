@@ -510,6 +510,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="video2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Resource Include="icon2.ico" />
     <EmbeddedResource Include="gif.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -34,7 +34,6 @@ namespace KSP_WPF
         private string feedID;
         private bool isAllRead = true;
         UploadedImageProp commentImage = null;
-        private bool isVideo = false;
         private readonly Hashtable ht = new Hashtable();
 
 
@@ -53,7 +52,7 @@ namespace KSP_WPF
 
             comment.TB_Content.MouseRightButtonDown += (s, e) =>
             {
-                Clipboard.SetDataObject((string)((object[]) comment.TB_Content.Tag)[1]);
+                Clipboard.SetDataObject((string)((object[])comment.TB_Content.Tag)[1]);
                 MessageBox.Show("클립보드에 댓글 내용이 복사됐습니다.");
                 e.Handled = true;
             };
@@ -99,7 +98,7 @@ namespace KSP_WPF
             if (imageUri != null)
             {
                 comment.IMG_Comment.Visibility = Visibility.Visible;
-                if(overrideGif)
+                if (overrideGif)
                 {
                     GlobalHelper.AssignImage(comment.IMG_Comment, "gif.png");
                     comment.IMG_Comment.Tag = imageUri;
@@ -359,7 +358,7 @@ namespace KSP_WPF
                             e.Handled = true;
                             try
                             {
-                                PostData feed = await KSPNotificationActivator.GetPost(data.@object.id);
+                                PostData feed = await KakaoRequestClass.GetPost(data.@object.id);
                                 ShowPostWindow(feed, data.@object.id);
                                 e.Handled = true;
                             }
@@ -402,7 +401,7 @@ namespace KSP_WPF
                             e.Handled = true;
                         };
 
-                        if (data.@object.media_type != null && data.@object.media_type.Equals("image"))
+                        if (data.@object.media_type != null && (data.@object.media_type.Equals("image") || data.@object.media_type.Equals("mixed")))
                         {
                             RefreshImageContent(data.@object.media, SP_ShareContent);
                             SP_ShareContent.Visibility = Visibility.Visible;
@@ -411,19 +410,6 @@ namespace KSP_WPF
                         if (data.@object.scrap != null)
                         {
                             GlobalHelper.RefreshScrap(data.@object.scrap, Scrap_Share);
-                        }
-                        else if (data.@object.media?.Count > 0 && data.@object.media?[0]?.url_hq != null)
-                        {
-                            TextBlock videoText = new TextBlock();
-                            videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
-                            MainWindow.SetClickObject(videoText);
-                            videoText.MouseLeftButtonDown += (s, e) =>
-                            {
-                                System.Diagnostics.Process.Start(data.@object.media?[0]?.url_hq);
-                                e.Handled = true;
-                            };
-                            SP_ShareContent.Children.Add(videoText);
-                            SP_ShareContent.Visibility = Visibility.Visible;
                         }
                     }
                 }
@@ -456,37 +442,52 @@ namespace KSP_WPF
             Image lastImage = null;
             foreach (var media in medias)
             {
-                string uri = media.origin_url;
-                bool overrideGif = false;
-                if (uri.Contains(".gif") && Properties.Settings.Default.PostNoGIF)
+                if (media.url_hq != null)
                 {
-                    overrideGif = true;
-                    uri = "gif.png";
+                    TextBlock videoText = new TextBlock();
+                    videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
+                    MainWindow.SetClickObject(videoText);
+                    videoText.MouseLeftButtonDown += (s, e) =>
+                    {
+                        System.Diagnostics.Process.Start(media.url_hq);
+                        e.Handled = true;
+                    };
+                    panel.Children.Add(videoText);
                 }
-                if (uri != null)
+                else
                 {
-                    Image image = new Image();
-                    if (overrideGif != true)
+                    string uri = media.origin_url;
+                    bool overrideGif = false;
+                    if (uri.Contains(".gif") && Properties.Settings.Default.PostNoGIF)
                     {
-                        image.Tag = new Image[2] { lastImage, null };
-                        if (lastImage != null && lastImage.Tag is Image[])
+                        overrideGif = true;
+                        uri = "gif.png";
+                    }
+                    if (uri != null)
+                    {
+                        Image image = new Image();
+                        if (overrideGif != true)
                         {
-                            ((Image[])lastImage.Tag)[1] = image;
+                            image.Tag = new Image[2] { lastImage, null };
+                            if (lastImage != null && lastImage.Tag is Image[])
+                            {
+                                ((Image[])lastImage.Tag)[1] = image;
+                            }
                         }
+                        else
+                        {
+                            image.Tag = media.origin_url;
+                        }
+                        GlobalHelper.AssignImage(image, uri);
+                        image.Stretch = Stretch.UniformToFill;
+                        if (!isFirst)
+                            image.Margin = new Thickness(0, 10, 0, 10);
+                        isFirst = false;
+                        image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
+                        image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
+                        lastImage = image;
+                        panel.Children.Add(image);
                     }
-                    else
-                    {
-                        image.Tag = media.origin_url;
-                    }
-                    GlobalHelper.AssignImage(image, uri);
-                    image.Stretch = Stretch.UniformToFill;
-                    if (!isFirst)
-                        image.Margin = new Thickness(0, 10, 0, 10);
-                    isFirst = false;
-                    image.MouseRightButtonDown += GlobalHelper.CopyImageHandler;
-                    image.MouseLeftButtonDown += GlobalHelper.SaveImageHandler;
-                    lastImage = image;
-                    panel.Children.Add(image);
                 }
             }
         }
@@ -494,24 +495,11 @@ namespace KSP_WPF
         private void RefreshImage()
         {
             SP_Content.Children.Clear();
-            if (data.media_type != null && data.media != null && data.media_type.Equals("image"))
+
+            if (data.media_type != null && data.media != null)
             {
                 RefreshImageContent(data.media, SP_Content);
                 SP_Content.Visibility = Visibility.Visible;
-            }
-            else if (data.media?.Count > 0 && data.media?[0]?.url_hq != null)
-            {
-                TextBlock videoText = new TextBlock();
-                videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
-                MainWindow.SetClickObject(videoText);
-                videoText.MouseLeftButtonDown += (s, e) =>
-                {
-                    System.Diagnostics.Process.Start(data.media?[0]?.url_hq);
-                    e.Handled = true;
-                };
-                SP_Content.Children.Add(videoText);
-                SP_Content.Visibility = Visibility.Visible;
-                isVideo = true;
             }
 
             if (data.closest_with_tags != null && data.closest_with_tags.Count > 0)
@@ -535,7 +523,7 @@ namespace KSP_WPF
 
         public async void Refresh()
         {
-            data = await KSPNotificationActivator.GetPost(feedID);
+            data = await KakaoRequestClass.GetPost(feedID);
             if (!data.permission.Equals("A"))
                 isAllRead = false;
             GlobalHelper.RefreshContent(data.content_decorators, data.content, TB_Content);
@@ -549,7 +537,7 @@ namespace KSP_WPF
         {
             TextBlock source = (TextBlock)sender;
             source.Tag = true;
-            data = await KSPNotificationActivator.GetPost(feedID);
+            data = await KakaoRequestClass.GetPost(feedID);
             var shares = await KakaoRequestClass.GetShares(false, data, null);
             var ups = await KakaoRequestClass.GetShares(true, data, null);
             var likes = await KakaoRequestClass.GetLikes(data, null);
@@ -589,7 +577,7 @@ namespace KSP_WPF
 
         private async Task<bool> UpdateStats()
         {
-            data = await KSPNotificationActivator.GetPost(feedID);
+            data = await KakaoRequestClass.GetPost(feedID);
 
             TB_Date.Text = GetTimeString(data.created_at);
             if (data.content_updated_at != null && data.content_updated_at.Year > 1)
@@ -735,7 +723,7 @@ namespace KSP_WPF
 
         private async Task<bool> RenewComment()
         {
-            data = await KSPNotificationActivator.GetPost(feedID);
+            data = await KakaoRequestClass.GetPost(feedID);
             RefreshComment(data.comments);
             await UpdateStats();
             return true;
@@ -1020,7 +1008,7 @@ namespace KSP_WPF
         {
             string content = GlobalHelper.GetStringFromQuoteData(data.content_decorators, true);
 
-            StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null, isVideo)
+            StoryWriteWindow sww = new StoryWriteWindow(data.id, content, data.permission, data.media, data.@object != null)
             {
                 Owner = this
             };
@@ -1036,7 +1024,7 @@ namespace KSP_WPF
                 sww.with_ids = with_ids;
             }
             sww.ShowDialog();
-            data = await KSPNotificationActivator.GetPost(feedID);
+            data = await KakaoRequestClass.GetPost(feedID);
             GlobalHelper.RefreshContent(data.content_decorators, data.content, TB_Content);
             Refresh();
         }
