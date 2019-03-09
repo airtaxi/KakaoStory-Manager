@@ -1303,7 +1303,7 @@ namespace KSP_WPF
             public List<LatestComment> latest_comments { get; set; }
             public string permalink { get; set; }
             public int view_count { get; set; }
-            public Object @object { get; set; }
+            public CommentData.PostData @object { get; set; }
         }
     }
 

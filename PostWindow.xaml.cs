@@ -401,9 +401,19 @@ namespace KSP_WPF
                             e.Handled = true;
                         };
 
-                        if (data.@object.media_type != null && (data.@object.media_type.Equals("image") || data.@object.media_type.Equals("mixed")))
+                        if (data.@object.media_type != null && data.@object.media != null)
                         {
                             RefreshImageContent(data.@object.media, SP_ShareContent);
+                            SP_ShareContent.Visibility = Visibility.Visible;
+                        }
+
+                        if (data.@object?.closest_with_tags != null && data.@object?.closest_with_tags.Count > 0)
+                        {
+                            Separator sep = new Separator();
+                            SP_ShareContent.Children.Add(sep);
+                            sep.Margin = new Thickness(0, 5, 0, 5);
+                            var TB_Closest_With = GlobalHelper.GetWithFriendTB(data.@object);
+                            SP_ShareContent.Children.Add(TB_Closest_With);
                             SP_ShareContent.Visibility = Visibility.Visible;
                         }
 
@@ -444,15 +454,15 @@ namespace KSP_WPF
             {
                 if (media.url_hq != null)
                 {
-                    TextBlock videoText = new TextBlock();
-                    videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
-                    MainWindow.SetClickObject(videoText);
-                    videoText.MouseLeftButtonDown += (s, e) =>
+                    Image videoImage = new Image();
+                    GlobalHelper.AssignImage(videoImage, "img_vid.png");
+                    MainWindow.SetClickObject(videoImage);
+                    videoImage.MouseLeftButtonDown += (s, e) =>
                     {
                         System.Diagnostics.Process.Start(media.url_hq);
                         e.Handled = true;
                     };
-                    panel.Children.Add(videoText);
+                    panel.Children.Add(videoImage);
                 }
                 else
                 {

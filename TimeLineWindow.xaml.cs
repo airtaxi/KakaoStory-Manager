@@ -360,6 +360,15 @@ namespace KSP_WPF
                             {
                                 GlobalHelper.RefreshScrap(feed.@object.scrap, tlp.Scrap_Share);
                             }
+                            if (feed.@object.closest_with_tags != null && feed.@object.closest_with_tags.Count > 0)
+                            {
+                                Separator sep = new Separator();
+                                tlp.SP_ShareContent.Children.Add(sep);
+                                sep.Margin = new Thickness(0, 5, 0, 5);
+                                var TB_Closest_With = GlobalHelper.GetWithFriendTB(feed.@object);
+                                tlp.SP_ShareContent.Children.Add(TB_Closest_With);
+                                tlp.SP_ShareContent.Visibility = Visibility.Visible;
+                            }
                         }
                     }
                     else
@@ -395,15 +404,15 @@ namespace KSP_WPF
             {
                 if (media.url_hq != null)
                 {
-                    TextBlock videoText = new TextBlock();
-                    videoText.Inlines.Add(new Bold(new Run("(클릭하여 비디오 재생)")));
-                    MainWindow.SetClickObject(videoText);
-                    videoText.MouseLeftButtonDown += (s, e) =>
+                    Image videoImage = new Image();
+                    GlobalHelper.AssignImage(videoImage, "img_vid.png");
+                    MainWindow.SetClickObject(videoImage);
+                    videoImage.MouseLeftButtonDown += (s, e) =>
                     {
                         System.Diagnostics.Process.Start(media.url_hq);
                         e.Handled = true;
                     };
-                    panel.Children.Add(videoText);
+                    panel.Children.Add(videoImage);
                 }
                 else
                 {
@@ -463,16 +472,6 @@ namespace KSP_WPF
                 RefreshImageContent(feed.media, tlp.SP_Content);
             }
 
-            if (feed.closest_with_tags != null && feed.closest_with_tags.Count > 0)
-            {
-                Separator sep = new Separator();
-                tlp.SP_Content.Children.Add(sep);
-                sep.Margin = new Thickness(0, 5, 0, 5);
-                var TB_Closest_With = GlobalHelper.GetWithFriendTB(feed);
-                tlp.SP_Content.Children.Add(TB_Closest_With);
-                tlp.SP_Content.Visibility = Visibility.Visible;
-            }
-
             bool willDisplayInfo = false;
 
             if (feed.comment_count > 0)
@@ -530,7 +529,16 @@ namespace KSP_WPF
             {
                 tlp.RD_CommentInfos.Height = new GridLength(0);
             }
-            
+
+            if (feed.closest_with_tags != null && feed.closest_with_tags.Count > 0)
+            {
+                Separator sep = new Separator();
+                tlp.SP_Main.Children.Add(sep);
+                sep.Margin = new Thickness(0, 5, 0, 5);
+                var TB_Closest_With = GlobalHelper.GetWithFriendTB(feed);
+                tlp.SP_Main.Children.Add(TB_Closest_With);
+            }
+
         }
 
         public static RoutedEventHandlerInfo[] GetRoutedEventHandlers(UIElement element, RoutedEvent routedEvent)

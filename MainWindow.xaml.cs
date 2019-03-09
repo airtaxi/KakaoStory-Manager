@@ -221,7 +221,7 @@ namespace KSP_WPF
                     WindowState = WindowState.Minimized;
                 else
                     Hide();
-                if (!Properties.Settings.Default.Disable_Message)
+                if (!Properties.Settings.Default.Disable_Message && Environment.OSVersion.Version.Major == 10)
                     GlobalHelper.ShowNotification("안내", "프로그램이 최소화됐습니다.\r\n시스템 트레이의 프로그램 아이콘을 더블클릭하여 창을 복구할 수 있습니다.", null);
             }
         }

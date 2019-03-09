@@ -67,7 +67,6 @@ namespace KSP_WPF
         private readonly string shareFeedID;
         private readonly bool isShared = false;
         private string linkData;
-        private string videoPath = null;
         private string videoMediaPath = null;
         private bool isInit = false;
         private string mediaText = null;
@@ -148,9 +147,14 @@ namespace KSP_WPF
                         path = System.IO.Path.GetTempFileName();
                         WebClient client = new WebClient();
                         client.DownloadFile(media.origin_url, path);
+                        AddAsset(path, media.media_path);
+                        editOldMediaPath.Add(media.media_path);
                     }
-                    editOldMediaPath.Add(media.media_path);
-                    AddAsset(path, media.media_path);
+                    else
+                    {
+                        AddAsset(path, media.key);
+                        editOldMediaPath.Add(media.url);
+                    }
                 }
                 ValidatePanelHeight();
             }
@@ -231,7 +235,6 @@ namespace KSP_WPF
                     image.MouseLeftButtonDown += assetData.Remove;
                     assets.Add(assetData);
                     SP_Pictures.Children.Add(image);
-                    videoPath = null;
                     return true;
                 }
                 else
@@ -255,8 +258,16 @@ namespace KSP_WPF
                 BT_Link.IsEnabled = false;
                 BT_Link.Foreground = Brushes.LightGray;
                 BT_LinkShow.Foreground = Brushes.LightGray;
-                BT_Pic.IsEnabled = false;
-                BT_Pic.Foreground = Brushes.LightGray;
+                if(assets.Count >= 20)
+                {
+                    BT_Pic.IsEnabled = false;
+                    BT_Pic.Foreground = Brushes.LightGray;
+                }
+                else
+                {
+                    BT_Pic.IsEnabled = true;
+                    BT_Pic.Foreground = Brushes.Gray;
+                }
             }
             else
             {
@@ -280,7 +291,7 @@ namespace KSP_WPF
             {
                 OpenFileDialog ofd = new OpenFileDialog
                 {
-                    Filter = "Media Files (*.jpg;*.jpeg; *.png;*.bmp;*.gif;*.mp4)|*.jpg;*.jpeg;*.png;*.bmp;*.gif",
+                    Filter = "Media Files (*.jpg;*.jpeg; *.png;*.bmp;*.gif;*.mp4)|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.mp4",
                     DefaultExt = "jpg",
                     Multiselect = true
                 };
