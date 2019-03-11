@@ -101,7 +101,7 @@ namespace KSP_WPF
                                     if (willDelete)
                                     {
                                         await Task.Delay(100);
-                                        KakaoRequestClass.DeletePost(activity.id);
+                                        await KakaoRequestClass.DeletePost(activity.id);
                                         deleted++;
                                     }
                                     counted++;

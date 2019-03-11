@@ -172,12 +172,12 @@ namespace KSP_WPF
             MainWindow.NotificationsWindow = null;
         }
 
-        private void BT_Refresh_Click(object sender, RoutedEventArgs e)
+        private async void BT_Refresh_Click(object sender, RoutedEventArgs e)
         {
-            Refresh();
+            await Refresh();
         }
 
-        private void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        private async void MetroWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)
             {
@@ -191,7 +191,7 @@ namespace KSP_WPF
             }
             else if (e.Key == Key.F5 || (e.Key == Key.R && Keyboard.Modifiers == ModifierKeys.Control))
             {
-                Refresh();
+                await Refresh();
             }
             else if (e.Key == Key.Escape)
             {

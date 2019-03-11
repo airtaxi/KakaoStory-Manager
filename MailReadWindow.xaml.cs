@@ -90,7 +90,7 @@ namespace KSP_WPF
         {
             await KakaoRequestClass.DeleteMail(id);
             if(MainWindow.MailWindow != null)
-                MainWindow.MailWindow.Refresh();
+                await MainWindow.MailWindow.Refresh();
 
             MessageBox.Show("쪽지 삭제가 완료되었습니다.");
             Close();

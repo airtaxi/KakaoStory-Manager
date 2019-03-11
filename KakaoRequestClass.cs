@@ -615,7 +615,7 @@ namespace KSP_WPF
                         MainWindow.IsOffline = false;
                     }
                 }
-                catch (Exception)
+                catch (WebException)
                 {
                     if (!MainWindow.IsOffline && Environment.OSVersion.Version.Major == 10)
                     {
@@ -624,6 +624,10 @@ namespace KSP_WPF
                         if (!Properties.Settings.Default.Disable_Message)
                             GlobalHelper.ShowNotification("일반 오류", "인터넷 연결에 문제가 발생했습니다. 자동으로 복구를 시도합니다.", null);
                     }
+                }
+                catch (Exception)
+                {
+
                 }
                 finally
                 {
@@ -720,14 +724,22 @@ namespace KSP_WPF
             }
             catch (WebException e)
             {
-                if (count < 5)
-                    return await GetResponseFromRequest(webRequest, ++count);
+                if((int) (e.Response as HttpWebResponse).StatusCode == 401 && MainWindow.IsLoggedIn)
+                {
+                    MainWindow.Instance.Logout();
+                    MainWindow.Instance.Login();
+                }
                 else
                 {
-                    if(!notShowError)
-                        MessageBox.Show(new StreamReader(e.Response.GetResponseStream()).ReadToEnd(), e.Message);
-                    return null;
+                    if (count < 5)
+                        return await GetResponseFromRequest(webRequest, ++count);
+                    else
+                    {
+                        if(!notShowError)
+                            MessageBox.Show(new StreamReader(e.Response.GetResponseStream()).ReadToEnd(), e.Message);
+                    }
                 }
+                return null;
             }
         }
 

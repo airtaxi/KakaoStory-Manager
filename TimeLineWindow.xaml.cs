@@ -39,8 +39,10 @@ namespace KSP_WPF
             string text = TB_Refresh.Text;
             if (text.Length == 0)
                 text = "3";
-            refreshTimer = new DispatcherTimer();
-            refreshTimer.Interval = TimeSpan.FromSeconds(Math.Max(Double.Parse(text), 3));
+            refreshTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(Math.Max(Double.Parse(text), 3))
+            };
             refreshTimer.Tick += (s, e) =>
             {
                 if (CB_AutoRefresh.IsChecked == true)
@@ -53,7 +55,7 @@ namespace KSP_WPF
         {
             InitializeComponent();
             InitRefreshTimer();
-            Dispatcher.Invoke(async() =>
+            Dispatcher.InvokeAsync(async() =>
             {
                 if (Properties.Settings.Default.PositionTimelineToTop)
                     Top = 0;
@@ -64,8 +66,6 @@ namespace KSP_WPF
                 MainWindow.SetClickObject(BT_Write);
                 MainWindow.SetClickObject(IC_Friend);
                 await RefreshTimeline(null, true);
-                //Show();
-                //Activate();
             });
         }
 
@@ -93,7 +93,8 @@ namespace KSP_WPF
         {
             InitializeComponent();
             InitRefreshTimer();
-            Dispatcher.Invoke(async() =>
+            profileID = id;
+            Dispatcher.InvokeAsync(async() =>
             {
                 if (showBookmarkedGlobal)
                 {
@@ -104,19 +105,20 @@ namespace KSP_WPF
                     Top = 0;
                 if (!Properties.Settings.Default.HideScrollBar)
                     SV_Content.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-                isProfile = true;
                 MainWindow.SetClickObject(BT_Refresh);
                 MainWindow.SetClickObject(BT_Write);
                 MainWindow.SetClickObject(IC_Friend);
                 SP_Content.Margin = new Thickness(0, 10, 0, 0);
-                if (id.Equals(MainWindow.UserProfile.id) && showBookmarked != true)
+                isProfile = true;
+                if (profileID.Equals(MainWindow.UserProfile.id) && showBookmarked != true)
                 {
                     if (MainWindow.ProfileTimeLineWindow != null)
                     {
-                        isClose = true;
+                        Hide();
                         MainWindow.ProfileTimeLineWindow.Show();
-                        //MainWindow.profileTimeLineWindow.Activate();
                         await MainWindow.ProfileTimeLineWindow.RefreshTimeline(null, true);
+                        profileID = null;
+                        Close();
                         return;
                     }
                     else
@@ -127,20 +129,20 @@ namespace KSP_WPF
                 }
                 else if(showBookmarked != true)
                 {
-                    if (profiles.ContainsKey(id))
+                    if (profiles.ContainsKey(profileID))
                     {
-                        profiles[id].Show();
-                        profiles[id].Activate();
-                        await profiles[id].RefreshTimeline(null, true);
-                        isClose = true;
+                        Hide();
+                        profiles[profileID].Show();
+                        profiles[profileID].Activate();
+                        await profiles[profileID].RefreshTimeline(null, true);
+                        profileID = null;
                         Close();
                         return;
                     }
                     else
-                        profiles.Add(id, this);
+                        profiles.Add(profileID, this);
                 }
                 IC_Friend.Kind = MaterialDesignThemes.Wpf.PackIconKind.PersonAdd;
-                profileID = id;
                 Title = "프로필";
                 await RefreshTimeline(null, true);
                 CD_Profile.Visibility = Visibility.Visible;
@@ -148,12 +150,11 @@ namespace KSP_WPF
         }
         
         public bool fromMainMenu = false;
-        private bool isClose = false;
         private ProfileRelationshipData.ProfileRelationship relationship;
         public bool isScrollOver = false;
         private bool scrollEnd = false;
 
-        public async Task<bool> RefreshTimeline(string from, bool isClear)
+        public async Task RefreshTimeline(string from, bool isClear)
         {
             BT_Refresh.IsEnabled = false;
             PR_Loading.IsActive = true;
@@ -394,7 +395,7 @@ namespace KSP_WPF
             IC_Refresh.Kind = MaterialDesignThemes.Wpf.PackIconKind.Refresh;
 
             PR_Loading.IsActive = false;
-            return true;
+            return;
         }
         
         private void RefreshImageContent(List<CommentData.Medium> medias, StackPanel panel)
@@ -605,10 +606,6 @@ namespace KSP_WPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (isClose)
-            {
-                Close();
-            }
         }
 
         private async void IC_Friend_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

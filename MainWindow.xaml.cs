@@ -164,9 +164,12 @@ namespace KSP_WPF
             {
                 TBX_Email.Text = Properties.Settings.Default.AutoEmail;
                 TBX_Password.Password = Properties.Settings.Default.AutoPassword;
-                Dispatcher.InvokeAsync(() =>
+                Task.Run(() =>
                 {
-                    TryLogin();   
+                    Dispatcher.InvokeAsync(() =>
+                    {
+                        TryLogin();
+                    });
                 });
             }
 
@@ -184,7 +187,7 @@ namespace KSP_WPF
             SetClickObject(TB_Tray);
             SetClickObject(IMG_Power);
 
-            Dispatcher.Invoke(async() =>
+            Dispatcher.InvokeAsync(async() =>
             {
                 await KakaoRequestClass.RequestNotification(false);
             });
@@ -219,8 +222,8 @@ namespace KSP_WPF
                 e.Cancel = true;
                 if (Properties.Settings.Default.DefaultMinimize)
                     WindowState = WindowState.Minimized;
-                else
-                    Hide();
+                //else
+                    //Hide();
                 if (!Properties.Settings.Default.Disable_Message && Environment.OSVersion.Version.Major == 10)
                     GlobalHelper.ShowNotification("안내", "프로그램이 최소화됐습니다.\r\n시스템 트레이의 프로그램 아이콘을 더블클릭하여 창을 복구할 수 있습니다.", null);
             }
@@ -259,16 +262,32 @@ namespace KSP_WPF
             });
         }
 
+        public void Logout()
+        {
+            if (IsLoggedIn)
+                Button_Click(BT_Login, null);
+        }
+
+        public void Login()
+        {
+            if (!IsLoggedIn)
+                Button_Click(BT_Login, null);
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (BT_Login.IsEnabled)
             {
                 if (!IsLoggedIn)
                 {
+                    TBX_Email.IsEnabled = false;
+                    TBX_Password.IsEnabled = false;
                     TryLogin();
                 }
                 else
                 {
+                    TBX_Email.IsEnabled = true;
+                    TBX_Password.IsEnabled = true;
                     GD_Login.Visibility = Visibility.Visible;
                     GD_Profile.Visibility = Visibility.Collapsed;
                     TB_Login.Visibility = Visibility.Visible;
@@ -358,7 +377,7 @@ namespace KSP_WPF
                 GlobalHelper.ShowOfflineMessage();
         }
 
-        public void BT_Notifiations_Click(object sender, RoutedEventArgs e)
+        public async void BT_Notifiations_Click(object sender, RoutedEventArgs e)
         {
             if (IsLoggedIn && !IsOffline)
             {
@@ -370,7 +389,7 @@ namespace KSP_WPF
                 }
                 else
                 {
-                    NotificationsWindow.Refresh();
+                    await NotificationsWindow.Refresh();
                     NotificationsWindow.Show();
                     NotificationsWindow.Activate();
                 }
@@ -385,9 +404,8 @@ namespace KSP_WPF
             {
                 if(ProfileTimeLineWindow == null)
                 {
-                    ProfileTimeLineWindow = new TimeLineWindow(UserProfile.id);
-                    ProfileTimeLineWindow.Show();
-                    //profileTimeLineWindow.Activate();
+                    var window = new TimeLineWindow(UserProfile.id);
+                    window.Show();
                 }
                 else
                 {
@@ -501,6 +519,7 @@ namespace KSP_WPF
                     WindowState = WindowState.Minimized;
                 else
                     Hide();
+
                 e.Handled = true;
             }
         }

@@ -261,188 +261,191 @@ namespace KSP_WPF
         public PostWindow(PostData data, string feedID)
         {
             InitializeComponent();
-            Dispatcher.InvokeAsync(async () =>
+            Task.Run(() =>
             {
-                if (!Properties.Settings.Default.ShowComment)
-                    IC_CommentShow_PreviewMouseLeftButtonDown(IC_CommentShow, null);
-                if (!Properties.Settings.Default.HideScrollBar)
+                Dispatcher.InvokeAsync(async () =>
                 {
-                    SV_Content.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-                    SV_Comment.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-                }
-                MainWindow.SetClickObject(BT_Upload);
-                MainWindow.SetClickObject(BT_Quote);
-                MainWindow.SetClickObject(BT_SubmitComment);
-                MainWindow.SetClickObject(IC_CommentShow);
-                MainWindow.Posts.Add(feedID, this);
-                this.data = data;
-                this.feedID = feedID;
-                ht.Add("like", "좋아요");
-                ht.Add("good", "멋져요");
-                ht.Add("pleasure", "기뻐요");
-                ht.Add("sad", "슬퍼요");
-                ht.Add("cheerup", "힘내요");
-                if (Properties.Settings.Default.FullScreen)
-                {
-                    WindowState = WindowState.Maximized;
-                }
-                if (data.liked)
-                {
-                    TB_LikeBTN.Text = "느낌 취소";
-                    IC_LikeBTN.Kind = MaterialDesignThemes.Wpf.PackIconKind.Cancel;
-                }
-                //TB_MustRead.Text = "";
-                //TB_MustRead.Text += data.with_me ? "필독 친구로 설정됨" : "";
-                TB_Name.Text = data.actor.display_name;
-                GlobalHelper.RefreshContent(data.content_decorators, data.content, TB_Content);
-                RefreshImage();
-                TB_Content.MouseRightButtonDown += (s, e) =>
-                {
-                    Clipboard.SetDataObject((string)((object[])TB_Content.Tag)[1]);
-                    MessageBox.Show("클립보드에 글 내용이 복사됐습니다.");
-                    e.Handled = true;
-                };
-                await UpdateStats();
-
-                if (data.content.Length == 0)
-                {
-                    TB_Content.Visibility = Visibility.Collapsed;
-                }
-
-                if (!data.actor.id.Equals(MainWindow.UserProfile.id))
-                    BT_Delte.IsEnabled = false;
-                if (!data.actor.id.Equals(MainWindow.UserProfile.id))
-                    BT_Edit.IsEnabled = false;
-
-                string imgUri = data.actor.profile_thumbnail_url;
-                if (!Properties.Settings.Default.PostNoGIF && data.actor.profile_video_url_square_small != null)
-                    imgUri = data.actor.profile_video_url_square_micro_small;
-                GlobalHelper.AssignImage(IMG_Profile, imgUri);
-
-                MainWindow.SetClickObject(IMG_Profile);
-                IMG_Profile.MouseLeftButtonDown += (s, e) =>
-                {
-                    try
+                    if (!Properties.Settings.Default.ShowComment)
+                        IC_CommentShow_PreviewMouseLeftButtonDown(IC_CommentShow, null);
+                    if (!Properties.Settings.Default.HideScrollBar)
                     {
-                        TimeLineWindow tlw = new TimeLineWindow(data.actor.id);
-                        tlw.Show();
-                        tlw.Activate();
+                        SV_Content.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                        SV_Comment.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+                    }
+                    MainWindow.SetClickObject(BT_Upload);
+                    MainWindow.SetClickObject(BT_Quote);
+                    MainWindow.SetClickObject(BT_SubmitComment);
+                    MainWindow.SetClickObject(IC_CommentShow);
+                    MainWindow.Posts.Add(feedID, this);
+                    this.data = data;
+                    this.feedID = feedID;
+                    ht.Add("like", "좋아요");
+                    ht.Add("good", "멋져요");
+                    ht.Add("pleasure", "기뻐요");
+                    ht.Add("sad", "슬퍼요");
+                    ht.Add("cheerup", "힘내요");
+                    if (Properties.Settings.Default.FullScreen)
+                    {
+                        WindowState = WindowState.Maximized;
+                    }
+                    if (data.liked)
+                    {
+                        TB_LikeBTN.Text = "느낌 취소";
+                        IC_LikeBTN.Kind = MaterialDesignThemes.Wpf.PackIconKind.Cancel;
+                    }
+                    //TB_MustRead.Text = "";
+                    //TB_MustRead.Text += data.with_me ? "필독 친구로 설정됨" : "";
+                    TB_Name.Text = data.actor.display_name;
+                    GlobalHelper.RefreshContent(data.content_decorators, data.content, TB_Content);
+                    RefreshImage();
+                    TB_Content.MouseRightButtonDown += (s, e) =>
+                    {
+                        Clipboard.SetDataObject((string)((object[])TB_Content.Tag)[1]);
+                        MessageBox.Show("클립보드에 글 내용이 복사됐습니다.");
                         e.Handled = true;
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("접근이 불가능한 스토리입니다.");
-                    }
-                };
-                RefreshComment(data.comments);
+                    };
+                    await UpdateStats();
 
-                if (data.verb != null && data.verb.Equals("share"))
-                {
-                    if (data.@object.deleted == true || data.@object.blinded == true)
+                    if (data.content.Length == 0)
                     {
-                        GD_Share.Visibility = Visibility.Visible;
-                        GD_ShareCount.Visibility = Visibility.Collapsed;
-                        TB_NameShare.Text = "(삭제됨)";
-                        TB_DateShare.Text = "(삭제됨)";
-                        TB_ShareContent.Text = "삭제된 게시글입니다.";
+                        TB_Content.Visibility = Visibility.Collapsed;
+                    }
+
+                    if (!data.actor.id.Equals(MainWindow.UserProfile.id))
+                        BT_Delte.IsEnabled = false;
+                    if (!data.actor.id.Equals(MainWindow.UserProfile.id))
+                        BT_Edit.IsEnabled = false;
+
+                    string imgUri = data.actor.profile_thumbnail_url;
+                    if (!Properties.Settings.Default.PostNoGIF && data.actor.profile_video_url_square_small != null)
+                        imgUri = data.actor.profile_video_url_square_micro_small;
+                    GlobalHelper.AssignImage(IMG_Profile, imgUri);
+
+                    MainWindow.SetClickObject(IMG_Profile);
+                    IMG_Profile.MouseLeftButtonDown += (s, e) =>
+                    {
+                        try
+                        {
+                            TimeLineWindow tlw = new TimeLineWindow(data.actor.id);
+                            tlw.Show();
+                            tlw.Activate();
+                            e.Handled = true;
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("접근이 불가능한 스토리입니다.");
+                        }
+                    };
+                    RefreshComment(data.comments);
+
+                    if (data.verb != null && data.verb.Equals("share"))
+                    {
+                        if (data.@object.deleted == true || data.@object.blinded == true)
+                        {
+                            GD_Share.Visibility = Visibility.Visible;
+                            GD_ShareCount.Visibility = Visibility.Collapsed;
+                            TB_NameShare.Text = "(삭제됨)";
+                            TB_DateShare.Text = "(삭제됨)";
+                            TB_ShareContent.Text = "삭제된 게시글입니다.";
+                        }
+                        else
+                        {
+
+                            GD_Share.Visibility = Visibility.Visible;
+                            GD_ShareCount.Visibility = Visibility.Visible;
+                            TB_GD_ShareCount.Text = data.@object.share_count.ToString();
+                            MainWindow.SetClickObject(SP_Share);
+                            SP_Share.MouseLeftButtonDown += async (s, e) =>
+                            {
+                                e.Handled = true;
+                                try
+                                {
+                                    PostData feed = await KakaoRequestClass.GetPost(data.@object.id);
+                                    ShowPostWindow(feed, data.@object.id);
+                                    e.Handled = true;
+                                }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("접근할 수 없는 포스트입니다.");
+                                }
+                            };
+
+                            string imgUri2 = data.@object.actor.profile_thumbnail_url;
+                            if (!Properties.Settings.Default.PostNoGIF && data.@object.actor.profile_video_url_square_small != null)
+                                imgUri2 = data.@object.actor.profile_video_url_square_small;
+                            GlobalHelper.AssignImage(IMG_ProfileShare, imgUri2);
+
+                            MainWindow.SetClickObject(IMG_ProfileShare);
+
+                            IMG_ProfileShare.MouseLeftButtonDown += (s, e) =>
+                            {
+                                try
+                                {
+                                    TimeLineWindow tlw = new TimeLineWindow(data.@object.actor.id);
+                                    tlw.Show();
+                                    tlw.Activate();
+                                    e.Handled = true;
+                                }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("접근이 불가능한 스토리입니다.");
+                                }
+                            };
+
+                            TB_NameShare.Text = data.@object.actor.display_name;
+                            TB_DateShare.Text = GetTimeString(data.@object.created_at);
+                            TB_ShareContent.Text = data.@object.content;
+                            GlobalHelper.RefreshContent(data.@object.content_decorators, data.@object.content, TB_ShareContent);
+                            TB_ShareContent.MouseRightButtonDown += (s, e) =>
+                            {
+                                Clipboard.SetDataObject(TB_ShareContent.Text);
+                                MessageBox.Show("클립보드에 공유한 글 내용이 복사됐습니다.");
+                                e.Handled = true;
+                            };
+
+                            if (data.@object.media_type != null && data.@object.media != null)
+                            {
+                                RefreshImageContent(data.@object.media, SP_ShareContent);
+                                SP_ShareContent.Visibility = Visibility.Visible;
+                            }
+
+                            if (data.@object?.closest_with_tags != null && data.@object?.closest_with_tags.Count > 0)
+                            {
+                                Separator sep = new Separator();
+                                SP_ShareContent.Children.Add(sep);
+                                sep.Margin = new Thickness(0, 5, 0, 5);
+                                var TB_Closest_With = GlobalHelper.GetWithFriendTB(data.@object);
+                                SP_ShareContent.Children.Add(TB_Closest_With);
+                                SP_ShareContent.Visibility = Visibility.Visible;
+                            }
+
+                            if (data.@object.scrap != null)
+                            {
+                                GlobalHelper.RefreshScrap(data.@object.scrap, Scrap_Share);
+                            }
+                        }
                     }
                     else
+                        GD_Share.Visibility = Visibility.Collapsed;
+
+                    if (!data.sharable || (data.@object?.sharable == false))
                     {
-
-                        GD_Share.Visibility = Visibility.Visible;
-                        GD_ShareCount.Visibility = Visibility.Visible;
-                        TB_GD_ShareCount.Text = data.@object.share_count.ToString();
-                        MainWindow.SetClickObject(SP_Share);
-                        SP_Share.MouseLeftButtonDown += async (s, e) =>
-                        {
-                            e.Handled = true;
-                            try
-                            {
-                                PostData feed = await KakaoRequestClass.GetPost(data.@object.id);
-                                ShowPostWindow(feed, data.@object.id);
-                                e.Handled = true;
-                            }
-                            catch (Exception)
-                            {
-                                MessageBox.Show("접근할 수 없는 포스트입니다.");
-                            }
-                        };
-
-                        string imgUri2 = data.@object.actor.profile_thumbnail_url;
-                        if (!Properties.Settings.Default.PostNoGIF && data.@object.actor.profile_video_url_square_small != null)
-                            imgUri2 = data.@object.actor.profile_video_url_square_small;
-                        GlobalHelper.AssignImage(IMG_ProfileShare, imgUri2);
-
-                        MainWindow.SetClickObject(IMG_ProfileShare);
-
-                        IMG_ProfileShare.MouseLeftButtonDown += (s, e) =>
-                        {
-                            try
-                            {
-                                TimeLineWindow tlw = new TimeLineWindow(data.@object.actor.id);
-                                tlw.Show();
-                                tlw.Activate();
-                                e.Handled = true;
-                            }
-                            catch (Exception)
-                            {
-                                MessageBox.Show("접근이 불가능한 스토리입니다.");
-                            }
-                        };
-
-                        TB_NameShare.Text = data.@object.actor.display_name;
-                        TB_DateShare.Text = GetTimeString(data.@object.created_at);
-                        TB_ShareContent.Text = data.@object.content;
-                        GlobalHelper.RefreshContent(data.@object.content_decorators, data.@object.content, TB_ShareContent);
-                        TB_ShareContent.MouseRightButtonDown += (s, e) =>
-                        {
-                            Clipboard.SetDataObject(TB_ShareContent.Text);
-                            MessageBox.Show("클립보드에 공유한 글 내용이 복사됐습니다.");
-                            e.Handled = true;
-                        };
-
-                        if (data.@object.media_type != null && data.@object.media != null)
-                        {
-                            RefreshImageContent(data.@object.media, SP_ShareContent);
-                            SP_ShareContent.Visibility = Visibility.Visible;
-                        }
-
-                        if (data.@object?.closest_with_tags != null && data.@object?.closest_with_tags.Count > 0)
-                        {
-                            Separator sep = new Separator();
-                            SP_ShareContent.Children.Add(sep);
-                            sep.Margin = new Thickness(0, 5, 0, 5);
-                            var TB_Closest_With = GlobalHelper.GetWithFriendTB(data.@object);
-                            SP_ShareContent.Children.Add(TB_Closest_With);
-                            SP_ShareContent.Visibility = Visibility.Visible;
-                        }
-
-                        if (data.@object.scrap != null)
-                        {
-                            GlobalHelper.RefreshScrap(data.@object.scrap, Scrap_Share);
-                        }
+                        BT_Share.IsEnabled = false;
+                        BT_UP.IsEnabled = false;
                     }
-                }
-                else
-                    GD_Share.Visibility = Visibility.Collapsed;
+                    else if (data.sympathized)
+                    {
+                        BT_UP.Content = "UP 취소";
+                    }
+                    if (!data.permission.Equals("A"))
+                        isAllRead = false;
 
-                if (!data.sharable || (data.@object?.sharable == false))
-                {
-                    BT_Share.IsEnabled = false;
-                    BT_UP.IsEnabled = false;
-                }
-                else if (data.sympathized)
-                {
-                    BT_UP.Content = "UP 취소";
-                }
-                if (!data.permission.Equals("A"))
-                    isAllRead = false;
-
-                if (data.scrap != null)
-                {
-                    GlobalHelper.RefreshScrap(data.scrap, Scrap_Main);
-                }
-                ShiftWindowOntoScreenHelper.ShiftWindowOntoScreen(this);
+                    if (data.scrap != null)
+                    {
+                        GlobalHelper.RefreshScrap(data.scrap, Scrap_Main);
+                    }
+                    ShiftWindowOntoScreenHelper.ShiftWindowOntoScreen(this);
+                });
             });
         }
 

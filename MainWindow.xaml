@@ -10,7 +10,7 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         ShowIconOnTitleBar="False"
         PreviewKeyDown="MetroWindow_PreviewKeyDown"
-        Title="카카오스토리 매니저" Icon="icon2.png" Height="480" Width="730" ResizeMode="NoResize" Focusable="False">
+        Title="카카오스토리 매니저" Icon="icon2.png" Height="480" Width="730" ResizeMode="NoResize">
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
@@ -35,7 +35,7 @@
             </StackPanel>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
-    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Focusable="False" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" PreviewGotKeyboardFocus="MetroWindow_PreviewGotKeyboardFocus">
         <TextBlock Name="TB_Tray" FontWeight="Bold" Text="프로그램 최소화 |" FontSize="16" Margin="510,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" TextAlignment="Center" MouseLeftButtonDown="TB_Tray_MouseLeftButtonDown" />
         <materialDesign:PackIcon Name="IMG_Power" Kind="PowerStandby" Foreground="Teal" Width="42" Height="42" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="638,34,0,0" MouseLeftButtonDown="Image_MouseLeftButtonDown" IsHitTestVisible="True" Background="Transparent" />
         <Grid Name="GD_Login" Visibility="Visible" Margin="0,45,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
