@@ -310,5 +310,17 @@ namespace KSP_WPF {
                 this["PostNoGIF"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DOGE")]
+        public string AutoPicDir {
+            get {
+                return ((string)(this["AutoPicDir"]));
+            }
+            set {
+                this["AutoPicDir"] = value;
+            }
+        }
     }
 }

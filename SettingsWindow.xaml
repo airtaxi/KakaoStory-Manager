@@ -18,6 +18,7 @@
             <Button Name="BT_FriendMenu" Margin="0,5,0,0" Content="친구 관리" Click="BT_FriendMenu_Click"/>
             <Button Name="BT_DeletePosts" Margin="0,5,0,0" Content="스토리 일괄 삭제" Click="BT_DeletePosts_Click"/>
             <Button Name="BT_BatchEditPosts" Margin="0,5,0,0" Content="스토리 일괄 변경" Click="BT_BatchEditPosts_Click"/>
+            <Button Name="BT_AutoPic" Margin="0,5,0,0" Content="고정 짤방 폴더 설정" Click="BT_AutoPic_Click"/>
             <Button Name="BT_Credits" Margin="0,5,0,0" Content="개발자 스토리 방문" Click="BT_Credits_Click"/>
             <Button Name="BT_Homepage" Margin="0,5,0,0" Content="개발자 홈페이지 방문 (업데이트 조회 가능)" Click="BT_Homepage_Click"/>
             <CheckBox Name="CB_Mute" Margin="0,5,0,0" Content="프로그램 상태 알림 끄기" Click="CB_Click"/>

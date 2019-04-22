@@ -60,7 +60,7 @@ namespace KSP_WPF
         }
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("내부오류가 발생했습니다.\n" + e.Exception.Message);
+            MessageBox.Show("내부오류가 발생했습니다.\n" + e.Exception.StackTrace, e.Exception.Message);
             e.Handled = true;
         }
     }

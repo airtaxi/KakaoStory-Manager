@@ -89,6 +89,25 @@ namespace KSP_WPF
                 ComboRange.SelectedIndex = 1;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => TB_Main.Focus()));
             isInit = true;
+
+            if(!Properties.Settings.Default.AutoPicDir.Equals("DOGE"))
+            {
+                try
+                {
+                    string[] files = Directory.GetFiles(Properties.Settings.Default.AutoPicDir);
+                    foreach (string path in files)
+                    {
+                        AddAsset(path);
+                    }
+                    ValidatePanelHeight();
+                }
+                catch (Exception)
+                {
+                    ValidatePanelHeight();
+                }
+            }
+
+
         }
         public StoryWriteWindow(string feedID, bool isAllRead)
         {
@@ -409,7 +428,9 @@ namespace KSP_WPF
             HttpWebRequest request = WebRequest.CreateHttp(requestURI);
             request.Method = "POST";
             request.ContentType = "multipart/form-data; boundary=" + boundary;
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
+            CookieContainer containerNow = new CookieContainer();
+            containerNow.SetCookies(new Uri("https://up-api-kage-4story-video.kakao.com/"), WebViewWindow.cookieString);
+            request.CookieContainer = containerNow;
 
             request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
             request.Headers["X-Kakao-ApiLevel"] = "46";
@@ -425,9 +446,10 @@ namespace KSP_WPF
             request.Referer = "https://story.kakao.com";
             request.KeepAlive = true;
             request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
+            request.Host = "up-api-kage-4story-video.kakao.com";
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
             request.Accept = "*/*";
+            request.AutomaticDecompression = DecompressionMethods.GZip;
 
             Stream writeStream = await request.GetRequestStreamAsync();
 
@@ -455,25 +477,23 @@ namespace KSP_WPF
             HttpWebRequest request = WebRequest.CreateHttp(requestURI);
             request.Method = "POST";
             request.ContentType = "multipart/form-data; boundary=" + boundary;
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
+            CookieContainer containerNow = new CookieContainer();
+            containerNow.SetCookies(new Uri("https://up-api-kage-4story.kakao.com/"), WebViewWindow.cookieString);
+            request.CookieContainer = containerNow;
 
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "46";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
             request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4";
+            request.Headers["Accept-Language"] = "ko-KR";
+            request.Headers["Origin"] = "https://story.kakao.com";
 
             request.Headers["DNT"] = "1";
 
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
+            request.Referer = "https://story.kakao.com/";
             request.KeepAlive = true;
             request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
+            request.Host = "up-api-kage-4story.kakao.com";
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
             request.Accept = "*/*";
+            request.AutomaticDecompression = DecompressionMethods.GZip;
 
             Stream writeStream = await request.GetRequestStreamAsync();
 

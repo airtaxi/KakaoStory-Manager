@@ -890,7 +890,9 @@ namespace KSP_WPF
             request.Method = "POST";
             string boundary = "----" + DateTime.Now.Ticks.ToString("x");
             request.ContentType = "multipart/form-data; boundary=" + boundary;
-            request.CookieContainer = WebViewWindow.GetUriCookieContainer(new Uri("https://story.kakao.com"));
+            CookieContainer containerNow = new CookieContainer();
+            containerNow.SetCookies(new Uri("https://up-api-kage-4story.kakao.com/"), WebViewWindow.cookieString);
+            request.CookieContainer = containerNow;
 
             request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
             request.Headers["X-Kakao-ApiLevel"] = "45";
@@ -906,9 +908,10 @@ namespace KSP_WPF
             request.Referer = "https://story.kakao.com";
             request.KeepAlive = true;
             request.UseDefaultCredentials = true;
-            request.Host = "story.kakao.com";
+            request.Host = "up-api-kage-4story.kakao.com";
             request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
             request.Accept = "*/*";
+            request.AutomaticDecompression = DecompressionMethods.GZip;
 
             Stream writeStream = await request.GetRequestStreamAsync();
 

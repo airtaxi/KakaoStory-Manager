@@ -30,7 +30,7 @@ namespace KSP_WPF
         {
             return Convert.ToInt64((date - epoch).TotalSeconds);
         }
-        
+
         public static void HandleScroll(object sender, MouseWheelEventArgs e)
         {
             int threshold = 48;
@@ -39,7 +39,7 @@ namespace KSP_WPF
             scrollViewer.ScrollToVerticalOffset(target);
             e.Handled = true;
         }
-        
+
         public static void SubContentMouseEvent(object s, MouseButtonEventArgs e)
         {
             string id = (string)((FrameworkElement)s).Tag;
@@ -55,7 +55,7 @@ namespace KSP_WPF
             }
             e.Handled = true;
         }
-        
+
         public static void ShowNotification(string title, string message, string URL)
         {
             if (MainWindow.IsDND != true)
@@ -117,8 +117,8 @@ namespace KSP_WPF
             imageViewer.Activate();
             imageViewer.Focus();
             imageViewer.currentImage = image;
-            if(image.Tag is string)
-                AssignImage(imageViewer.IMG_Main, (string) image.Tag);
+            if (image.Tag is string)
+                AssignImage(imageViewer.IMG_Main, (string)image.Tag);
             else
                 imageViewer.IMG_Main.Source = ((Image)source).Source;
             imageViewer.ZB_Main.FitToBounds();
@@ -220,32 +220,25 @@ namespace KSP_WPF
                                 Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
                                 {
                                     Inputs = {
-                                    new Microsoft.Toolkit.Uwp.Notifications.ToastTextBox("tbReply")
-                                    {
-                                        PlaceholderContent = "답장 작성하기",
+                                        new Microsoft.Toolkit.Uwp.Notifications.ToastTextBox("tbReply")
+                                        {
+                                            PlaceholderContent = "답장 작성하기",
+                                        },
                                     },
-                                },
                                     Buttons =
-                                {
-                                    new Microsoft.Toolkit.Uwp.Notifications.ToastButton("보내기", URL + "REPLY!@#$%" + "R!@=!!" + id + "R!@=!!" + name + "R!@=!!" + writer + "R!@=!!" + identity)
                                     {
-                                        ActivationType = Microsoft.Toolkit.Uwp.Notifications.ToastActivationType.Background,
-                                        TextBoxId = "tbReply"
+                                        new Microsoft.Toolkit.Uwp.Notifications.ToastButton("보내기", URL + "REPLY!@#$%" + "R!@=!!" + id + "R!@=!!" + name + "R!@=!!" + writer + "R!@=!!" + identity)
+                                        {
+                                            ActivationType = Microsoft.Toolkit.Uwp.Notifications.ToastActivationType.Background,
+                                            TextBoxId = "tbReply"
+                                        },
+                                        new Microsoft.Toolkit.Uwp.Notifications.ToastButton("좋아요", URL + "LIKE!@#$%" + commentID),
                                     },
-                                    new Microsoft.Toolkit.Uwp.Notifications.ToastButton("좋아요", URL + "LIKE!@#$%" + commentID),
-                                    new Microsoft.Toolkit.Uwp.Notifications.ToastButton("열기", URL)
-                                },
                                 };
                             }
                             else
                             {
-                                Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
-                                {
-                                    Buttons =
-                                {
-                                    new Microsoft.Toolkit.Uwp.Notifications.ToastButton("열기", URL)
-                                },
-                                };
+                                Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom() {};
                             }
                         }
                         var toastContent = new Microsoft.Toolkit.Uwp.Notifications.ToastContent()
@@ -256,6 +249,10 @@ namespace KSP_WPF
                         var toastXml = new Windows.Data.Xml.Dom.XmlDocument();
                         toastXml.LoadXml(toastContent.GetContent());
                         var toast = new Windows.UI.Notifications.ToastNotification(toastXml);
+                        toast.Activated += (s, e) =>
+                        {
+                            KSPNotificationActivator.ActivateHandler(URL, null);
+                        };
                         DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
                     }
                     catch (Exception) { }
@@ -516,7 +513,7 @@ namespace KSP_WPF
                 {
                     string text = decorator.text.Replace("\r\n", "\n");
                     text = decorator.text.Replace("\\n", "\n");
-                    if(text.Contains("http://") || text.Contains("https://"))
+                    if (text.Contains("http://") || text.Contains("https://"))
                     {
                         int count = 0;
                         string[] splitted = SplitWithDelimiters(text, new List<string> { "http://", "https://" });
@@ -526,7 +523,7 @@ namespace KSP_WPF
                             count++;
                             if (splittedText.Equals("https://") || splittedText.Equals("http://"))
                                 lastDelimiter = splittedText;
-                            else if(lastDelimiter != null && splittedText.Length > 0)
+                            else if (lastDelimiter != null && splittedText.Length > 0)
                             {
                                 int endPos = splittedText.IndexOf(" ");
                                 if (endPos < 0)

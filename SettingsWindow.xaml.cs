@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -47,6 +48,11 @@ namespace KSP_WPF
             {
                 TB_Version.Text = "버전 : " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
                 BT_Start.Visibility = Visibility.Collapsed;
+            }
+
+            if (!Properties.Settings.Default.AutoPicDir.Equals("DOGE"))
+            {
+                BT_AutoPic.Content = "고정 짤방 폴더 삭제";
             }
             CB_Mute.IsChecked = Properties.Settings.Default.Disable_Message;
             CB_Like.IsChecked = Properties.Settings.Default.Disable_Like;
@@ -205,6 +211,29 @@ namespace KSP_WPF
             {
                 registryKey.DeleteValue("KSP-WPF");
                 MessageBox.Show("프로그램이 자동 시작 프로그램에서 삭제됐습니다.", "정보");
+            }
+        }
+
+        private void BT_AutoPic_Click(object sender, RoutedEventArgs e)
+        {
+            if(Properties.Settings.Default.AutoPicDir.Equals("DOGE"))
+            {
+                var dialog = new CommonOpenFileDialog();
+                dialog.Title = "고정 짤방 폴더 선택";
+                dialog.IsFolderPicker = true;
+
+                if(dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                {
+                    Properties.Settings.Default.AutoPicDir = dialog.FileName;
+                    Properties.Settings.Default.Save();
+                    BT_AutoPic.Content = "고정 짤방 폴더 삭제";
+                }
+            }
+            else
+            {
+                Properties.Settings.Default.AutoPicDir = "DOGE";
+                Properties.Settings.Default.Save();
+                BT_AutoPic.Content = "고정 짤방 폴더 설정";
             }
         }
     }

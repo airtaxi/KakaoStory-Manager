@@ -16,6 +16,7 @@ namespace KSP_WPF
     {
         public static string rawDataNow;
         public static CookieContainer cookieContainer;
+        public static string cookieString;
         public WebViewWindow()
         {
             InitializeComponent();
@@ -57,7 +58,7 @@ namespace KSP_WPF
         {
             return cookieContainer;
         }
-        private CookieContainer GetUriCookieContainerForOnce(Uri uri)
+        public static CookieContainer GetUriCookieContainerForOnce(Uri uri)
         {
             CookieContainer cookies = null;
             // Determine the size of the cookie
@@ -80,6 +81,7 @@ namespace KSP_WPF
             if (cookieData.Length > 0)
             {
                 cookies = new CookieContainer();
+                cookieString = cookieData.ToString().Replace(';', ',');
                 cookies.SetCookies(uri, cookieData.ToString().Replace(';', ','));
             }
             return cookies;
