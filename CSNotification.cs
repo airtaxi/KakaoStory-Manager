@@ -323,52 +323,12 @@ namespace KSP_WPF
             public bool is_feed_blocked { get; set; }
         }
 
-        public class Activity
-        {
-            public int comment_count { get; set; }
-            public bool downloadable { get; set; }
-            public bool pinned { get; set; }
-            public string iid { get; set; }
-            public bool deletable { get; set; }
-            public DateTime created_at { get; set; }
-            public int with_tag_count { get; set; }
-            public bool sharable { get; set; }
-            public string content { get; set; }
-            public bool required { get; set; }
-            public bool liked { get; set; }
-            public string feed_id { get; set; }
-            public string sid { get; set; }
-            public bool sympathized { get; set; }
-            public DateTime updated_at { get; set; }
-            public string media_type { get; set; }
-            public string activity_type { get; set; }
-            public string id { get; set; }
-            public bool modifiable { get; set; }
-            public List<ContentDecorator2> content_decorators { get; set; }
-            public bool blinded { get; set; }
-            public List<object> likes { get; set; }
-            public int like_count { get; set; }
-            public List<object> comments { get; set; }
-            public bool bookmarked { get; set; }
-            public string verb { get; set; }
-            public string permission { get; set; }
-            public bool comment_all_writable { get; set; }
-            public bool has_unread_reaction { get; set; }
-            public int share_count { get; set; }
-            public Actor3 actor { get; set; }
-            public List<object> latest_friend_emotion { get; set; }
-            public bool push_mute { get; set; }
-            public bool with_me { get; set; }
-            public int sympathy_count { get; set; }
-            public List<object> latest_comments { get; set; }
-            public int view_count { get; set; }
-        }
-
         public class BundledFeed
         {
             public List<TitleDecorator> title_decorators { get; set; }
             public Scrap scrap { get; set; }
-            public List<Activity> activities { get; set; }
+            public CommentData.PostData original_activity { get; set; }
+            public List<CommentData.PostData> activities { get; set; }
             public int total_count { get; set; }
             public bool more_activities { get; set; }
             public string type { get; set; }
@@ -1304,9 +1264,10 @@ namespace KSP_WPF
             public string permalink { get; set; }
             public int view_count { get; set; }
             public CommentData.PostData @object { get; set; }
+            public TimeLineData.BundledFeed bundled_feed { get; set; }
         }
     }
-
+    
     public class CommentMedia
     {
         public int height { get; set; }

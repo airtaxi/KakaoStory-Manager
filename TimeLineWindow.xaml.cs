@@ -154,6 +154,114 @@ namespace KSP_WPF
         public bool isScrollOver = false;
         private bool scrollEnd = false;
 
+        public TimeLinePageControl GenerateTimeLinePageControl(CommentData.PostData feed)
+        {
+            TimeLinePageControl tlp = new TimeLinePageControl();
+            if (Properties.Settings.Default.ScrollTimeline)
+                tlp.SV_Content.MaxHeight = 300;
+            try
+            {
+                try
+                {
+                    RefreshTimeLineFeed(tlp, feed);
+                }
+                catch (Exception)
+                {
+                    tlp.TB_Content.Text = "";
+                    tlp.TB_Content.Inlines.Clear();
+                    tlp.TB_Content.Inlines.Add(new Bold(new Run("(오류 : 삭제 등의 원인으로 인해 글 원본을 가져올 수 없습니다)")));
+                    tlp.GD_Share.Visibility = Visibility.Collapsed;
+                }
+
+                if (feed.scrap != null)
+                {
+                    GlobalHelper.RefreshScrap(feed.scrap, tlp.Scrap_Main);
+                }
+
+                MainWindow.SetClickObject(tlp.Card);
+
+                tlp.Card.Tag = feed.id;
+                tlp.TB_Content.Tag = feed.id;
+                tlp.SP_Content.Tag = feed.id;
+
+                tlp.Card.MouseLeftButtonDown += MainContentMouseEvent;
+                tlp.TB_Content.MouseRightButtonDown += (s, e) =>
+                {
+                    Clipboard.SetDataObject(feed.content);
+                    MessageBox.Show("클립보드에 글 내용이 복사됐습니다.");
+                    e.Handled = true;
+                };
+
+                if (feed.verb.Equals("share"))
+                {
+                    if(feed.@object?.share_count == null || feed.@object?.id == null || feed.@object?.actor?.profile_thumbnail_url == null)
+                    {
+                        tlp.TB_Content.Inlines.Add(new Bold(new Run("\n(오류 : 삭제 등의 원인으로 인해 공유글 원본을 가져올 수 없습니다)")));
+                        tlp.GD_Share.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+
+                        tlp.GD_ShareCount.Visibility = Visibility.Visible;
+                        tlp.TB_GD_ShareCount.Text = feed.@object.share_count.ToString();
+                        tlp.GD_Share.Tag = feed.@object.id;
+                        tlp.GD_Share.MouseLeftButtonDown += ShareContentMouseEvent;
+
+                        string imgUri = feed.@object.actor.profile_image_url2 ?? feed.@object.actor.profile_thumbnail_url;
+                        if (Properties.Settings.Default.GIFProfile && feed.@object.actor.profile_video_url_square_small != null)
+                            imgUri = feed.@object.actor.profile_video_url_square_small;
+                        GlobalHelper.AssignImage(tlp.IMG_ProfileShare, imgUri);
+                        MainWindow.SetClickObject(tlp.IMG_ProfileShare);
+
+                        tlp.IMG_ProfileShare.Tag = feed.@object.actor.id;
+                        tlp.IMG_ProfileShare.MouseLeftButtonDown += GlobalHelper.SubContentMouseEvent;
+
+                        tlp.TB_NameShare.Text = feed.@object.actor.display_name;
+                        tlp.TB_DateShare.Text = PostWindow.GetTimeString(feed.@object.created_at);
+                        GlobalHelper.RefreshContent(feed.@object.content_decorators, feed.@object.content, tlp.TB_ShareContent);
+
+                        tlp.TB_ShareContent.MouseRightButtonDown += (s, e) =>
+                        {
+                            Clipboard.SetDataObject(feed.@object.content);
+                            MessageBox.Show("클립보드에 공유한 글 내용이 복사됐습니다.");
+                            e.Handled = true;
+                        };
+
+                        if (feed.@object.media_type != null && feed.@object.media != null)
+                        {
+                            RefreshImageContent(feed.@object.media, tlp.SP_ShareContent);
+                        }
+
+                        if (feed.@object.scrap != null)
+                        {
+                            GlobalHelper.RefreshScrap(feed.@object.scrap, tlp.Scrap_Share);
+                        }
+                        if (feed.@object.closest_with_tags != null && feed.@object.closest_with_tags.Count > 0)
+                        {
+                            Separator sep = new Separator();
+                            tlp.SP_ShareContent.Children.Add(sep);
+                            sep.Margin = new Thickness(0, 5, 0, 5);
+                            var TB_Closest_With = GlobalHelper.GetWithFriendTB(feed.@object);
+                            tlp.SP_ShareContent.Children.Add(TB_Closest_With);
+                            tlp.SP_ShareContent.Visibility = Visibility.Visible;
+                        }
+                    }
+                }
+                else
+                {
+                    tlp.GD_Share.Visibility = Visibility.Collapsed;
+                }
+
+            }
+            catch (Exception e)
+            {
+                tlp.SP_Content.Background = Brushes.DarkRed;
+                tlp.TB_Name.Text = "오류!";
+                tlp.TB_Content.Text = e.StackTrace;
+            }
+            return tlp;
+        }
+
         public async Task RefreshTimeline(string from, bool isClear)
         {
             BT_Refresh.IsEnabled = false;
@@ -258,7 +366,10 @@ namespace KSP_WPF
                     var feedsNow = new List<CommentData.PostData>();
                     foreach(var bookmark in bookmarks.bookmarks)
                     {
-                        feedsNow.Add(bookmark.activity);
+                        if(bookmark.status == 0)
+                        {
+                            feedsNow.Add(bookmark.activity);
+                        }
                     }
                     feeds = feedsNow;
                     nextRequest = bookmarks.bookmarks.Last().id;
@@ -278,116 +389,55 @@ namespace KSP_WPF
             {
                 if (feed.verb.Equals("post") || feed.verb.Equals("share"))
                 {
-                    TimeLinePageControl tlp = new TimeLinePageControl();
-                    if (Properties.Settings.Default.ScrollTimeline)
-                        tlp.SV_Content.MaxHeight = 300;
-                    try
-                    {
-                        RefreshTimeLineFeed(tlp, feed);
-                    }
-                    catch (Exception e)
-                    {
-                        tlp.SP_Content.Background = Brushes.DarkRed;
-                        tlp.TB_Name.Text = "오류!";
-                        tlp.TB_Content.Text = e.StackTrace;
-                    }
-                    
-                    if (feed.scrap != null)
-                    {
-                        GlobalHelper.RefreshScrap(feed.scrap, tlp.Scrap_Main);
-                    }
-
+                    TimeLinePageControl tlp = GenerateTimeLinePageControl(feed);
                     SP_Content.Children.Add(tlp);
-
-                    MainWindow.SetClickObject(tlp.Card);
-
-                    tlp.Card.Tag = feed.id;
-                    tlp.TB_Content.Tag = feed.id;
-                    tlp.SP_Content.Tag = feed.id;
-
-                    tlp.Card.MouseLeftButtonDown += MainContentMouseEvent;
-                    tlp.TB_Content.MouseRightButtonDown += (s, e) =>
-                    {
-                        Clipboard.SetDataObject(feed.content);
-                        MessageBox.Show("클립보드에 글 내용이 복사됐습니다.");
-                        e.Handled = true;
-                    };
-
-                    //tlp.SV_Content.PreviewMouseWheel += HandleScroll;
-
-                    if (feed.verb.Equals("share"))
-                    {
-                        tlp.GD_Share.Visibility = Visibility.Visible;
-                        if (feed.@object.deleted == true || feed.@object.blinded == true)
-                        {
-                            tlp.GD_ShareCount.Visibility = Visibility.Collapsed;
-                            tlp.TB_NameShare.Text = "(삭제됨)";
-                            tlp.TB_DateShare.Text = "(삭제됨)";
-                            tlp.TB_ShareContent.Text = "삭제된 게시글입니다.";
-                        }
-                        else
-                        {
-                            tlp.GD_ShareCount.Visibility = Visibility.Visible;
-                            tlp.TB_GD_ShareCount.Text = feed.@object.share_count.ToString();
-                            tlp.GD_Share.Tag = feed.@object.id;
-                            tlp.GD_Share.MouseLeftButtonDown += ShareContentMouseEvent;
-
-                            string imgUri = feed.@object.actor.profile_image_url2 ?? feed.@object.actor.profile_thumbnail_url;
-                            if (Properties.Settings.Default.GIFProfile && feed.@object.actor.profile_video_url_square_small != null)
-                                imgUri = feed.@object.actor.profile_video_url_square_small;
-                            GlobalHelper.AssignImage(tlp.IMG_ProfileShare, imgUri);
-                            MainWindow.SetClickObject(tlp.IMG_ProfileShare);
-
-                            tlp.IMG_ProfileShare.Tag = feed.@object.actor.id;
-                            tlp.IMG_ProfileShare.MouseLeftButtonDown += GlobalHelper.SubContentMouseEvent;
-
-                            tlp.TB_NameShare.Text = feed.@object.actor.display_name;
-                            tlp.TB_DateShare.Text = PostWindow.GetTimeString(feed.@object.created_at);
-                            GlobalHelper.RefreshContent(feed.@object.content_decorators, feed.@object.content, tlp.TB_ShareContent);
-
-                            tlp.TB_ShareContent.MouseRightButtonDown += (s, e) =>
-                            {
-                                Clipboard.SetDataObject(feed.@object.content);
-                                MessageBox.Show("클립보드에 공유한 글 내용이 복사됐습니다.");
-                                e.Handled = true;
-                            };
-
-                            if (feed.@object.media_type != null && feed.@object.media != null)
-                            {
-                                RefreshImageContent(feed.@object.media, tlp.SP_ShareContent);
-                            }
-
-                            if (feed.@object.scrap != null)
-                            {
-                                GlobalHelper.RefreshScrap(feed.@object.scrap, tlp.Scrap_Share);
-                            }
-                            if (feed.@object.closest_with_tags != null && feed.@object.closest_with_tags.Count > 0)
-                            {
-                                Separator sep = new Separator();
-                                tlp.SP_ShareContent.Children.Add(sep);
-                                sep.Margin = new Thickness(0, 5, 0, 5);
-                                var TB_Closest_With = GlobalHelper.GetWithFriendTB(feed.@object);
-                                tlp.SP_ShareContent.Children.Add(TB_Closest_With);
-                                tlp.SP_ShareContent.Visibility = Visibility.Visible;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        tlp.GD_Share.Visibility = Visibility.Collapsed;
-                    }
-
-                    //Rectangle rect = new Rectangle
-                    //{
-                    //    Stroke = Brushes.Black,
-                    //    StrokeThickness = 1
-                    //};
-                    //SP_Content.Children.Add(rect);
                     SP_Content.Children.Add(new Rectangle()
                     {
                         Height = 10,
                         Fill = Brushes.Transparent
                     });
+                }
+                else if (feed.verb.Equals("bundled_feed"))
+                {
+                    try
+                    {
+                        if (feed.bundled_feed != null && feed.bundled_feed.type.Equals("share"))
+                        {
+                            CommentData.PostData feedNow = feed.bundled_feed.activities?[0];
+                            if (feedNow != null)
+                            {
+                                feedNow.@object = feed.bundled_feed.original_activity;
+                                TimeLinePageControl tlp = GenerateTimeLinePageControl(feedNow);
+                                GlobalHelper.SetShareFriendsTB(tlp.TB_Title, feed.bundled_feed.title_decorators);
+                                tlp.TB_Title.Visibility = Visibility.Visible;
+                                tlp.TB_TitleSep.Visibility = Visibility.Visible;
+                                SP_Content.Children.Add(tlp);
+                                SP_Content.Children.Add(new Rectangle()
+                                {
+                                    Height = 10,
+                                    Fill = Brushes.Transparent
+                                });
+                            }
+                        }
+                        else if (feed.bundled_feed != null && feed.bundled_feed.type.Equals("up"))
+                        {
+                            CommentData.PostData feedNow = feed.bundled_feed.original_activity;
+                            if (feedNow != null)
+                            {
+                                TimeLinePageControl tlp = GenerateTimeLinePageControl(feedNow);
+                                GlobalHelper.SetShareFriendsTB(tlp.TB_Title, feed.bundled_feed.title_decorators);
+                                tlp.TB_Title.Visibility = Visibility.Visible;
+                                tlp.TB_TitleSep.Visibility = Visibility.Visible;
+                                SP_Content.Children.Add(tlp);
+                                SP_Content.Children.Add(new Rectangle()
+                                {
+                                    Height = 10,
+                                    Fill = Brushes.Transparent
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception) { }
                 }
             }
             BT_Refresh.IsEnabled = true;
@@ -595,7 +645,7 @@ namespace KSP_WPF
         private void SV_Content_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             GlobalHelper.HandleScroll(sender, e);
-            //if (!isScrollOver)
+            //if (!fcrollOver)
             //{
             //    int threshold = 48;
             //    ScrollViewer scrollViewer = (ScrollViewer)sender;

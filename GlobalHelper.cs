@@ -132,7 +132,7 @@ namespace KSP_WPF
 
         public async static Task<bool> CheckUpdate()
         {
-            HttpWebRequest webRequest = WebRequest.CreateHttp("https://project-6817963503898600526.firebaseapp.com/KSP/latest.version");
+            HttpWebRequest webRequest = WebRequest.CreateHttp("https://teamarcstar.com/KSP/latest.version");
             webRequest.Method = "GET";
             try
             {
@@ -232,13 +232,20 @@ namespace KSP_WPF
                                             ActivationType = Microsoft.Toolkit.Uwp.Notifications.ToastActivationType.Background,
                                             TextBoxId = "tbReply"
                                         },
+                                        new Microsoft.Toolkit.Uwp.Notifications.ToastButton("열기", URL),
                                         new Microsoft.Toolkit.Uwp.Notifications.ToastButton("좋아요", URL + "LIKE!@#$%" + commentID),
                                     },
                                 };
                             }
                             else
                             {
-                                Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom() {};
+                                Action = new Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom()
+                                {
+                                    Buttons =
+                                    {
+                                        new Microsoft.Toolkit.Uwp.Notifications.ToastButton("열기", URL)
+                                    }
+                                };
                             }
                         }
                         var toastContent = new Microsoft.Toolkit.Uwp.Notifications.ToastContent()
@@ -253,6 +260,7 @@ namespace KSP_WPF
                         {
                             KSPNotificationActivator.ActivateHandler(URL, null);
                         };
+                        toast.ExpirationTime = DateTimeOffset.MaxValue;
                         DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
                     }
                     catch (Exception) { }
@@ -260,6 +268,23 @@ namespace KSP_WPF
             }
         }
 
+        public static void SetShareFriendsTB(TextBlock textBlock, List<TimeLineData.TitleDecorator> decorator)
+        {
+            Bold idContent = new Bold(new Run(decorator[0].text));
+            MainWindow.SetClickObject(idContent);
+            idContent.PreviewMouseLeftButtonDown += (s, e) =>
+            {
+                TimeLineWindow tlw = new TimeLineWindow(decorator[0].id);
+                tlw.Show();
+                tlw.Focus();
+                e.Handled = true;
+            };
+
+            textBlock.Inlines.Add(idContent);
+            textBlock.Inlines.Add(new Run(decorator[1].text));
+            textBlock.Inlines.Add(new Bold(new Run(decorator[2].text)));
+            textBlock.Inlines.Add(new Run(decorator[3].text));
+        }
         public static TextBlock GetWithFriendTB(CommentData.PostData data)
         {
             TextBlock TB_Closest_With = new TextBlock();

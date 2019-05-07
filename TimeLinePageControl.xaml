@@ -11,87 +11,91 @@
     <Grid>
         <Grid Name="Card" IsHitTestVisible="True" Background="Transparent">
             <Rectangle Stroke="LightGray"/>
-            <Grid Margin="0,10,0,10" Name="GD_Main" IsHitTestVisible="True" Background="Transparent">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Name="RD_CommentInfos" Height="25"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="10"/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.Column="1" Name="IMG_Profile" Width="50" Height="50" Stretch="UniformToFill"/>
-                <Rectangle Stroke="LightGray" Grid.Column="1" Width="50" Height="50"/>
-                <StackPanel Grid.Column="2" Orientation="Vertical">
-                    <TextBlock Name="TB_Name" Text="이름" Margin="5,10,0,0" FontWeight="Bold" />
-                    <TextBlock Name="TB_Date" Text="날짜" Margin="5,2,0,0" FontWeight="Light" />
-                </StackPanel>
-                <ScrollViewer Name="SV_Content" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"  VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
-                    <StackPanel Name="SP_Main" Orientation="Vertical">
-                        <TextBlock Name="TB_Content" Text="내용" TextWrapping="Wrap"/>
-                        <StackPanel Name="SP_Content" Margin="0,5,0,5" Orientation="Vertical"/>
-                        <local:ScrapControl x:Name="Scrap_Main" Visibility="Collapsed"/>
-                        <Grid Name="GD_Share" IsHitTestVisible="True" Background="Transparent">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10"/>
-                                <ColumnDefinition Width="42"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="10"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="10"/>
-                                <RowDefinition Height="42"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="5"/>
-                            </Grid.RowDefinitions>
-                            <Grid Name="GD_ShareCount" Grid.ColumnSpan="4" Grid.RowSpan="4" Margin="0,5,5,0">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" >
-                                    <materialDesign:PackIcon Kind="Share" Foreground="Gray" Width="12" Height="12" VerticalAlignment="Center" />
-                                    <TextBlock Name="TB_GD_ShareCount" Text="0" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Margin="1,0,0,0" Foreground="Gray" TextAlignment="Right" />
+            <StackPanel Orientation="Vertical">
+                <TextBlock x:Name="TB_Title" Visibility="Collapsed" Margin="10,10,10,5" FontSize="13" />
+                <Rectangle Name="TB_TitleSep" Visibility="Collapsed" Fill="LightGray" Height="1" Margin="10,0,10,0"/>
+                <Grid Margin="0,10,0,10" Name="GD_Main" IsHitTestVisible="True" Background="Transparent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Name="RD_CommentInfos" Height="25"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="1" Name="IMG_Profile" Width="50" Height="50" Stretch="UniformToFill"/>
+                    <Rectangle Stroke="LightGray" Grid.Column="1" Width="50" Height="50"/>
+                    <StackPanel Grid.Column="2" Orientation="Vertical">
+                        <TextBlock Name="TB_Name" Text="이름" Margin="5,10,0,0" FontWeight="Bold" />
+                        <TextBlock Name="TB_Date" Text="날짜" Margin="5,2,0,0" FontWeight="Light" />
+                    </StackPanel>
+                    <ScrollViewer Name="SV_Content" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"  VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                        <StackPanel Name="SP_Main" Orientation="Vertical">
+                            <TextBlock Name="TB_Content" Text="내용" TextWrapping="Wrap"/>
+                            <StackPanel Name="SP_Content" Margin="0,5,0,5" Orientation="Vertical"/>
+                            <local:ScrapControl x:Name="Scrap_Main" Visibility="Collapsed"/>
+                            <Grid Name="GD_Share" IsHitTestVisible="True" Background="Transparent">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="42"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="10"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="10"/>
+                                    <RowDefinition Height="42"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="5"/>
+                                </Grid.RowDefinitions>
+                                <Grid Name="GD_ShareCount" Grid.ColumnSpan="4" Grid.RowSpan="4" Margin="0,5,5,0">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,5,0" VerticalAlignment="Top" >
+                                        <materialDesign:PackIcon Kind="Share" Foreground="Gray" Width="12" Height="12" VerticalAlignment="Center" />
+                                        <TextBlock Name="TB_GD_ShareCount" Text="0" HorizontalAlignment="Right" FontSize="12" VerticalAlignment="Center" Margin="1,0,0,0" Foreground="Gray" TextAlignment="Right" />
+                                    </StackPanel>
+                                </Grid>
+                                <Rectangle Stroke="LightGray" Grid.RowSpan="4" Grid.ColumnSpan="4"/>
+                                <Image Name="IMG_ProfileShare" Grid.Row="1" Grid.Column="1" Width="40" Height="40" Stretch="UniformToFill"/>
+                                <Rectangle Stroke="LightGray" Grid.Row="1" Grid.Column="1" Width="40" Height="40"/>
+                                <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical">
+                                    <TextBlock Name="TB_NameShare" Text="이름" Margin="5,6,0,0" FontWeight="Bold" />
+                                    <TextBlock Name="TB_DateShare" Text="날짜" Margin="5,1,0,0" FontWeight="Light" />
+                                </StackPanel>
+                                <StackPanel Name="SP_ShareContent" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" Grid.Row="2" Margin="0,10,0,0">
+                                    <TextBlock Text="공유 내용" Name="TB_ShareContent" Width="Auto" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                                    <local:ScrapControl x:Name="Scrap_Share" Visibility="Collapsed"/>
+                                    <!--<MediaElement Name="ME_VideoShare" Width="Auto" VerticalAlignment="Center" Stretch="Uniform" LoadedBehavior="Play" UnloadedBehavior="Stop" Visibility="Collapsed"/>-->
                                 </StackPanel>
                             </Grid>
-                            <Rectangle Stroke="LightGray" Grid.RowSpan="4" Grid.ColumnSpan="4"/>
-                            <Image Name="IMG_ProfileShare" Grid.Row="1" Grid.Column="1" Width="40" Height="40" Stretch="UniformToFill"/>
-                            <Rectangle Stroke="LightGray" Grid.Row="1" Grid.Column="1" Width="40" Height="40"/>
-                            <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Vertical">
-                                <TextBlock Name="TB_NameShare" Text="이름" Margin="5,6,0,0" FontWeight="Bold" />
-                                <TextBlock Name="TB_DateShare" Text="날짜" Margin="5,1,0,0" FontWeight="Light" />
-                            </StackPanel>
-                            <StackPanel Name="SP_ShareContent" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" Grid.Row="2" Margin="0,10,0,0">
-                                <TextBlock Text="공유 내용" Name="TB_ShareContent" Width="Auto" TextWrapping="Wrap" Margin="0,0,0,5"/>
-                                <local:ScrapControl x:Name="Scrap_Share" Visibility="Collapsed"/>
-                                <!--<MediaElement Name="ME_VideoShare" Width="Auto" VerticalAlignment="Center" Stretch="Uniform" LoadedBehavior="Play" UnloadedBehavior="Stop" Visibility="Collapsed"/>-->
-                            </StackPanel>
-                        </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                    <StackPanel Name="SP_CommentInfos" Margin="0,7,0,0" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Name="TB_CommentCount">
+                            <TextBlock.Inlines>
+                                <Run Text="댓글" FontSize="12"/>
+                            </TextBlock.Inlines>
+                        </TextBlock>
+                        <TextBlock Name="TB_LikeCount">
+                            <TextBlock.Inlines>
+                                <Run Text="느낌" FontSize="12"/>
+                            </TextBlock.Inlines>
+                        </TextBlock>
+                        <TextBlock Name="TB_ShareCount">
+                            <TextBlock.Inlines>
+                                <Run Text="공유" FontSize="12"/>
+                            </TextBlock.Inlines>
+                        </TextBlock>
+                        <TextBlock Name="TB_UpCount">
+                            <TextBlock.Inlines>
+                                <Run Text="UP" FontSize="12"/>
+                            </TextBlock.Inlines>
+                        </TextBlock>
                     </StackPanel>
-                </ScrollViewer>
-                <StackPanel Name="SP_CommentInfos" Margin="0,7,0,0" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Name="TB_CommentCount">
-                        <TextBlock.Inlines>
-                            <Run Text="댓글" FontSize="12"/>
-                        </TextBlock.Inlines>
-                    </TextBlock>
-                    <TextBlock Name="TB_LikeCount">
-                        <TextBlock.Inlines>
-                            <Run Text="느낌" FontSize="12"/>
-                        </TextBlock.Inlines>
-                    </TextBlock>
-                    <TextBlock Name="TB_ShareCount">
-                        <TextBlock.Inlines>
-                            <Run Text="공유" FontSize="12"/>
-                        </TextBlock.Inlines>
-                    </TextBlock>
-                    <TextBlock Name="TB_UpCount">
-                        <TextBlock.Inlines>
-                            <Run Text="UP" FontSize="12"/>
-                        </TextBlock.Inlines>
-                    </TextBlock>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Name="SP_Comments" Orientation="Vertical"/>
-            </Grid>
+                    <StackPanel Grid.Row="1" Name="SP_Comments" Orientation="Vertical"/>
+                </Grid>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

@@ -60,10 +60,10 @@ namespace KSP_WPF
                                 PostData data = await KakaoRequestClass.GetPost(activityID);
                                 if (data != null)
                                 {
-                                    await MainWindow.Instance.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
-                                    {
-                                        PostWindow.ShowPostWindow(data, activityID);
-                                    }));
+                                    //await MainWindow.Instance.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
+                                    //{
+                                    //}));
+                                    PostWindow.ShowPostWindow(data, activityID);
                                 }
                             }
                             catch (Exception)
