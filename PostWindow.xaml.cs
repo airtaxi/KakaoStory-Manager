@@ -232,29 +232,37 @@ namespace KSP_WPF
 
         public static void ShowPostWindow(PostData data, string feedID)
         {
-            if (MainWindow.Posts.ContainsKey(feedID))
+            if (data != null)
             {
-                PostWindow postWindow = MainWindow.Posts[feedID];
-                postWindow.Refresh();
-                postWindow.Show();
-                postWindow.Activate();
-                postWindow.Focus();
-                postWindow.SV_Comment.ScrollToEnd();
-                postWindow.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => postWindow.TB_Comment.Focus()));
-            }
-            else
-            {
-                MainWindow.Instance.Dispatcher.BeginInvoke(new Action(delegate
+                if (MainWindow.Posts.ContainsKey(feedID))
                 {
-                    PostWindow postWindow = new PostWindow(data, feedID);
+                    PostWindow postWindow = MainWindow.Posts[feedID];
+                    postWindow.Refresh();
                     postWindow.Show();
                     postWindow.Activate();
                     postWindow.Focus();
                     postWindow.SV_Comment.ScrollToEnd();
-                    if (Properties.Settings.Default.PositionPostToTop)
-                        postWindow.Top = 0;
                     postWindow.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => postWindow.TB_Comment.Focus()));
-                }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+                }
+                else
+                {
+                    MainWindow.Instance.Dispatcher.BeginInvoke(new Action(delegate
+                    {
+                        try
+                        {
+                            PostWindow postWindow = new PostWindow(data, feedID);
+                            postWindow.Show();
+                            postWindow.Activate();
+                            postWindow.Focus();
+                            MainWindow.Posts.Add(feedID, postWindow);
+                            postWindow.SV_Comment.ScrollToEnd();
+                            if (Properties.Settings.Default.PositionPostToTop)
+                                postWindow.Top = 0;
+                            postWindow.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() => postWindow.TB_Comment.Focus()));
+                        }
+                        catch (Exception) { }
+                    }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+                }
             }
         }
 
@@ -276,7 +284,6 @@ namespace KSP_WPF
                     MainWindow.SetClickObject(BT_Quote);
                     MainWindow.SetClickObject(BT_SubmitComment);
                     MainWindow.SetClickObject(IC_CommentShow);
-                    MainWindow.Posts.Add(feedID, this);
                     this.data = data;
                     this.feedID = feedID;
                     ht.Add("like", "좋아요");
@@ -357,17 +364,13 @@ namespace KSP_WPF
                             MainWindow.SetClickObject(SP_Share);
                             SP_Share.MouseLeftButtonDown += async (s, e) =>
                             {
-                                e.Handled = true;
                                 try
                                 {
                                     PostData feed = await KakaoRequestClass.GetPost(data.@object.id);
                                     ShowPostWindow(feed, data.@object.id);
-                                    e.Handled = true;
                                 }
-                                catch (Exception)
-                                {
-                                    MessageBox.Show("접근할 수 없는 포스트입니다.");
-                                }
+                                catch (Exception) { }
+                                e.Handled = true;
                             };
 
                             string imgUri2 = data.@object.actor.profile_thumbnail_url;

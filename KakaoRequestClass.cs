@@ -335,7 +335,11 @@ namespace KSP_WPF
             string requestURI = "https://story.kakao.com/a/activities/" + activityID;
             HttpWebRequest webRequest = GenerateDefaultProfile(requestURI, "GET");
             string respResult = await GetResponseFromRequest(webRequest);
-            PostData obj = JsonConvert.DeserializeObject<PostData>(respResult);
+
+            PostData obj = null;
+            if(respResult != null)
+                obj = JsonConvert.DeserializeObject<PostData>(respResult);
+
             return obj;
         }
 

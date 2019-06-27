@@ -176,7 +176,7 @@ namespace KSP_WPF
             }
         }
 
-        public static void ShowNotification(string title, string message, string URL, string commentID, string id, string name, string writer, string identity, string thumbnailURL)
+        public static async void ShowNotification(string title, string message, string URL, string commentID, string id, string name, string writer, string identity, string thumbnailURL)
         {
             if (MainWindow.IsDND != true)
             {
@@ -201,13 +201,49 @@ namespace KSP_WPF
                             }
                             }
                         };
-                        if (thumbnailURL != null)
+                        try
                         {
-                            Visual.BindingGeneric.HeroImage = new Microsoft.Toolkit.Uwp.Notifications.ToastGenericHeroImage()
+                            bool isThumbnailReplaced = false;
+                            string text = URL.Split(new string[] { "!" }, StringSplitOptions.None)[1];
+                            string activityID = text.Split(new string[] { "activities/" }, StringSplitOptions.None)[1];
+                            var post = await KakaoRequestClass.GetPost(activityID);
+
+                            if(commentID != null)
                             {
-                                Source = thumbnailURL,
-                            };
+                                foreach(var comment in post.comments)
+                                {
+                                    if (comment.id.Equals(commentID))
+                                    {
+                                        thumbnailURL = comment.decorators?[0]?.media?.url;
+                                        if(thumbnailURL != null) isThumbnailReplaced = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!isThumbnailReplaced)
+                            {
+                                if (post.@object != null)
+                                {
+                                    if (post.@object.media_type?.Equals("video") == true) thumbnailURL = post.@object.media[0]?.preview_url_hq;
+                                    else thumbnailURL = post.@object.media?[0]?.url;
+                                }
+                                else
+                                {
+                                    if (post.media_type?.Equals("video") == true) thumbnailURL = post.media[0]?.preview_url_hq;
+                                    else thumbnailURL = post.media?[0]?.url;
+                                }
+                            }
+
+                            if (thumbnailURL != null)
+                            {
+                                Visual.BindingGeneric.HeroImage = new Microsoft.Toolkit.Uwp.Notifications.ToastGenericHeroImage()
+                                {
+                                    Source = thumbnailURL,
+                                };
+                            }
                         }
+                        catch (Exception) { }
                         Microsoft.Toolkit.Uwp.Notifications.ToastActionsCustom Action;
                         if (URL == null)
                         {
@@ -256,10 +292,10 @@ namespace KSP_WPF
                         var toastXml = new Windows.Data.Xml.Dom.XmlDocument();
                         toastXml.LoadXml(toastContent.GetContent());
                         var toast = new Windows.UI.Notifications.ToastNotification(toastXml);
-                        toast.Activated += (s, e) =>
-                        {
-                            KSPNotificationActivator.ActivateHandler(URL, null);
-                        };
+                        //toast.Activated += (s, e) =>
+                        //{
+                        //    KSPNotificationActivator.ActivateHandler(URL, null);
+                        //};
                         toast.ExpirationTime = DateTimeOffset.MaxValue;
                         DesktopNotificationManagerCompat.CreateToastNotifier().Show(toast);
                     }

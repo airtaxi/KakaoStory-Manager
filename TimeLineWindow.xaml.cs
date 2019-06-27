@@ -82,10 +82,7 @@ namespace KSP_WPF
                 CommentData.PostData data = await KakaoRequestClass.GetPost(id);
                 PostWindow.ShowPostWindow(data, id);
             }
-            catch (Exception)
-            {
-                MessageBox.Show("접근할 수 없는 포스트입니다.");
-            }
+            catch (Exception) { }
             e.Handled = true;
         }
         
@@ -264,6 +261,7 @@ namespace KSP_WPF
 
         public async Task RefreshTimeline(string from, bool isClear)
         {
+            if(from == null) lastOffset = -1;
             BT_Refresh.IsEnabled = false;
             PR_Loading.IsActive = true;
             TB_RefreshBT.Text = "갱신중...";
@@ -378,7 +376,7 @@ namespace KSP_WPF
                     feeds = profile.activities;
             }
             
-            if ((isProfile && feeds.Count != 18)) scrollEnd = true;
+            if (isProfile && feeds.Count != 18) scrollEnd = true;
 
             if (isClear)
             {

@@ -58,18 +58,12 @@ namespace KSP_WPF
                             try
                             {
                                 PostData data = await KakaoRequestClass.GetPost(activityID);
-                                if (data != null)
+                                if (data != null && activityID != null)
                                 {
-                                    //await MainWindow.Instance.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
-                                    //{
-                                    //}));
                                     PostWindow.ShowPostWindow(data, activityID);
                                 }
                             }
-                            catch (Exception)
-                            {
-                                MessageBox.Show("접근할 수 없는 포스트입니다.");
-                            }
+                            catch (Exception) { }
                         }
                     }
                     catch (Exception)

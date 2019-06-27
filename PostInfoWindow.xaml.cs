@@ -115,10 +115,7 @@ namespace KSP_WPF
                         PostData pd = await KakaoRequestClass.GetPost(share.activity_id);
                         PostWindow.ShowPostWindow(pd, share.activity_id);
                     }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("접근할 수 없는 스토리입니다.");
-                    }
+                    catch (Exception) {}
                     e.Handled = true;
                 };
                 SP_Shares.Children.Add(fsc);

@@ -119,12 +119,9 @@ namespace KSP_WPF
                         {
                             var post = await KakaoRequestClass.GetPost(feedID);
                             PostWindow.ShowPostWindow(post, feedID);
-                            content.RA_Notify.Fill = Brushes.Transparent;
                         }
-                        catch (Exception)
-                        {
-                            MessageBox.Show("접근할 수 없는 포스트입니다.");
-                        }
+                        catch (Exception) { }
+                        content.RA_Notify.Fill = Brushes.Transparent;
                         e.Handled = true;
                     };
                 }
