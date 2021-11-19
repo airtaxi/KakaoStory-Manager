@@ -10,6 +10,6 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="로그인" Height="450" Width="800" Icon="icon2.png" ShowInTaskbar="False">
     <Grid Focusable="False">
-        <WebBrowser Name="WebBrwoserView"/>
+        <WebBrowser Name="WebBrowserView"/>
     </Grid>
 </controls:MetroWindow>

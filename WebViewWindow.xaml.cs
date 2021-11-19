@@ -20,14 +20,14 @@ namespace KSP_WPF
         public WebViewWindow()
         {
             InitializeComponent();
-            WebBrwoserView.Loaded += (s, e) =>
+            WebBrowserView.Loaded += (s, e) =>
             {
                 Dispatcher.InvokeAsync(() =>
                 {
                     try
                     {
-                        WebBrwoserView.Navigate("https://story.kakao.com/s/logout");
-                        WebBrwoserView.LoadCompleted += OnLoad;
+                        WebBrowserView.Navigate("https://story.kakao.com/s/logout");
+                        WebBrowserView.LoadCompleted += OnLoad;
                     }
                     catch (Exception)
                     {
@@ -113,23 +113,16 @@ namespace KSP_WPF
                 {
                     try
                     {
-                        (WebBrwoserView.Document as mshtml.HTMLDocument).getElementById("loginEmail").setAttribute("value", MainWindow.Instance.TBX_Email.Text);
-                        (WebBrwoserView.Document as mshtml.HTMLDocument).getElementById("loginPw").setAttribute("value", MainWindow.Instance.TBX_Password.Password);
-                        (WebBrwoserView.Document as mshtml.HTMLDocument).getElementById("staySignedIn").setAttribute("value", "true");
-                        mshtml.IHTMLElementCollection buttons = (WebBrwoserView.Document as mshtml.IHTMLDocument3).getElementsByTagName("button");
-                        foreach (mshtml.IHTMLElement button in buttons)
+                        WebBrowserView.InvokeScript("eval", new string[] { $"document.getElementById(\"id_email_2\").value = \"{MainWindow.Instance.TBX_Email.Text}\";" });
+                        WebBrowserView.InvokeScript("eval", new string[] { $"document.getElementById(\"id_password_3\").value = \"{MainWindow.Instance.TBX_Password.Password}\";" });
+                        WebBrowserView.InvokeScript("eval", new string[] { "document.getElementsByClassName(\"ico_account ico_check\")[0].click();" });
+                        WebBrowserView.InvokeScript("eval", new string[] { "document.getElementsByClassName(\"btn_g btn_confirm submit\")[0].click();" });
+
+                        await Task.Delay(7000);
+                        if (!isLoginSuccess)
                         {
-                            if (((string)button.getAttribute("type")).Contains("submit"))
-                            {
-                                button.click();
-                                await Task.Delay(7000);
-                                if (!isLoginSuccess)
-                                {
-                                    MessageBox.Show("로그인 실패");
-                                    Show();
-                                }
-                                break;
-                            }
+                            MessageBox.Show("로그인 실패");
+                            Show();
                         }
                         IsLoggedIn = true;
                     }
@@ -145,8 +138,8 @@ namespace KSP_WPF
 
         public void Dispose()
         {
-            WebBrwoserView.Dispose();
-            WebBrwoserView = null;
+            WebBrowserView.Dispose();
+            WebBrowserView = null;
         }
         private void Window_Closed(object sender, EventArgs e)
         {

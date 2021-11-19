@@ -17,7 +17,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Documents;
 using Newtonsoft.Json;
 using System.Windows.Input;
-using WPFMediaKit.DirectShow.Controls;
 using System.Text.RegularExpressions;
 
 namespace KSP_WPF

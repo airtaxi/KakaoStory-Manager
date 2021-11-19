@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28917.182
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSP-WPF", "KSP-WPF.csproj", "{49F8F936-4926-4892-ACDF-06009B20D646}"
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "KakaoStory Manager", "..\KakaoStory Notification\KakaoStory Manager.wapproj", "{2C10D959-488E-4AED-99A0-313DD5FACC04}"
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "KakaoStory Manager", "KakaoStory Notification\KakaoStory Manager.wapproj", "{2C10D959-488E-4AED-99A0-313DD5FACC04}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,9 +35,9 @@ Global
 		{49F8F936-4926-4892-ACDF-06009B20D646}.Release|x64.Build.0 = Release|Any CPU
 		{49F8F936-4926-4892-ACDF-06009B20D646}.Release|x86.ActiveCfg = Release|Any CPU
 		{49F8F936-4926-4892-ACDF-06009B20D646}.Release|x86.Build.0 = Release|Any CPU
-		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|Any CPU.Build.0 = Debug|x86
-		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|Any CPU.Deploy.0 = Debug|x86
+		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|ARM.Build.0 = Debug|Any CPU
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|ARM.Deploy.0 = Debug|Any CPU
@@ -47,9 +47,9 @@ Global
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|x86.ActiveCfg = Debug|x86
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|x86.Build.0 = Debug|x86
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Debug|x86.Deploy.0 = Debug|x86
-		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|Any CPU.ActiveCfg = Release|x86
-		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|Any CPU.Build.0 = Release|x86
-		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|Any CPU.Deploy.0 = Release|x86
+		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|ARM.ActiveCfg = Release|Any CPU
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|ARM.Build.0 = Release|Any CPU
 		{2C10D959-488E-4AED-99A0-313DD5FACC04}.Release|ARM.Deploy.0 = Release|Any CPU

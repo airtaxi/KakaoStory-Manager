@@ -882,52 +882,62 @@ namespace KSP_WPF
             s.Write(bytes, 0, bytes.Length);
         }
 
-        public async Task<UploadedImageProp> UploadImage(string filepath)
+        public async Task<UploadedImageProp> UploadImage(string filepath, int count = 0)
         {
-            string filename = System.IO.Path.GetFileName(filepath);
-            StreamReader fileStream = new StreamReader(filepath);
+            try
+            {
+                string filename = System.IO.Path.GetFileName(filepath);
+                StreamReader fileStream = new StreamReader(filepath);
 
-            string requestURI = "https://up-api-kage-4story.kakao.com/web/webstory-img/";
+                string requestURI = "https://up-api-kage-4story.kakao.com/web/webstory-img/";
 
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "POST";
-            string boundary = "----" + DateTime.Now.Ticks.ToString("x");
-            request.ContentType = "multipart/form-data; boundary=" + boundary;
-            CookieContainer containerNow = new CookieContainer();
-            containerNow.SetCookies(new Uri("https://up-api-kage-4story.kakao.com/"), WebViewWindow.cookieString);
-            request.CookieContainer = containerNow;
+                HttpWebRequest request = WebRequest.CreateHttp(requestURI);
+                request.Method = "POST";
+                string boundary = "----" + DateTime.Now.Ticks.ToString("x");
+                request.ContentType = "multipart/form-data; boundary=" + boundary;
+                CookieContainer containerNow = new CookieContainer();
+                containerNow.SetCookies(new Uri("https://up-api-kage-4story.kakao.com/"), WebViewWindow.cookieString);
+                request.CookieContainer = containerNow;
 
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "45";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "1b242cf8fa50f1f96765";
-            request.Headers["Cache-Control"] = "max-age=0";
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4";
+                request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
+                request.Headers["X-Kakao-ApiLevel"] = "45";
+                request.Headers["X-Requested-With"] = "XMLHttpRequest";
+                request.Headers["X-Kakao-VC"] = "1b242cf8fa50f1f96765";
+                request.Headers["Cache-Control"] = "max-age=0";
+                request.Headers["Accept-Encoding"] = "gzip, deflate, br";
+                request.Headers["Accept-Language"] = "ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4";
 
-            request.Headers["DNT"] = "1";
+                request.Headers["DNT"] = "1";
 
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "up-api-kage-4story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "*/*";
-            request.AutomaticDecompression = DecompressionMethods.GZip;
+                request.Headers["authority"] = "story.kakao.com";
+                request.Referer = "https://story.kakao.com";
+                request.KeepAlive = true;
+                request.UseDefaultCredentials = true;
+                request.Host = "up-api-kage-4story.kakao.com";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+                request.Accept = "*/*";
+                request.AutomaticDecompression = DecompressionMethods.GZip;
 
-            Stream writeStream = await request.GetRequestStreamAsync();
+                Stream writeStream = await request.GetRequestStreamAsync();
 
-            WriteMultipartForm(writeStream, boundary, null, filename, System.Web.MimeMapping.GetMimeMapping(filename), fileStream.BaseStream);
+                WriteMultipartForm(writeStream, boundary, null, filename, System.Web.MimeMapping.GetMimeMapping(filename), fileStream.BaseStream);
 
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
+                var readStream = await request.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
 
-            string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
-            respReader.Close();
+                string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
+                respReader.Close();
 
-            UploadedImageProp result = JsonConvert.DeserializeObject<UploadedImageProp>(respResult);
-            return result;
+                UploadedImageProp result = JsonConvert.DeserializeObject<UploadedImageProp>(respResult);
+                return result;
+            }
+            catch (WebException e)
+            {
+                if ((int)(e.Response as HttpWebResponse).StatusCode == 401 && count < 10)
+                    return await UploadImage(filepath, ++count);
+                else
+                    return null;
+            }
         }
 
         private async void BT_Upload_Click(object sender, RoutedEventArgs e)

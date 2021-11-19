@@ -125,23 +125,23 @@
             <materialDesign:PackIcon Name="BT_Upload" ToolTip="사진 첨부하기" Kind="Attachment" Grid.Column="2" Width="30" Height="30" Margin="5,5,5,5" MouseLeftButtonDown="BT_Upload_MouseLeftButtonDown" Foreground="Gray" IsHitTestVisible="True" Background="Transparent"/>
             <materialDesign:PackIcon Name="BT_SubmitComment" ToolTip="댓글 작성하기" Kind="Send" Grid.Column="3" Width="30" Height="30" Margin="5,5,5,5" MouseLeftButtonDown="BT_SubmitComment_MouseLeftButtonDown" Foreground="Gray" IsHitTestVisible="True" Background="Transparent" />
         </Grid>
-        <controls:Flyout Name="FL_Menu" Position="Right" Width="150" HorizontalAlignment="Right" Header="메뉴" Grid.Column="1" Grid.RowSpan="4" Theme="Accent" IsOpen="False">
+        <controls:Flyout Name="FL_Menu" Position="Right" Width="200" HorizontalAlignment="Right" Header="메뉴" Grid.Column="1" Grid.RowSpan="4" Theme="Accent" IsOpen="False">
             <StackPanel Margin="5,5,5,5">
-                <Button Name="BT_Web" Content="브라우저로 열기" Click="BT_Web_Click" Style="{StaticResource AccentedSquareButtonStyle}"/>
-                <Button Name="BT_Edit" Content="수정" Click="BT_Edit_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
-                <Button Name="BT_Delte" Content="삭제" Click="BT_Delte_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
-                <Button Name="BT_Share" Content="공유" Click="BT_Share_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
-                <Button Name="BT_UP" Content="UP하기" Click="BT_UP_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
-                <Button Name="BT_Mute" Content="이 게시글 알림 음소거" Click="BT_Mute_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_Web" Content="브라우저로 열기" Click="BT_Web_Click"/>
+                <Button Name="BT_Edit" Content="수정" Click="BT_Edit_Click" Margin="0,5,0,0"/>
+                <Button Name="BT_Delte" Content="삭제" Click="BT_Delte_Click" Margin="0,5,0,0"/>
+                <Button Name="BT_Share" Content="공유" Click="BT_Share_Click" Margin="0,5,0,0"/>
+                <Button Name="BT_UP" Content="UP하기" Click="BT_UP_Click" Margin="0,5,0,0"/>
+                <Button Name="BT_Mute" Content="이 게시글 알림 음소거" Click="BT_Mute_Click" Margin="0,5,0,0"/>
             </StackPanel>
         </controls:Flyout>
         <controls:Flyout Name="FL_Emotion" Position="Right" Width="200" HorizontalAlignment="Right" Header="느낌 달기" Grid.Column="1" Grid.RowSpan="4" Theme="Accent" IsOpen="False">
             <StackPanel Margin="5,5,5,5">
-                <Button Name="BT_E_Like" Tag="like" Content="좋아요 (L)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}"/>
-                <Button Name="BT_E_Good" Tag="good" Content="멋져요 (G)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
-                <Button Name="BT_E_Pleasure" Tag="pleasure" Content="기뻐요 (P)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
-                <Button Name="BT_E_Sad" Tag="sad" Content="슬퍼요 (S)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
-                <Button Name="BT_E_Cheerup" Tag="cheerup" Content="힘내요 (C)" Click="BT_E_Like_Click" Style="{StaticResource AccentedSquareButtonStyle}" Margin="0,5,0,0"/>
+                <Button Name="BT_E_Like" Tag="like" Content="좋아요 (L)" Click="BT_E_Like_Click"/>
+                <Button Name="BT_E_Good" Tag="good" Content="멋져요 (G)" Click="BT_E_Like_Click" Margin="0,5,0,0"/>
+                <Button Name="BT_E_Pleasure" Tag="pleasure" Content="기뻐요 (P)" Click="BT_E_Like_Click" Margin="0,5,0,0"/>
+                <Button Name="BT_E_Sad" Tag="sad" Content="슬퍼요 (S)" Click="BT_E_Like_Click" Margin="0,5,0,0"/>
+                <Button Name="BT_E_Cheerup" Tag="cheerup" Content="힘내요 (C)" Click="BT_E_Like_Click" Margin="0,5,0,0"/>
             </StackPanel>
         </controls:Flyout>
     </Grid>

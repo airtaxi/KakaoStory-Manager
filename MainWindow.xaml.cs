@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
 using MahApps.Metro;
+using ControlzEx.Theming;
 
 namespace KSP_WPF
 {
@@ -555,9 +556,9 @@ namespace KSP_WPF
         {
             Properties.Settings.Default.DarkMode = TSW_DarkMode.IsChecked == true;
             if (Properties.Settings.Default.DarkMode == true)
-                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent("Teal"), ThemeManager.GetAppTheme("BaseDark"));
+                ThemeManager.Current.ChangeTheme(System.Windows.Application.Current, "Dark.Teal");
             else
-                ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent("Teal"), ThemeManager.GetAppTheme("BaseLight"));
+                ThemeManager.Current.ChangeTheme(System.Windows.Application.Current, "Light.Teal");
             Properties.Settings.Default.Save();
         }
 

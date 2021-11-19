@@ -417,98 +417,118 @@ namespace KSP_WPF
         }
 
 
-        private async Task<string> UploadVideo(AssetData asset)
+        private async Task<string> UploadVideo(AssetData asset, int count = 0)
         {
-            StreamReader fileStream = new StreamReader(asset.Path);
+            try
+            {
+                StreamReader fileStream = new StreamReader(asset.Path);
 
-            string requestURI = "https://up-api-kage-4story-video.kakao.com/web/webstory-video/";
+                string requestURI = "https://up-api-kage-4story-video.kakao.com/web/webstory-video/";
 
-            string boundary = "----" + DateTime.Now.Ticks.ToString("x");
+                string boundary = "----" + DateTime.Now.Ticks.ToString("x");
 
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "POST";
-            request.ContentType = "multipart/form-data; boundary=" + boundary;
-            CookieContainer containerNow = new CookieContainer();
-            containerNow.SetCookies(new Uri("https://up-api-kage-4story-video.kakao.com/"), WebViewWindow.cookieString);
-            request.CookieContainer = containerNow;
+                HttpWebRequest request = WebRequest.CreateHttp(requestURI);
+                request.Method = "POST";
+                request.ContentType = "multipart/form-data; boundary=" + boundary;
+                CookieContainer containerNow = new CookieContainer();
+                containerNow.SetCookies(new Uri("https://up-api-kage-4story-video.kakao.com/"), WebViewWindow.cookieString);
+                request.CookieContainer = containerNow;
 
-            request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
-            request.Headers["X-Kakao-ApiLevel"] = "46";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
-            request.Headers["Cache-Control"] = "max-age=0";
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4";
+                request.Headers["X-Kakao-DeviceInfo"] = "web:d;-;-";
+                request.Headers["X-Kakao-ApiLevel"] = "46";
+                request.Headers["X-Requested-With"] = "XMLHttpRequest";
+                request.Headers["X-Kakao-VC"] = "185412afe1da9580e67f";
+                request.Headers["Cache-Control"] = "max-age=0";
+                request.Headers["Accept-Encoding"] = "gzip, deflate, br";
+                request.Headers["Accept-Language"] = "ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4";
 
-            request.Headers["DNT"] = "1";
+                request.Headers["DNT"] = "1";
 
-            request.Headers["authority"] = "story.kakao.com";
-            request.Referer = "https://story.kakao.com";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "up-api-kage-4story-video.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "*/*";
-            request.AutomaticDecompression = DecompressionMethods.GZip;
+                request.Headers["authority"] = "story.kakao.com";
+                request.Referer = "https://story.kakao.com";
+                request.KeepAlive = true;
+                request.UseDefaultCredentials = true;
+                request.Host = "up-api-kage-4story-video.kakao.com";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+                request.Accept = "*/*";
+                request.AutomaticDecompression = DecompressionMethods.GZip;
 
-            Stream writeStream = await request.GetRequestStreamAsync();
+                Stream writeStream = await request.GetRequestStreamAsync();
 
-            WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(asset.Path), System.Web.MimeMapping.GetMimeMapping(asset.Path), fileStream.BaseStream);
-            fileStream.Close();
+                WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(asset.Path), System.Web.MimeMapping.GetMimeMapping(asset.Path), fileStream.BaseStream);
+                fileStream.Close();
 
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
+                var readStream = await request.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
 
-            string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
-            respReader.Close();
-            
-            var videoData = JsonConvert.DeserializeObject<VideoData.Video>(respResult);
-            return videoData.access_key;
+                string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
+                respReader.Close();
+
+                var videoData = JsonConvert.DeserializeObject<VideoData.Video>(respResult);
+                return videoData.access_key;
+            }
+            catch (WebException e)
+            {
+                if ((int)(e.Response as HttpWebResponse).StatusCode == 401 && count < 10)
+                    return await UploadVideo(asset, ++count);
+                else
+                    return null;
+            }
         }
 
-        private async Task<string> UploadImage(AssetData asset)
+        private async Task<string> UploadImage(AssetData asset, int count = 0)
         {
-            StreamReader fileStream = new StreamReader(asset.Path);
+            try
+            {
+                StreamReader fileStream = new StreamReader(asset.Path);
 
-            string requestURI = "https://up-api-kage-4story.kakao.com/web/webstory-img/";
+                string requestURI = "https://up-api-kage-4story.kakao.com/web/webstory-img/";
 
-            string boundary = "----" + DateTime.Now.Ticks.ToString("x");
+                string boundary = "----" + DateTime.Now.Ticks.ToString("x");
 
-            HttpWebRequest request = WebRequest.CreateHttp(requestURI);
-            request.Method = "POST";
-            request.ContentType = "multipart/form-data; boundary=" + boundary;
-            CookieContainer containerNow = new CookieContainer();
-            containerNow.SetCookies(new Uri("https://up-api-kage-4story.kakao.com/"), WebViewWindow.cookieString);
-            request.CookieContainer = containerNow;
+                HttpWebRequest request = WebRequest.CreateHttp(requestURI);
+                request.Method = "POST";
+                request.ContentType = "multipart/form-data; boundary=" + boundary;
+                CookieContainer containerNow = new CookieContainer();
+                containerNow.SetCookies(new Uri("https://up-api-kage-4story.kakao.com/"), WebViewWindow.cookieString);
+                request.CookieContainer = containerNow;
 
-            request.Headers["Accept-Encoding"] = "gzip, deflate, br";
-            request.Headers["Accept-Language"] = "ko-KR";
-            request.Headers["Origin"] = "https://story.kakao.com";
+                request.Headers["Accept-Encoding"] = "gzip, deflate, br";
+                request.Headers["Accept-Language"] = "ko-KR";
+                request.Headers["Origin"] = "https://story.kakao.com";
 
-            request.Headers["DNT"] = "1";
+                request.Headers["DNT"] = "1";
 
-            request.Referer = "https://story.kakao.com/";
-            request.KeepAlive = true;
-            request.UseDefaultCredentials = true;
-            request.Host = "up-api-kage-4story.kakao.com";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-            request.Accept = "*/*";
-            request.AutomaticDecompression = DecompressionMethods.GZip;
+                request.Referer = "https://story.kakao.com/";
+                request.KeepAlive = true;
+                request.UseDefaultCredentials = true;
+                request.Host = "up-api-kage-4story.kakao.com";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+                request.Accept = "*/*";
+                request.AutomaticDecompression = DecompressionMethods.GZip;
 
-            Stream writeStream = await request.GetRequestStreamAsync();
+                Stream writeStream = await request.GetRequestStreamAsync();
 
-            WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(asset.Path), System.Web.MimeMapping.GetMimeMapping(asset.Path), fileStream.BaseStream);
-            fileStream.Close();
+                WriteMultipartForm(writeStream, boundary, null, System.IO.Path.GetFileName(asset.Path), System.Web.MimeMapping.GetMimeMapping(asset.Path), fileStream.BaseStream);
+                fileStream.Close();
 
-            var readStream = await request.GetResponseAsync();
-            var respReader = readStream.GetResponseStream();
+                var readStream = await request.GetResponseAsync();
+                var respReader = readStream.GetResponseStream();
 
-            string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
-            respReader.Close();
+                string respResult = await (new StreamReader(respReader, Encoding.UTF8)).ReadToEndAsync();
+                respReader.Close();
 
-            UploadedImageProp result = JsonConvert.DeserializeObject<UploadedImageProp>(respResult);
-            
-            return result.access_key + "/" + result.info.original.filename + "?width=" + result.info.original.width + "&height=" + result.info.original.height + "&avg=" + result.info.original.avg;
+                UploadedImageProp result = JsonConvert.DeserializeObject<UploadedImageProp>(respResult);
+
+                return result.access_key + "/" + result.info.original.filename + "?width=" + result.info.original.width + "&height=" + result.info.original.height + "&avg=" + result.info.original.avg;
+            }
+            catch (WebException e)
+            {
+                if ((int)(e.Response as HttpWebResponse).StatusCode == 401 && count< 10)
+                    return await UploadImage(asset, ++count);
+                else
+                    return null;
+            }
         }
         /// <summary>
         /// Writes multi part HTTP POST request. Author : Farhan Ghumra

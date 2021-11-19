@@ -42,8 +42,8 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Button Name="BT_Edit" Content="수정" Style="{StaticResource AccentedSquareButtonStyle}"/>
-                    <Button Name="BT_Delete" Content="삭제" Grid.Row="1" Style="{StaticResource AccentedSquareButtonStyle}"/>
+                    <Button Name="BT_Edit" Content="수정"/>
+                    <Button Name="BT_Delete" Content="삭제" Grid.Row="1"/>
                 </Grid>
             </controls:FlipViewItem>
         </controls:FlipView>
